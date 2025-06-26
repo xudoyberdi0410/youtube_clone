@@ -35,15 +35,12 @@ jobs:
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
         
-      - name: Build with Docker
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          target: prerelease
-          push: false
-          tags: youtube-clone-build:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+      - name: Build with Docker (Multi-stage)
+        run: |
+          # Build the prerelease stage that includes the built 'out' directory
+          docker build --target prerelease -t youtube-clone-build:latest .
+          # Verify that the build was successful by checking if out directory exists
+          docker run --rm youtube-clone-build:latest ls -la out/
           
       - name: Extract built files from Docker
         run: |
@@ -53,6 +50,8 @@ jobs:
           docker cp temp-container:/usr/src/app/out ./out
           # Clean up
           docker rm temp-container
+          # List contents to verify
+          ls -la ./out
           
       - name: Setup Pages
         uses: actions/configure-pages@v5
