@@ -38,7 +38,7 @@ export function ProfileEditDialog({ user, children }: ProfileEditDialogProps) {
     e.preventDefault()
     setLoading(true)
     setError(null)
-
+    
     if (formData.password && formData.password !== formData.confirmPassword) {
       setError('Пароли не совпадают')
       setLoading(false)
@@ -46,7 +46,7 @@ export function ProfileEditDialog({ user, children }: ProfileEditDialogProps) {
     }
 
     try {
-      const updateData: any = {
+      const updateData: Record<string, string> = {
         username: formData.username,
         email: formData.email,
       }
@@ -61,11 +61,10 @@ export function ProfileEditDialog({ user, children }: ProfileEditDialogProps) {
       if (typeof window !== 'undefined') {
         window.dispatchEvent(new Event('authStateChanged'))
       }
-      
-      setOpen(false)
+        setOpen(false)
       setFormData({ ...formData, password: '', confirmPassword: '' })
-    } catch (err: any) {
-      setError(err.message || 'Ошибка обновления профиля')
+    } catch (err: unknown) {
+      setError((err as Error).message || 'Ошибка обновления профиля')
     } finally {
       setLoading(false)
     }
@@ -78,9 +77,8 @@ export function ProfileEditDialog({ user, children }: ProfileEditDialogProps) {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Edit Profile</DialogTitle>
-          <DialogDescription>
-            Make changes to your profile here. Click save when you're done.
+          <DialogTitle>Edit Profile</DialogTitle>          <DialogDescription>
+            Make changes to your profile here. Click save when you&apos;re done.
           </DialogDescription>
         </DialogHeader>
         

@@ -41,13 +41,12 @@ export function SignUpForm({ className, ...props }: React.ComponentProps<"div">)
     try {
       // Регистрация пользователя
       await registerUser({ email, username, password })      // Автоматический вход после успешной регистрации
-      await loginUser({ username: email, password })
-      
+      await loginUser({ username: email, password })      
       // Переход на главную страницу
       router.push("/")
       
-    } catch (err: any) {
-      const message = err.message || "Произошла ошибка"
+    } catch (err: unknown) {
+      const message = (err as Error).message || "Произошла ошибка"
       
       if (/email/i.test(message)) {
         setEmailError(true)

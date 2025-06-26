@@ -1,6 +1,6 @@
 "use client";
 
-import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
+import { SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 import { HistoryIcon, UserCircleIcon } from "@/components/youtube-icons";
 import Link from "next/link";
 

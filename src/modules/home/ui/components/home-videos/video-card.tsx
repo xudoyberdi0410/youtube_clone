@@ -130,7 +130,7 @@ export function VideoCard({
               <DropdownMenuItem>Download</DropdownMenuItem>
               <DropdownMenuItem>Share</DropdownMenuItem>
               <DropdownMenuItem className="text-red-600">Not interested</DropdownMenuItem>
-              <DropdownMenuItem className="text-red-600">Don't recommend channel</DropdownMenuItem>
+              <DropdownMenuItem className="text-red-600">Don&apos;t recommend channel</DropdownMenuItem>
               <DropdownMenuItem>Report</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

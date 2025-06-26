@@ -58,7 +58,7 @@ export const useSettings = () => {
     e.preventDefault()
     setSaving(true)
     clearMessages()
-
+    
     if (formData.password && formData.password !== formData.confirmPassword) {
       setError('Пароли не совпадают')
       setSaving(false)
@@ -66,7 +66,7 @@ export const useSettings = () => {
     }
 
     try {
-      const updateData: any = {
+      const updateData: Record<string, string> = {
         username: formData.username,
         email: formData.email,
       }
@@ -81,25 +81,23 @@ export const useSettings = () => {
       if (typeof window !== 'undefined') {
         window.dispatchEvent(new Event('authStateChanged'))
       }
-      
-      setSuccess('Профиль успешно обновлен')
+        setSuccess('Профиль успешно обновлен')
       setFormData(prev => ({ ...prev, password: '', confirmPassword: '' }))
-    } catch (err: any) {
-      setError(err.message || 'Ошибка обновления профиля')
+    } catch (err: unknown) {
+      setError((err as Error).message || 'Ошибка обновления профиля')
     } finally {
       setSaving(false)
     }
   }
 
   const handleAvatarUpload = async (file: File) => {
-    try {
-      await uploadAvatar(file)
+    try {      await uploadAvatar(file)
       if (typeof window !== 'undefined') {
         window.dispatchEvent(new Event('authStateChanged'))
       }
       setSuccess('Аватар успешно загружен')
-    } catch (error: any) {
-      setError(error.message || 'Ошибка загрузки аватара')
+    } catch (error: unknown) {
+      setError((error as Error).message || 'Ошибка загрузки аватара')
     }
   }
 
@@ -108,11 +106,10 @@ export const useSettings = () => {
       return
     }
 
-    try {
-      await deleteAccount()
+    try {      await deleteAccount()
       router.push("/")
-    } catch (error: any) {
-      setError(error.message || 'Ошибка удаления аккаунта')
+    } catch (error: unknown) {
+      setError((error as Error).message || 'Ошибка удаления аккаунта')
     }
   }
 

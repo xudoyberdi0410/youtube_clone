@@ -1,7 +1,7 @@
 import { buildApiUrl, getAuthHeaders } from './api-config'
 
 // Типы для API ответов
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   data?: T
   message?: string
   success?: boolean
@@ -9,9 +9,9 @@ export interface ApiResponse<T = any> {
 
 export class ApiError extends Error {
   status?: number
-  details?: any
+  details?: unknown
 
-  constructor(message: string, status?: number, details?: any) {
+  constructor(message: string, status?: number, details?: unknown) {
     super(message)
     this.name = 'ApiError'
     this.status = status
@@ -76,11 +76,10 @@ export class ApiClient {
 
   // GET запрос
   async get<T>(endpoint: string): Promise<T> {
-    return this.request<T>(endpoint, { method: 'GET' })
-  }
+    return this.request<T>(endpoint, { method: 'GET' })  }
 
   // POST запрос
-  async post<T>(endpoint: string, data?: any): Promise<T> {
+  async post<T>(endpoint: string, data?: unknown): Promise<T> {
     return this.request<T>(endpoint, {
       method: 'POST',
       body: data ? JSON.stringify(data) : undefined,
@@ -88,7 +87,7 @@ export class ApiClient {
   }
 
   // PUT запрос
-  async put<T>(endpoint: string, data?: any): Promise<T> {
+  async put<T>(endpoint: string, data?: unknown): Promise<T> {
     return this.request<T>(endpoint, {
       method: 'PUT',
       body: data ? JSON.stringify(data) : undefined,

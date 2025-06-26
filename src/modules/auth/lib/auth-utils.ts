@@ -76,13 +76,12 @@ export async function isAuthenticated(): Promise<boolean> {
   try {
     const token = localStorage.getItem('access_token') || localStorage.getItem('authToken')
     if (!token) {
-      return false
-    }
+      return false    }
 
     // Проверяем токен, делая запрос к защищенному endpoint
     await apiClient.get('/get_own_lock') // Текущий endpoint бэкенда
     return true
-  } catch (error) {
+  } catch {
     // Если токен невалидный, очищаем localStorage
     localStorage.removeItem('access_token')
     localStorage.removeItem('refresh_token')

@@ -24,16 +24,16 @@ export function LoginForm({
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {    event.preventDefault()
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault()
     setLoading(true)
     setError(null)
 
     try {
       await loginUser({ username: email, password })
       router.push("/")
-    } catch (err: any) {
-      setError(err.message || "Ошибка входа")
+    } catch (err: unknown) {
+      setError((err as Error).message || "Ошибка входа")
     } finally {
       setLoading(false)
     }

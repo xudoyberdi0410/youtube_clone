@@ -1,7 +1,7 @@
 "use client";
 
 import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
-import { GaminIcon, HistoryIcon, LearningIcon, LiveIcon, MusicIcon, NewsIcon, SportsIcon, TrendingIcon, UserCircleIcon } from "@/components/youtube-icons";
+import { GaminIcon, LearningIcon, LiveIcon, MusicIcon, NewsIcon, SportsIcon, TrendingIcon } from "@/components/youtube-icons";
 import Link from "next/link";
 
 const items = [
