@@ -1,15 +1,31 @@
-export { default as TrendingIcon } from "./TrendingIcon.svg"
-export { default as GaminIcon } from "./GaminIcon.svg"
-export { default as HistoryIcon } from "./HistoryIcon.svg"
-export { default as HomeIcon } from "./HomeIcon.svg"
-export { default as HumbergerMenuIcon } from "./HumbergerMenuIcon.svg"
-export { default as LearningIcon } from "./LearningIcon.svg"
-export { default as LiveIcon } from "./LiveIcon.svg"
-export { default as MusicIcon } from "./MusicIcon.svg"
-export { default as NewsIcon } from "./NewsIcon.svg"
-export { default as SearchIcon } from "./SearchIcon.svg"
-export { default as ShortsIcon } from "./ShortsIcon.svg"
-export { default as SportsIcon } from "./SportsIcon.svg"
-export { default as SubscriptionsIcon } from "./SubscriptionsIcon.svg"
-export { default as ThreeDotsIcon } from "./ThreeDotsIcon.svg"
-export { default as UserCircleIcon } from "./UserCircleIcon.svg"
+import TrendingIconSvg from "./TrendingIcon.svg"
+import GaminIconSvg from "./GaminIcon.svg"
+import HistoryIconSvg from "./HistoryIcon.svg"
+import HomeIconSvg from "./HomeIcon.svg"
+import HumbergerMenuIconSvg from "./HumbergerMenuIcon.svg"
+import LearningIconSvg from "./LearningIcon.svg"
+import LiveIconSvg from "./LiveIcon.svg"
+import MusicIconSvg from "./MusicIcon.svg"
+import NewsIconSvg from "./NewsIcon.svg"
+import SearchIconSvg from "./SearchIcon.svg"
+import ShortsIconSvg from "./ShortsIcon.svg"
+import SportsIconSvg from "./SportsIcon.svg"
+import SubscriptionsIconSvg from "./SubscriptionsIcon.svg"
+import ThreeDotsIconSvg from "./ThreeDotsIcon.svg"
+import UserCircleIconSvg from "./UserCircleIcon.svg"
+
+export const TrendingIcon = TrendingIconSvg
+export const GaminIcon = GaminIconSvg
+export const HistoryIcon = HistoryIconSvg
+export const HomeIcon = HomeIconSvg
+export const HumbergerMenuIcon = HumbergerMenuIconSvg
+export const LearningIcon = LearningIconSvg
+export const LiveIcon = LiveIconSvg
+export const MusicIcon = MusicIconSvg
+export const NewsIcon = NewsIconSvg
+export const SearchIcon = SearchIconSvg
+export const ShortsIcon = ShortsIconSvg
+export const SportsIcon = SportsIconSvg
+export const SubscriptionsIcon = SubscriptionsIconSvg
+export const ThreeDotsIcon = ThreeDotsIconSvg
+export const UserCircleIcon = UserCircleIconSvg

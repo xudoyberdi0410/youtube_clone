@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { HomeIcon } from "@/components/youtube-icons"
+import { Home } from "lucide-react"
 
 interface HomeButtonProps {
   variant?: "default" | "outline" | "ghost"
@@ -20,7 +20,7 @@ export function HomeButton({
   return (
     <Link href="/">
       <Button variant={variant} size={iconOnly ? "icon" : size} className={className}>
-        <HomeIcon className={iconOnly ? "w-4 h-4" : "w-4 h-4 mr-2"} />
+        <Home className={iconOnly ? "w-4 h-4" : "w-4 h-4 mr-2"} />
         {!iconOnly && "На главную"}
       </Button>
     </Link>
