@@ -3,28 +3,42 @@ import Link from "next/link"
 import Image from "next/image"
 import { SearchInput } from "./search-input"
 import { AuthButton } from "@/modules/auth/ui/components/auth-botton"
+import { SearchIcon } from "lucide-react"
 
 export const HomeNavbar = () => {
     return (
-        <nav className="fixed top-0 left-0 right-0 h-16 bg-white flex items-center px-2 pr-5 z-50">
-            <div className="flex items-center gap-4 w-full">
+        <nav className="fixed top-0 left-0 right-0 h-16 bg-white flex items-center px-2 md:px-4 z-50 border-b border-gray-200">
+            <div className="flex items-center justify-between w-full">
                 {/* Menu and logo */}
                 <div className="flex items-center flex-shrink-0">
                     <SidebarTrigger />
                     <Link href="/">
-                        <div className="p-4 flex items-center gap-1">
-                            <Image src="/youtube.svg" alt="YouTube" width={50} height={50} />
-                            <p className="text-xl font-semibold tracking-tight">YouTube</p>
+                        <div className="p-2 md:p-4 flex items-center gap-1 md:gap-2">
+                            <div className="relative w-8 h-8 md:w-12 md:h-12">
+                                <Image 
+                                    src="/youtube.svg" 
+                                    alt="YouTube" 
+                                    fill 
+                                    priority
+                                    sizes="(max-width: 768px) 32px, 48px"
+                                />
+                            </div>
+                            <p className="hidden sm:block text-lg md:text-xl font-semibold tracking-tight">YouTube</p>
                         </div>
                     </Link>
                 </div>
 
-                {/* Search bar */}
-                <div className="flex-1 flex justify-center max-w-[720px] mx-auto">
+                {/* Search bar - hidden on mobile, shown on tablet+ */}
+                <div className="hidden md:flex flex-1 justify-center max-w-[720px] mx-auto">
                     <SearchInput />
                 </div>
 
-                <div className="flex-shrink-0 items-center flex gap-4">
+                {/* Right side - Auth button and mobile search */}
+                <div className="flex items-center gap-2 md:gap-4 flex-shrink-0">
+                    {/* Mobile search button */}
+                    <button className="md:hidden p-2 hover:bg-gray-100 rounded-full">
+                        <SearchIcon className="w-5 h-5" />
+                    </button>
                     <AuthButton />
                 </div>
             </div>
