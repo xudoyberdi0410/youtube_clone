@@ -1,3 +1,4 @@
+import React from 'react'
 import TrendingIconSvg from "./TrendingIcon.svg"
 import GaminIconSvg from "./GaminIcon.svg"
 import HistoryIconSvg from "./HistoryIcon.svg"
@@ -14,18 +15,21 @@ import SubscriptionsIconSvg from "./SubscriptionsIcon.svg"
 import ThreeDotsIconSvg from "./ThreeDotsIcon.svg"
 import UserCircleIconSvg from "./UserCircleIcon.svg"
 
-export const TrendingIcon = TrendingIconSvg
-export const GaminIcon = GaminIconSvg
-export const HistoryIcon = HistoryIconSvg
-export const HomeIcon = HomeIconSvg
-export const HumbergerMenuIcon = HumbergerMenuIconSvg
-export const LearningIcon = LearningIconSvg
-export const LiveIcon = LiveIconSvg
-export const MusicIcon = MusicIconSvg
-export const NewsIcon = NewsIconSvg
-export const SearchIcon = SearchIconSvg
-export const ShortsIcon = ShortsIconSvg
-export const SportsIcon = SportsIconSvg
-export const SubscriptionsIcon = SubscriptionsIconSvg
-export const ThreeDotsIcon = ThreeDotsIconSvg
-export const UserCircleIcon = UserCircleIconSvg
+type SvgComponent = React.ComponentType<React.SVGProps<SVGSVGElement>>
+
+// Create wrapper components to ensure proper React component behavior
+export const TrendingIcon = (props: React.SVGProps<SVGSVGElement>) => React.createElement(TrendingIconSvg as SvgComponent, props)
+export const GaminIcon = (props: React.SVGProps<SVGSVGElement>) => React.createElement(GaminIconSvg as SvgComponent, props)
+export const HistoryIcon = (props: React.SVGProps<SVGSVGElement>) => React.createElement(HistoryIconSvg as SvgComponent, props)
+export const HomeIcon = (props: React.SVGProps<SVGSVGElement>) => React.createElement(HomeIconSvg as SvgComponent, props)
+export const HumbergerMenuIcon = (props: React.SVGProps<SVGSVGElement>) => React.createElement(HumbergerMenuIconSvg as SvgComponent, props)
+export const LearningIcon = (props: React.SVGProps<SVGSVGElement>) => React.createElement(LearningIconSvg as SvgComponent, props)
+export const LiveIcon = (props: React.SVGProps<SVGSVGElement>) => React.createElement(LiveIconSvg as SvgComponent, props)
+export const MusicIcon = (props: React.SVGProps<SVGSVGElement>) => React.createElement(MusicIconSvg as SvgComponent, props)
+export const NewsIcon = (props: React.SVGProps<SVGSVGElement>) => React.createElement(NewsIconSvg as SvgComponent, props)
+export const SearchIcon = (props: React.SVGProps<SVGSVGElement>) => React.createElement(SearchIconSvg as SvgComponent, props)
+export const ShortsIcon = (props: React.SVGProps<SVGSVGElement>) => React.createElement(ShortsIconSvg as SvgComponent, props)
+export const SportsIcon = (props: React.SVGProps<SVGSVGElement>) => React.createElement(SportsIconSvg as SvgComponent, props)
+export const SubscriptionsIcon = (props: React.SVGProps<SVGSVGElement>) => React.createElement(SubscriptionsIconSvg as SvgComponent, props)
+export const ThreeDotsIcon = (props: React.SVGProps<SVGSVGElement>) => React.createElement(ThreeDotsIconSvg as SvgComponent, props)
+export const UserCircleIcon = (props: React.SVGProps<SVGSVGElement>) => React.createElement(UserCircleIconSvg as SvgComponent, props)
