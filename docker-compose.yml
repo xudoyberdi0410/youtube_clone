@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  # Development service
+  dev:
+    build:
+      context: .
+      target: base
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    command: bun run dev
+    environment:
+      - NODE_ENV=development
+
+  # Build service for testing production build locally
+  build:
+    build:
+      context: .
+      target: prerelease
+    command: bun run build
+
+  # Production service with nginx
+  prod:
+    build:
+      context: .
+      target: nginx
+    ports:
+      - "8080:80"
