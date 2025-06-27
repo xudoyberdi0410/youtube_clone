@@ -7,18 +7,19 @@ import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Card, CardContent } from '@/components/ui/card'
 import { Comments } from './comments'
+import { VideoDescription } from '@/components/video/VideoDescription'
+import { VideoPlayer } from '@/components/video/VideoPlayer'
+import { useAuth } from '@/hooks/use-auth'
+import { AuthRequiredDialog } from '@/components/auth/AuthRequiredDialog'
 import { 
   ThumbsUp, 
   ThumbsDown, 
   Share, 
-  Download, 
   MoreHorizontal,
   Bookmark,
-  Scissors,
-  Bell,
-  ChevronDown,
-  ChevronUp
+  Bell
 } from 'lucide-react'
+import { VerifiedIcon } from '@/components/youtube-icons'
 
 interface PrimaryColumnProps {
   videoId?: string
@@ -33,53 +34,97 @@ interface PrimaryColumnProps {
 }
 
 export function PrimaryColumn({ 
-  videoId = "-AFAY2IV4bk",
+  videoId = "big-buck-bunny",
   title = "Building a YouTube Clone",
   channelName = "TsodingDaily",
   channelAvatar = "/avatars/channel_photo1.png",
   subscriberCount = "162K",
   viewCount = "45,892",
   publishDate = "2 days ago",
-  description = "Streamed Live on Twitch: https://twitch.tv/tsoding\nEnable Subtitles for Twitch Chat\n\nIn this stream we continue building our YouTube clone using React and Next.js...",
+  description = `🔥 Building a Complete YouTube Clone with Next.js & React
+
+00:00 Introduction and Project Overview
+02:15 Setting up Next.js and TypeScript
+05:30 Creating the Layout Components
+12:45 Implementing the Video Player
+18:20 Building the Comments System
+25:10 Adding User Authentication
+32:40 State Management with Zustand
+
+🔗 Useful Resources:
+→ GitHub Repository: https://github.com/tsoding/youtube-clone
+→ Live Demo: https://youtube-clone-demo.vercel.app
+→ Figma Design: https://figma.com/youtube-design
+
+In this comprehensive tutorial, we'll build a fully functional YouTube clone using modern web technologies. We'll cover everything from the basic layout to advanced features like video streaming and real-time comments.
+
+📚 What you'll learn:
+• Next.js 14 with App Router
+• TypeScript for type safety
+• Tailwind CSS for styling
+• shadcn/ui component library
+• Video player integration
+• Comment system with replies
+• Responsive design principles
+
+💻 Prerequisites:
+• Basic knowledge of React
+• Understanding of JavaScript/TypeScript
+• Familiarity with CSS
+
+🎯 Perfect for developers looking to build modern video platforms!
+
+#nextjs #react #typescript #webdev #tutorial`,
   isSubscribed = false
 }: PrimaryColumnProps) {
+  const { requireAuth, isAuthenticated, showAuthDialog, setShowAuthDialog } = useAuth()
   const [liked, setLiked] = useState(false)
   const [disliked, setDisliked] = useState(false)
   const [saved, setSaved] = useState(false)
   const [subscribed, setSubscribed] = useState(isSubscribed)
-  const [showFullDescription, setShowFullDescription] = useState(false)
 
   const handleLike = () => {
-    setLiked(!liked)
-    if (disliked) setDisliked(false)
+    requireAuth(() => {
+      setLiked(!liked)
+      if (disliked) setDisliked(false)
+    })
   }
 
   const handleDislike = () => {
-    setDisliked(!disliked)
-    if (liked) setLiked(false)
+    requireAuth(() => {
+      setDisliked(!disliked)
+      if (liked) setLiked(false)
+    })
   }
 
   const handleSubscribe = () => {
-    setSubscribed(!subscribed)
+    requireAuth(() => {
+      setSubscribed(!subscribed)
+    })
   }
 
-  const truncatedDescription = description.length > 200 
-    ? description.substring(0, 200) + "..."
-    : description
+  const handleSave = () => {
+    requireAuth(() => {
+      setSaved(!saved)
+    })
+  }
+
+  const handleSeek = (seconds: number) => {
+    // TODO: Implement video seeking functionality
+    console.log(`Seeking to ${seconds} seconds`)
+  }
 
   return (
     <div id="primary" className="w-full">
       <div id="primary-inner" className="space-y-4">
-        {/* Video Player Placeholder */}
-        <div className="relative aspect-video bg-black rounded-lg overflow-hidden">
-          <div className="absolute inset-0 flex items-center justify-center text-white text-lg">
-            Video Player Placeholder
-          </div>
-          {/* Video overlays */}
-          <div id="overlays" className="absolute inset-0 pointer-events-none"></div>
-          <div id="mouseover-overlay" className="absolute inset-0 pointer-events-none"></div>
-          <div id="hover-overlays" className="absolute inset-0 pointer-events-none"></div>
-        </div>
+        {/* Video Player */}
+        <VideoPlayer
+          videoId={videoId}
+          title={title}
+          autoPlay={false}
+          poster="/previews/previews1.png"
+          fallbackSrc="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+        />
 
         {/* Video Title */}
         <div className="space-y-2">
@@ -100,9 +145,7 @@ export function PrimaryColumn({
             <div className="flex flex-col">
               <div className="flex items-center space-x-2">
                 <span className="font-medium text-foreground">{channelName}</span>
-                <Badge variant="secondary" className="text-xs">
-                  ✓
-                </Badge>
+                <VerifiedIcon className="w-4 h-4 text-blue-500" />
               </div>
               <span className="text-sm text-muted-foreground">{subscriberCount} subscribers</span>
             </div>
@@ -110,11 +153,11 @@ export function PrimaryColumn({
             {/* Subscribe Button */}
             <Button
               onClick={handleSubscribe}
-              variant={subscribed ? "secondary" : "default"}
-              className={`ml-4 ${
+              variant="ghost"
+              className={`ml-4 px-4 py-2 rounded-full font-medium text-sm transition-all duration-200 ${
                 subscribed 
-                  ? "bg-secondary hover:bg-secondary/80 text-secondary-foreground" 
-                  : "bg-primary text-primary-foreground hover:bg-primary/90"
+                  ? "bg-gray-100 hover:bg-gray-200 text-gray-800 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-200" 
+                  : "bg-black hover:bg-gray-800 text-white dark:bg-white dark:hover:bg-gray-200 dark:text-black"
               }`}
             >
               {subscribed ? (
@@ -158,23 +201,11 @@ export function PrimaryColumn({
               Share
             </Button>
 
-            {/* Download */}
-            <Button variant="ghost" size="sm" className="bg-secondary text-foreground hover:bg-secondary/80 rounded-full">
-              <Download className="w-4 h-4 mr-2" />
-              Download
-            </Button>
-
-            {/* Clip */}
-            <Button variant="ghost" size="sm" className="bg-secondary text-foreground hover:bg-secondary/80 rounded-full">
-              <Scissors className="w-4 h-4 mr-2" />
-              Clip
-            </Button>
-
             {/* Save */}
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setSaved(!saved)}
+              onClick={handleSave}
               className={`bg-secondary hover:bg-secondary/80 rounded-full ${saved ? "text-blue-500" : "text-foreground"}`}
             >
               <Bookmark className="w-4 h-4 mr-2" />
@@ -189,84 +220,22 @@ export function PrimaryColumn({
         </div>
 
         {/* Video Description */}
-        <div className="bg-secondary/50 rounded-xl border-0 p-4">
-          <div className="space-y-3">
-            <div className="flex items-center text-sm font-medium text-muted-foreground space-x-2">
-              <span>{viewCount} views</span>
-              <span>•</span>
-              <span>{publishDate}</span>
-            </div>
-            
-            <div className="text-foreground">
-              <div className="text-sm leading-relaxed">
-                {showFullDescription ? (
-                  <div className="space-y-2">
-                    {description.split('\n').map((line, index) => {
-                      // Handle links
-                      if (line.includes('http')) {
-                        return (
-                          <p key={index} className="text-blue-500 hover:underline cursor-pointer">
-                            {line}
-                          </p>
-                        )
-                      }
-                      // Handle section headers (lines starting with emoji or special chars)
-                      if (line.match(/^[🔗⏰#]/)) {
-                        return (
-                          <p key={index} className="font-semibold text-foreground mt-3 first:mt-0">
-                            {line}
-                          </p>
-                        )
-                      }
-                      // Handle timestamps
-                      if (line.match(/^\d{2}:\d{2}/)) {
-                        return (
-                          <p key={index} className="text-blue-500 hover:underline cursor-pointer pl-2">
-                            {line}
-                          </p>
-                        )
-                      }
-                      // Regular text
-                      return line.trim() ? (
-                        <p key={index} className="text-foreground">
-                          {line}
-                        </p>
-                      ) : (
-                        <div key={index} className="h-2"></div>
-                      )
-                    })}
-                  </div>
-                ) : (
-                  <p className="text-foreground">
-                    {truncatedDescription}
-                  </p>
-                )}
-              </div>
-              
-              {description.length > 200 && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowFullDescription(!showFullDescription)}
-                  className="text-muted-foreground hover:text-foreground p-0 h-auto mt-3 font-medium"
-                >
-                  {showFullDescription ? (
-                    <>
-                      Show less <ChevronUp className="w-4 h-4 ml-1" />
-                    </>
-                  ) : (
-                    <>
-                      ...more <ChevronDown className="w-4 h-4 ml-1" />
-                    </>
-                  )}
-                </Button>
-              )}
-            </div>
-          </div>
-        </div>
+        <VideoDescription
+          description={description}
+          viewCount={viewCount}
+          publishDate={publishDate}
+          onSeek={handleSeek}
+          maxPreviewLength={150}
+        />
 
         {/* Comments Section */}
         <Comments videoId={videoId} commentsCount={1247} />
+
+        {/* Auth Required Dialog */}
+        <AuthRequiredDialog
+          open={showAuthDialog}
+          onOpenChange={setShowAuthDialog}
+        />
       </div>
     </div>
   )

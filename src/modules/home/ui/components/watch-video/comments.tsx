@@ -3,6 +3,8 @@
 import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { useAuth } from '@/hooks/use-auth'
+import { AuthRequiredDialog } from '@/components/auth/AuthRequiredDialog'
 import { 
   ThumbsUp, 
   ThumbsDown, 
@@ -23,6 +25,7 @@ interface Comment {
   isHearted: boolean
   replies?: Comment[]
   isReplying?: boolean
+  showReplies?: boolean
 }
 
 interface CommentsProps {
@@ -31,8 +34,10 @@ interface CommentsProps {
 }
 
 export function Comments({ videoId, commentsCount = 1247 }: CommentsProps) {
+  const { requireAuth, isAuthenticated, showAuthDialog, setShowAuthDialog } = useAuth()
   const [sortBy, setSortBy] = useState<'top' | 'newest'>('top')
   const [newComment, setNewComment] = useState('')
+  const [replyText, setReplyText] = useState('')
   const [comments, setComments] = useState<Comment[]>([
     {
       id: '1',
@@ -43,6 +48,7 @@ export function Comments({ videoId, commentsCount = 1247 }: CommentsProps) {
       likes: 42,
       isLiked: false,
       isHearted: true,
+      showReplies: true,
       replies: [
         {
           id: '1-1',
@@ -79,49 +85,107 @@ export function Comments({ videoId, commentsCount = 1247 }: CommentsProps) {
   ])
 
   const handleLikeComment = (commentId: string, isReply: boolean = false, parentId?: string) => {
-    setComments(prevComments => 
-      prevComments.map(comment => {
-        if (!isReply && comment.id === commentId) {
-          return {
-            ...comment,
-            isLiked: !comment.isLiked,
-            likes: comment.isLiked ? comment.likes - 1 : comment.likes + 1
+    requireAuth(() => {
+      setComments(prevComments => 
+        prevComments.map(comment => {
+          if (!isReply && comment.id === commentId) {
+            return {
+              ...comment,
+              isLiked: !comment.isLiked,
+              likes: comment.isLiked ? comment.likes - 1 : comment.likes + 1
+            }
           }
-        }
-        if (isReply && comment.id === parentId && comment.replies) {
-          return {
-            ...comment,
-            replies: comment.replies.map(reply => 
-              reply.id === commentId 
-                ? {
-                    ...reply,
-                    isLiked: !reply.isLiked,
-                    likes: reply.isLiked ? reply.likes - 1 : reply.likes + 1
-                  }
-                : reply
-            )
+          if (isReply && comment.id === parentId && comment.replies) {
+            return {
+              ...comment,
+              replies: comment.replies.map(reply => 
+                reply.id === commentId 
+                  ? {
+                      ...reply,
+                      isLiked: !reply.isLiked,
+                      likes: reply.isLiked ? reply.likes - 1 : reply.likes + 1
+                    }
+                  : reply
+              )
+            }
           }
-        }
-        return comment
-      })
+          return comment
+        })
+      )
+    })
+  }
+
+  const toggleReplies = (commentId: string) => {
+    setComments(prevComments =>
+      prevComments.map(comment =>
+        comment.id === commentId
+          ? { ...comment, showReplies: !comment.showReplies }
+          : comment
+      )
     )
   }
 
-  const handleAddComment = () => {
-    if (newComment.trim()) {
-      const comment: Comment = {
-        id: Date.now().toString(),
-        author: 'You',
-        avatar: '/avatars/channel_photo2.png',
-        content: newComment,
-        timestamp: 'just now',
-        likes: 0,
-        isLiked: false,
-        isHearted: false,
+  const toggleReply = (commentId: string) => {
+    requireAuth(() => {
+      setComments(prevComments =>
+        prevComments.map(comment =>
+          comment.id === commentId
+            ? { ...comment, isReplying: !comment.isReplying }
+            : { ...comment, isReplying: false } // Close other reply inputs
+        )
+      )
+      setReplyText('')
+    })
+  }
+
+  const handleAddReply = (parentId: string) => {
+    requireAuth(() => {
+      if (replyText.trim()) {
+        const reply: Comment = {
+          id: `${parentId}-${Date.now()}`,
+          author: 'You',
+          avatar: '/avatars/channel_photo2.png',
+          content: replyText,
+          timestamp: 'just now',
+          likes: 0,
+          isLiked: false,
+          isHearted: false,
+        }
+
+        setComments(prevComments =>
+          prevComments.map(comment =>
+            comment.id === parentId
+              ? {
+                  ...comment,
+                  replies: comment.replies ? [...comment.replies, reply] : [reply],
+                  isReplying: false,
+                  showReplies: true
+                }
+              : comment
+          )
+        )
+        setReplyText('')
       }
-      setComments([comment, ...comments])
-      setNewComment('')
-    }
+    })
+  }
+
+  const handleAddComment = () => {
+    requireAuth(() => {
+      if (newComment.trim()) {
+        const comment: Comment = {
+          id: Date.now().toString(),
+          author: 'You',
+          avatar: '/avatars/channel_photo2.png',
+          content: newComment,
+          timestamp: 'just now',
+          likes: 0,
+          isLiked: false,
+          isHearted: false,
+        }
+        setComments([comment, ...comments])
+        setNewComment('')
+      }
+    })
   }
 
   const CommentItem = ({ comment, isReply = false, parentId }: { comment: Comment, isReply?: boolean, parentId?: string }) => (
@@ -167,6 +231,7 @@ export function Comments({ videoId, commentsCount = 1247 }: CommentsProps) {
             <Button
               variant="ghost"
               size="sm"
+              onClick={() => toggleReply(comment.id)}
               className="h-8 px-2 text-muted-foreground hover:text-foreground"
             >
               Reply
@@ -182,26 +247,81 @@ export function Comments({ videoId, commentsCount = 1247 }: CommentsProps) {
           </Button>
         </div>
         
+        {/* Reply Input */}
+        {!isReply && comment.isReplying && (
+          <div className="flex items-start space-x-3 mt-3">
+            <Avatar className="w-6 h-6 flex-shrink-0">
+              <AvatarImage src="/avatars/channel_photo2.png" alt="Your avatar" />
+              <AvatarFallback>YU</AvatarFallback>
+            </Avatar>
+            <div className="flex-1 space-y-2">
+              <input
+                type="text"
+                placeholder="Add a reply..."
+                value={replyText}
+                onChange={(e) => setReplyText(e.target.value)}
+                className="w-full bg-transparent border-b border-border text-foreground placeholder-muted-foreground focus:border-primary outline-none pb-2 transition-colors text-sm"
+                onKeyPress={(e) => e.key === 'Enter' && handleAddReply(comment.id)}
+                autoFocus
+              />
+              {replyText.trim() && (
+                <div className="flex items-center justify-end space-x-2">
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    onClick={() => toggleReply(comment.id)}
+                    className="text-muted-foreground hover:text-foreground text-xs"
+                  >
+                    Cancel
+                  </Button>
+                  <Button 
+                    size="sm"
+                    onClick={() => handleAddReply(comment.id)}
+                    disabled={!replyText.trim()}
+                    className="text-xs"
+                  >
+                    Reply
+                  </Button>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+        
         {/* Replies */}
         {comment.replies && comment.replies.length > 0 && (
-          <div className="space-y-3 mt-4">
+          <div className="mt-4">
             <Button
               variant="ghost"
               size="sm"
-              className="text-blue-500 hover:text-blue-600 p-0 h-auto font-medium"
+              onClick={() => toggleReplies(comment.id)}
+              className="text-blue-500 hover:text-blue-600 p-0 h-auto font-medium mb-3"
             >
-              <ChevronDown className="w-4 h-4 mr-1" />
-              {comment.replies.length} {comment.replies.length === 1 ? 'reply' : 'replies'}
+              {comment.showReplies ? (
+                <>
+                  <ChevronDown className="w-4 h-4 mr-1" />
+                  Hide {comment.replies.length} {comment.replies.length === 1 ? 'reply' : 'replies'}
+                </>
+              ) : (
+                <>
+                  <ChevronDown className="w-4 h-4 mr-1 rotate-[-90deg]" />
+                  Show {comment.replies.length} {comment.replies.length === 1 ? 'reply' : 'replies'}
+                </>
+              )}
             </Button>
             
-            {comment.replies.map(reply => (
-              <CommentItem 
-                key={reply.id} 
-                comment={reply} 
-                isReply={true} 
-                parentId={comment.id}
-              />
-            ))}
+            {comment.showReplies && (
+              <div className="space-y-3">
+                {comment.replies.map(reply => (
+                  <CommentItem 
+                    key={reply.id} 
+                    comment={reply} 
+                    isReply={true} 
+                    parentId={comment.id}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -239,13 +359,17 @@ export function Comments({ videoId, commentsCount = 1247 }: CommentsProps) {
         <div className="flex-1 space-y-3">
           <input
             type="text"
-            placeholder="Add a comment..."
+            placeholder={isAuthenticated ? "Add a comment..." : "Sign in to comment"}
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
-            className="w-full bg-transparent border-b border-border text-foreground placeholder-muted-foreground focus:border-primary outline-none pb-2 transition-colors"
+            disabled={!isAuthenticated}
+            className={`w-full bg-transparent border-b border-border text-foreground placeholder-muted-foreground focus:border-primary outline-none pb-2 transition-colors ${
+              !isAuthenticated ? 'cursor-not-allowed opacity-60' : ''
+            }`}
             onKeyPress={(e) => e.key === 'Enter' && handleAddComment()}
+            onClick={() => !isAuthenticated && requireAuth(() => {})}
           />
-          {newComment.trim() && (
+          {newComment.trim() && isAuthenticated && (
             <div className="flex items-center justify-end space-x-2">
               <Button 
                 variant="ghost" 
@@ -281,6 +405,12 @@ export function Comments({ videoId, commentsCount = 1247 }: CommentsProps) {
           Show more comments
         </Button>
       </div>
+
+      {/* Auth Required Dialog */}
+      <AuthRequiredDialog
+        open={showAuthDialog}
+        onOpenChange={setShowAuthDialog}
+      />
     </div>
   )
 }

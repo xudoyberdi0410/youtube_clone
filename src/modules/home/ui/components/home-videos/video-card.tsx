@@ -11,6 +11,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { VerifiedIcon } from '@/components/youtube-icons'
 
 // Функция для форматирования количества просмотров
 function formatViews(views: number): string {
@@ -120,7 +121,7 @@ export function VideoCard({
               {channel.name}
             </p>
             {channel.isVerified && (
-              <CheckCircle className="w-3 h-3 text-gray-600 flex-shrink-0" />
+              <VerifiedIcon className="w-4 h-4 text-blue-500" />
             )}
           </div>
           

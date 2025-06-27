@@ -1,22 +1,15 @@
 import { WatchVideo } from "@/modules/home/ui/components/watch-video";
 
+// Force dynamic rendering for this page since it uses searchParams
+export const dynamic = 'force-dynamic';
+
 interface WatchPageProps {
-  searchParams: { v?: string };
+  searchParams: Promise<{ v?: string }>;
 }
 
-export default function WatchPage({ searchParams }: WatchPageProps) {
-  const videoId = searchParams.v;
-
-  if (!videoId) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Video Not Found</h1>
-          <p className="text-gray-600">No video ID provided in the URL.</p>
-        </div>
-      </div>
-    );
-  }
+export default async function WatchPage({ searchParams }: WatchPageProps) {
+  const resolvedSearchParams = await searchParams;
+  const videoId = resolvedSearchParams.v || "big-buck-bunny"; // Default video ID
 
   return <WatchVideo videoId={videoId} />;
 }

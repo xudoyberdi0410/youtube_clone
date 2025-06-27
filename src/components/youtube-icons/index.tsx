@@ -13,6 +13,7 @@ import SportsIconSvg from "./SportsIcon.svg"
 import SubscriptionsIconSvg from "./SubscriptionsIcon.svg"
 import ThreeDotsIconSvg from "./ThreeDotsIcon.svg"
 import UserCircleIconSvg from "./UserCircleIcon.svg"
+import VerifiedIconSvg from "./VerifiedIcon.svg"
 
 // Export the SVG components directly
 export const TrendingIcon = TrendingIconSvg
@@ -30,3 +31,4 @@ export const SportsIcon = SportsIconSvg
 export const SubscriptionsIcon = SubscriptionsIconSvg
 export const ThreeDotsIcon = ThreeDotsIconSvg
 export const UserCircleIcon = UserCircleIconSvg
+export const VerifiedIcon = VerifiedIconSvg

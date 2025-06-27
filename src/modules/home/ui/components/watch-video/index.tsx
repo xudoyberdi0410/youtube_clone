@@ -1,10 +1,88 @@
+"use client"
+
 import { PrimaryColumn } from './primary-column'
+import { useRouter } from 'next/navigation'
 
 interface WatchVideoProps {
   videoId: string;
 }
 
+// Mock data for recommended videos
+const recommendedVideos = [
+  {
+    id: '1',
+    title: 'React Server Components: The Future of React?',
+    channelName: 'Fireship',
+    thumbnail: '/previews/previews1.png',
+    viewCount: '1.2M',
+    publishDate: '1 week ago',
+  },
+  {
+    id: '2',
+    title: 'TypeScript in 100 Seconds',
+    channelName: 'Fireship',
+    thumbnail: '/previews/previews1.png',
+    viewCount: '800K',
+    publishDate: '2 weeks ago',
+  },
+  {
+    id: '3',
+    title: 'Next.js 14 Crash Course',
+    channelName: 'Traversy Media',
+    thumbnail: '/previews/previews1.png',
+    viewCount: '500K',
+    publishDate: '3 days ago',
+  },
+  {
+    id: '4',
+    title: 'Building Modern Web Apps with React',
+    channelName: 'Code with Antonio',
+    thumbnail: '/previews/previews1.png',
+    viewCount: '350K',
+    publishDate: '5 days ago',
+  },
+  {
+    id: '5',
+    title: 'Full Stack Development Roadmap 2024',
+    channelName: 'Coding Addict',
+    thumbnail: '/previews/previews1.png',
+    viewCount: '920K',
+    publishDate: '1 month ago',
+  },
+  {
+    id: '6',
+    title: 'JavaScript ES2024 New Features',
+    channelName: 'JavaScript Mastery',
+    thumbnail: '/previews/previews1.png',
+    viewCount: '450K',
+    publishDate: '4 days ago',
+  },
+  {
+    id: '7',
+    title: 'CSS Grid vs Flexbox - When to Use Each',
+    channelName: 'Kevin Powell',
+    thumbnail: '/previews/previews1.png',
+    viewCount: '280K',
+    publishDate: '1 week ago',
+  },
+  {
+    id: '8',
+    title: 'Database Design Best Practices',
+    channelName: 'TechWorld with Nana',
+    thumbnail: '/previews/previews1.png',
+    viewCount: '670K',
+    publishDate: '2 weeks ago',
+  },
+];
+
 export const WatchVideo = ({ videoId }: WatchVideoProps) => {
+    const router = useRouter();
+
+    const onVideoSelect = (id: string) => {
+      // Navigate to the selected video
+      router.push(`/watch?v=${id}`);
+    };
+
     return (
         <div className="flex gap-6 max-w-[1920px] mx-auto p-4">
             {/* Primary Column - Video and Comments */}
@@ -45,15 +123,29 @@ In this stream we continue building our YouTube clone using React and Next.js. W
             <div className="w-80 xl:w-96">
                 <div className="space-y-4">
                     <h3 className="text-lg font-semibold text-foreground">Up next</h3>
-                    {/* Placeholder for recommended videos */}
+                    {/* Recommended videos list */}
                     <div className="space-y-3">
-                        {Array.from({ length: 10 }).map((_, index) => (
-                            <div key={index} className="flex space-x-2 p-2 hover:bg-muted rounded-lg cursor-pointer">
-                                <div className="w-40 h-24 bg-muted rounded-lg flex-shrink-0"></div>
-                                <div className="flex-1 space-y-1">
-                                    <div className="h-4 bg-muted-foreground/20 rounded w-full"></div>
-                                    <div className="h-3 bg-muted-foreground/20 rounded w-3/4"></div>
-                                    <div className="h-3 bg-muted-foreground/20 rounded w-1/2"></div>
+                        {recommendedVideos.map((video) => (
+                            <div
+                                key={video.id}
+                                className="flex space-x-2 p-2 hover:bg-muted rounded-lg cursor-pointer transition-colors"
+                                onClick={() => onVideoSelect(video.id)}
+                            >
+                                <img
+                                    src={video.thumbnail}
+                                    alt={video.title}
+                                    className="w-40 h-24 object-cover rounded-lg flex-shrink-0 bg-muted"
+                                />
+                                <div className="flex-1 space-y-1 overflow-hidden">
+                                    <div className="font-medium text-sm text-foreground truncate">
+                                        {video.title}
+                                    </div>
+                                    <div className="text-xs text-muted-foreground truncate">
+                                        {video.channelName}
+                                    </div>
+                                    <div className="text-xs text-muted-foreground">
+                                        {video.viewCount} views • {video.publishDate}
+                                    </div>
                                 </div>
                             </div>
                         ))}
