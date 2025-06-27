@@ -1,3 +1,5 @@
+import { API_CONSTANTS } from './constants'
+
 // API Configuration
 export const API_CONFIG = {
   // Base URL для API
@@ -46,7 +48,9 @@ export const API_CONFIG = {
   },
   
   // Timeouts
-  TIMEOUT: 30000, // 30 seconds
+  TIMEOUT: API_CONSTANTS.TIMEOUT,
+  RETRY_ATTEMPTS: API_CONSTANTS.RETRY_ATTEMPTS,
+  RETRY_DELAY: API_CONSTANTS.RETRY_DELAY,
 }
 
 // Helper функция для построения полного URL

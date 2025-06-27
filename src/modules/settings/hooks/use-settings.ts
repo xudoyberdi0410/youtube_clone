@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/modules/auth/hooks/use-auth'
 import { updateProfile, uploadAvatar, deleteAccount } from '@/modules/auth/lib/auth-utils'
+import { SUCCESS_MESSAGES, ERROR_MESSAGES } from '@/lib/constants'
 import { SettingsFormData } from '../types'
 
 export const useSettings = () => {
@@ -46,7 +47,7 @@ export const useSettings = () => {
   }, [loading, user, router])
 
   const updateFormData = (updates: Partial<SettingsFormData>) => {
-    setFormData(prev => ({ ...prev, ...updates }))
+    setFormData((prev: SettingsFormData) => ({ ...prev, ...updates }))
   }
 
   const clearMessages = () => {
@@ -60,7 +61,7 @@ export const useSettings = () => {
     clearMessages()
     
     if (formData.password && formData.password !== formData.confirmPassword) {
-      setError('Пароли не совпадают')
+      setError(ERROR_MESSAGES.PASSWORD_MISMATCH)
       setSaving(false)
       return
     }
@@ -81,8 +82,8 @@ export const useSettings = () => {
       if (typeof window !== 'undefined') {
         window.dispatchEvent(new Event('authStateChanged'))
       }
-        setSuccess('Профиль успешно обновлен')
-      setFormData(prev => ({ ...prev, password: '', confirmPassword: '' }))
+        setSuccess(SUCCESS_MESSAGES.PROFILE_UPDATED)
+      setFormData((prev: SettingsFormData) => ({ ...prev, password: '', confirmPassword: '' }))
     } catch (err: unknown) {
       setError((err as Error).message || 'Ошибка обновления профиля')
     } finally {
@@ -95,7 +96,7 @@ export const useSettings = () => {
       if (typeof window !== 'undefined') {
         window.dispatchEvent(new Event('authStateChanged'))
       }
-      setSuccess('Аватар успешно загружен')
+      setSuccess(SUCCESS_MESSAGES.AVATAR_UPLOADED)
     } catch (error: unknown) {
       setError((error as Error).message || 'Ошибка загрузки аватара')
     }

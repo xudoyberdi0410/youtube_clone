@@ -2,6 +2,7 @@
 
 import { PrimaryColumn } from './primary-column'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 
 interface WatchVideoProps {
   videoId: string;
@@ -131,9 +132,11 @@ In this stream we continue building our YouTube clone using React and Next.js. W
                                 className="flex space-x-2 p-2 hover:bg-muted rounded-lg cursor-pointer transition-colors"
                                 onClick={() => onVideoSelect(video.id)}
                             >
-                                <img
+                                <Image
                                     src={video.thumbnail}
                                     alt={video.title}
+                                    width={160}
+                                    height={96}
                                     className="w-40 h-24 object-cover rounded-lg flex-shrink-0 bg-muted"
                                 />
                                 <div className="flex-1 space-y-1 overflow-hidden">

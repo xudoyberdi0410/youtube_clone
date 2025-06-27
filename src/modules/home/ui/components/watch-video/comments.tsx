@@ -33,7 +33,7 @@ interface CommentsProps {
   commentsCount?: number
 }
 
-export function Comments({ videoId, commentsCount = 1247 }: CommentsProps) {
+export function Comments({ commentsCount = 1247 }: CommentsProps) {
   const { requireAuth, isAuthenticated, showAuthDialog, setShowAuthDialog } = useAuth()
   const [sortBy, setSortBy] = useState<'top' | 'newest'>('top')
   const [newComment, setNewComment] = useState('')

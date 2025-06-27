@@ -34,8 +34,8 @@ interface VideoPlayerProps {
 export function VideoPlayer({ 
   videoId = "demo",
   src,
-  poster = "/previews/previews1.png",
-  title = "Video",
+  // poster = "/previews/previews1.png",
+  // title = "Video",
   autoPlay = false,
   className = "",
   fallbackSrc = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
@@ -85,7 +85,7 @@ export function VideoPlayer({
     return `${mins}:${secs.toString().padStart(2, '0')}`
   }
 
-  const togglePlay = () => {
+  const togglePlay = useCallback(() => {
     if (videoRef.current) {
       if (isPlaying) {
         videoRef.current.pause()
@@ -93,18 +93,18 @@ export function VideoPlayer({
         videoRef.current.play()
       }
     }
-  }
+  }, [isPlaying])
 
-  const handleVolumeChange = (value: number[]) => {
+  const handleVolumeChange = useCallback((value: number[]) => {
     const newVolume = value[0]
     setVolume(newVolume)
     if (videoRef.current) {
       videoRef.current.volume = newVolume
     }
     setIsMuted(newVolume === 0)
-  }
+  }, [])
 
-  const toggleMute = () => {
+  const toggleMute = useCallback(() => {
     if (videoRef.current) {
       const newMuted = !isMuted
       setIsMuted(newMuted)
@@ -115,7 +115,7 @@ export function VideoPlayer({
         videoRef.current.volume = volume
       }
     }
-  }
+  }, [isMuted, volume])
 
   const handleSeek = (value: number[]) => {
     const newTime = value[0]
@@ -125,15 +125,15 @@ export function VideoPlayer({
     }
   }
 
-  const skipTime = (seconds: number) => {
+  const skipTime = useCallback((seconds: number) => {
     if (videoRef.current) {
       const newTime = Math.max(0, Math.min(duration, currentTime + seconds))
       videoRef.current.currentTime = newTime
       setCurrentTime(newTime)
     }
-  }
+  }, [duration, currentTime])
 
-  const toggleFullscreen = () => {
+  const toggleFullscreen = useCallback(() => {
     if (!document.fullscreenElement) {
       containerRef.current?.requestFullscreen()
       setIsFullscreen(true)
@@ -141,7 +141,7 @@ export function VideoPlayer({
       document.exitFullscreen()
       setIsFullscreen(false)
     }
-  }
+  }, [])
 
   const changePlaybackRate = (rate: number) => {
     setPlaybackRate(rate)
@@ -232,7 +232,7 @@ export function VideoPlayer({
 
     document.addEventListener('keydown', handleKeyPress)
     return () => document.removeEventListener('keydown', handleKeyPress)
-  }, [volume, isPlaying, currentTime, duration])
+  }, [volume, isPlaying, currentTime, duration, togglePlay, skipTime, handleVolumeChange, toggleMute, toggleFullscreen])
 
   const getVideoSrc = () => {
     if (src) return src;
@@ -301,6 +301,13 @@ export function VideoPlayer({
       {isBuffering && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/50">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+        </div>
+      )}
+
+      {/* Speed indicator */}
+      {playbackRate !== 1 && (
+        <div className="absolute top-4 right-4 bg-black/70 text-white px-3 py-1 rounded-md text-sm font-medium backdrop-blur-sm border border-white/20">
+          {playbackRate}x
         </div>
       )}
       
@@ -416,9 +423,16 @@ export function VideoPlayer({
                 </div>
               </div>
               
-              <span className="text-sm">
-                {formatTime(currentTime)} / {formatTime(duration)}
-              </span>
+              <div className="flex items-center space-x-2">
+                <span className="text-sm">
+                  {formatTime(currentTime)} / {formatTime(duration)}
+                </span>
+                {playbackRate !== 1 && (
+                  <span className="text-xs bg-white/20 px-2 py-1 rounded backdrop-blur-sm">
+                    {playbackRate === 1 ? 'Normal' : `${playbackRate}x`}
+                  </span>
+                )}
+              </div>
             </div>
             
             <div className="flex items-center space-x-2">

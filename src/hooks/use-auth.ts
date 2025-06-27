@@ -7,7 +7,7 @@ export function useAuth() {
   const { isLoggedIn, user, loading } = useAuthModule()
   const [showAuthDialog, setShowAuthDialog] = useState(false)
 
-  const requireAuth = (action: () => void, title?: string, description?: string) => {
+  const requireAuth = (action: () => void) => {
     if (!isLoggedIn) {
       setShowAuthDialog(true)
       return

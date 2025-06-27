@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { VideoCardSkelton } from "./video-card-skelton";
-import { VideoCard } from "./video-card"; // ты создашь позже
+import { VideoCard } from "./video-card";
 import { VideoFilters } from "./video-filters";
 import type { Video } from "@/types/video";
 

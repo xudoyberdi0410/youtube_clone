@@ -3,9 +3,7 @@
 import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
-import { Card, CardContent } from '@/components/ui/card'
 import { Comments } from './comments'
 import { VideoDescription } from '@/components/video/VideoDescription'
 import { VideoPlayer } from '@/components/video/VideoPlayer'
@@ -77,7 +75,7 @@ In this comprehensive tutorial, we'll build a fully functional YouTube clone usi
 #nextjs #react #typescript #webdev #tutorial`,
   isSubscribed = false
 }: PrimaryColumnProps) {
-  const { requireAuth, isAuthenticated, showAuthDialog, setShowAuthDialog } = useAuth()
+  const { requireAuth, showAuthDialog, setShowAuthDialog } = useAuth()
   const [liked, setLiked] = useState(false)
   const [disliked, setDisliked] = useState(false)
   const [saved, setSaved] = useState(false)
