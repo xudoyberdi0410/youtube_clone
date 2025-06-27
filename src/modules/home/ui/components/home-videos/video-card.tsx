@@ -1,5 +1,6 @@
 import { Video } from "@/types/video";
 import Image from "next/image";
+import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, MoreVertical } from "lucide-react";
@@ -33,8 +34,22 @@ export function VideoCard({
 }: Video) {
   // Определяем, является ли это первое видео (LCP)
   const isFirstVideo = id === "1";
+  
+  const handleMoreOptionsClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+  
+  const handleChannelClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // Здесь можно добавить навигацию на страницу канала
+    // window.location.href = `/channel/${channel.id}`;
+  };
+  
   return (
-    <div className="group cursor-pointer animate-in fade-in-0 duration-700">
+    <Link href={`/watch?v=${id}`} className="block">
+      <div className="group cursor-pointer animate-in fade-in-0 duration-700">
       {/* Thumbnail Container */}
       <div className="relative w-full aspect-video mb-3">
         <div className="relative w-full h-full bg-gray-100 rounded-xl overflow-hidden shadow-sm md:hover:shadow-md transition-shadow duration-300">
@@ -75,7 +90,10 @@ export function VideoCard({
       {/* Video Info */}
       <div className="flex gap-3">
         {/* Channel Avatar */}
-        <Avatar className="w-8 h-8 md:w-9 md:h-9 flex-shrink-0 mt-0.5 ring-2 ring-transparent md:hover:ring-gray-200 transition-all duration-200">
+        <Avatar 
+          className="w-8 h-8 md:w-9 md:h-9 flex-shrink-0 mt-0.5 ring-2 ring-transparent md:hover:ring-gray-200 transition-all duration-200 cursor-pointer"
+          onClick={handleChannelClick}
+        >
           <AvatarImage 
             src={channel.avatarUrl} 
             alt={channel.name}
@@ -95,7 +113,10 @@ export function VideoCard({
           
           {/* Channel Name with Verification */}
           <div className="flex items-center gap-1 mb-1">
-            <p className="text-xs md:text-sm text-gray-600 hover:text-gray-900 cursor-pointer transition-colors truncate">
+            <p 
+              className="text-xs md:text-sm text-gray-600 hover:text-gray-900 cursor-pointer transition-colors truncate"
+              onClick={handleChannelClick}
+            >
               {channel.name}
             </p>
             {channel.isVerified && (
@@ -112,7 +133,7 @@ export function VideoCard({
         </div>
 
         {/* More Options Menu - hidden on mobile */}
-        <div className="hidden md:block">
+        <div className="hidden md:block" onClick={handleMoreOptionsClick}>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button 
@@ -137,5 +158,6 @@ export function VideoCard({
         </div>
       </div>
     </div>
+    </Link>
   );
 }
