@@ -146,3 +146,66 @@ export type { SettingsFormData } from './types'
    - Add types to appropriate type files
 
 This structure provides a solid foundation for scaling the YouTube clone project while maintaining code quality and developer productivity.
+
+## API Client Architecture
+
+The project features a comprehensive TypeScript API client:
+
+```typescript
+// lib/api-client.ts - Main API client
+export class ApiClient {
+  // Singleton pattern for consistent instance
+  static getInstance(): ApiClient
+
+  // HTTP methods with type safety
+  async get<T>(endpoint: string, params?: Record<string, string | number>): Promise<T>
+  async post<T>(endpoint: string, data?: unknown): Promise<T>
+  async put<T>(endpoint: string, data?: unknown): Promise<T>
+  async delete<T>(endpoint: string, params?: Record<string, string | number>): Promise<T>
+  
+  // FormData support for file uploads
+  async postFormData<T>(endpoint: string, formData: FormData): Promise<T>
+  async putFormData<T>(endpoint: string, formData: FormData): Promise<T>
+  
+  // All API endpoints with proper typing:
+  // User: registerUser, getUser, updateUser, uploadUserAvatar, deleteUser
+  // Channel: createChannel, getMyChannel, getChannel, updateChannel, uploadChannelImages
+  // Video: uploadVideo, getVideos, getMyVideos, updateVideo, deleteVideo
+  // Likes: addLike, getLikes, deleteLike
+  // Comments: addComment, getComments, updateComment, deleteComment
+  // History: addToHistory, getHistory, deleteFromHistory
+  // Playlists: createPlaylist, getPlaylists, updatePlaylist, deletePlaylist
+  // PlaylistVideos: addVideoToPlaylist, getPlaylistVideos, removeVideoFromPlaylist
+  // Subscriptions: subscribe, getSubscriptions, getSubscribers, unsubscribe
+  // Shorts: uploadShorts, getShorts, deleteShorts
+  // Auth: login, refreshToken
+}
+
+// types/api.ts - Complete type definitions
+export interface User { /* ... */ }
+export interface Channel { /* ... */ }
+export interface Video { /* ... */ }
+// ... all API entity types
+
+export interface UserRegistration { /* ... */ }
+export interface VideoUpload { /* ... */ }
+// ... all request/response types
+
+export type VideoCategory = 'Musiqa' | "Ta'lim" | 'Texnologiya' | /* ... */
+```
+
+**Key Features:**
+- ✅ Type-safe methods for all 30+ API endpoints
+- ✅ Automatic error handling with custom `ApiError` class
+- ✅ FormData support for file uploads
+- ✅ Singleton pattern for consistent API instance
+- ✅ Complete test coverage
+
+**Usage:**
+```typescript
+import { apiClient } from '@/lib/api-client'
+import type { User, Video } from '@/types/api'
+
+const user: User = await apiClient.getUser()
+const videos: Video[] = await apiClient.getVideos()
+```

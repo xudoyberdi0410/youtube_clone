@@ -1,4 +1,34 @@
 import { buildApiUrl, getAuthHeaders } from './api-config'
+import type {
+  User,
+  Channel,
+  Video,
+  Like,
+  Comment,
+  History,
+  Playlist,
+  PlaylistVideo,
+  Subscription,
+  Shorts,
+  VideoCategory,
+  LoginCredentials,
+  UserRegistration,
+  UserUpdate,
+  ChannelCreate,
+  ChannelUpdate,
+  VideoUpload,
+  VideoUpdate,
+  LikeCreate,
+  CommentCreate,
+  CommentUpdate,
+  HistoryCreate,
+  PlaylistCreate,
+  PlaylistUpdate,
+  PlaylistVideoCreate,
+  SubscriptionCreate,
+  ShortsUpload,
+  TokenResponse
+} from '../types/api'
 
 // Типы для API ответов
 export interface ApiResponse<T = unknown> {
@@ -57,11 +87,22 @@ export class ApiClient {
         )
       }
 
-      // Если ответ пустой, возвращаем пустой объект
+      // Пытаемся получить JSON напрямую
+      const contentType = response.headers.get('content-type')
+      if (contentType?.includes('application/json')) {
+        return await response.json()
+      }
+      
+      // Если не JSON, читаем как текст
       const text = await response.text()
       if (!text) return {} as T
       
-      return JSON.parse(text)
+      try {
+        return JSON.parse(text)
+      } catch {
+        // Если не удалось распарсить как JSON, возвращаем как есть
+        return text as T
+      }
     } catch (error) {
       if (error instanceof ApiError) {
         throw error
@@ -75,8 +116,17 @@ export class ApiClient {
   }
 
   // GET запрос
-  async get<T>(endpoint: string): Promise<T> {
-    return this.request<T>(endpoint, { method: 'GET' })  }
+  async get<T>(endpoint: string, params?: Record<string, string | number>): Promise<T> {
+    let url = endpoint
+    if (params) {
+      const searchParams = new URLSearchParams()
+      Object.entries(params).forEach(([key, value]) => {
+        searchParams.append(key, String(value))
+      })
+      url += `?${searchParams.toString()}`
+    }
+    return this.request<T>(url, { method: 'GET' })
+  }
 
   // POST запрос
   async post<T>(endpoint: string, data?: unknown): Promise<T> {
@@ -95,8 +145,16 @@ export class ApiClient {
   }
 
   // DELETE запрос
-  async delete<T>(endpoint: string): Promise<T> {
-    return this.request<T>(endpoint, { method: 'DELETE' })
+  async delete<T>(endpoint: string, params?: Record<string, string | number>): Promise<T> {
+    let url = endpoint
+    if (params) {
+      const searchParams = new URLSearchParams()
+      Object.entries(params).forEach(([key, value]) => {
+        searchParams.append(key, String(value))
+      })
+      url += `?${searchParams.toString()}`
+    }
+    return this.request<T>(url, { method: 'DELETE' })
   }
 
   // POST запрос с FormData (для загрузки файлов)
@@ -112,6 +170,48 @@ export class ApiClient {
     try {
       const response = await fetch(url, {
         method: 'POST',
+        headers,
+        body: formData,
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new ApiError(
+          errorData.detail || errorData.message || `HTTP ${response.status}`,
+          response.status,
+          errorData
+        )
+      }
+
+      const text = await response.text()
+      if (!text) return {} as T
+      
+      return JSON.parse(text)
+    } catch (error) {
+      if (error instanceof ApiError) {
+        throw error
+      }
+      
+      console.error('API FormData Request failed:', error)
+      throw new ApiError(
+        error instanceof Error ? error.message : 'Network error'
+      )
+    }
+  }
+
+  // PUT запрос с FormData (для обновления файлов)
+  async putFormData<T>(endpoint: string, formData: FormData): Promise<T> {
+    const url = buildApiUrl(endpoint)
+    const token = getAuthHeaders().Authorization
+
+    const headers: Record<string, string> = {}
+    if (token) {
+      headers.Authorization = token
+    }
+
+    try {
+      const response = await fetch(url, {
+        method: 'PUT',
         headers,
         body: formData,
       })
@@ -182,6 +282,300 @@ export class ApiClient {
         error instanceof Error ? error.message : 'Network error'
       )
     }
+  }
+  // === USER ENDPOINTS ===
+
+  // Регистрация пользователя
+  async registerUser(userData: UserRegistration): Promise<User> {
+    return this.post<User>('/user/post_user', userData)
+  }
+
+  // Загрузка аватара пользователя
+  async uploadUserAvatar(imageFile: File): Promise<string> {
+    const formData = new FormData()
+    formData.append('image', imageFile)
+    return this.postFormData<string>('/user/post_image', formData)
+  }
+
+  // Получение данных пользователя
+  async getUser(): Promise<User> {
+    return this.get<User>('/user/get_user')
+  }
+
+  // Обновление данных пользователя
+  async updateUser(userData: UserUpdate): Promise<User> {
+    return this.put<User>('/user/put_user', userData)
+  }
+
+  // Обновление аватара пользователя
+  async updateUserAvatar(imageFile: File): Promise<string> {
+    const formData = new FormData()
+    formData.append('image', imageFile)
+    return this.putFormData<string>('/user/put_image', formData)
+  }
+
+  // Удаление пользователя
+  async deleteUser(): Promise<string> {
+    return this.delete<string>('/user/delete_user')
+  }
+
+  // === CHANNEL ENDPOINTS ===
+
+  // Создание канала
+  async createChannel(channelData: ChannelCreate): Promise<Channel> {
+    return this.post<Channel>('/channel/post_channel', channelData)
+  }
+
+  // Загрузка изображения профиля канала
+  async uploadChannelProfileImage(imageFile: File): Promise<string> {
+    const formData = new FormData()
+    formData.append('image', imageFile)
+    return this.postFormData<string>('/channel/post_profile_image', formData)
+  }
+
+  // Загрузка баннера канала
+  async uploadChannelBannerImage(imageFile: File): Promise<string> {
+    const formData = new FormData()
+    formData.append('image', imageFile)
+    return this.postFormData<string>('/channel/post_banner_image', formData)
+  }
+
+  // Получение моего канала
+  async getMyChannel(): Promise<Channel> {
+    return this.get<Channel>('/channel/my_channel')
+  }
+
+  // Получение канала (публичный)
+  async getChannel(name?: string): Promise<Channel> {
+    const params = name ? { name } : undefined
+    return this.get<Channel>('/channel/get_channel', params)
+  }
+
+  // Обновление канала
+  async updateChannel(channelData: ChannelUpdate): Promise<Channel> {
+    return this.put<Channel>('/channel/put_channel', channelData)
+  }
+
+  // Обновление изображения профиля канала
+  async updateChannelProfileImage(imageFile: File): Promise<string> {
+    const formData = new FormData()
+    formData.append('image', imageFile)
+    return this.putFormData<string>('/channel/put_profile_image', formData)
+  }
+
+  // Обновление баннера канала
+  async updateChannelBannerImage(imageFile: File): Promise<string> {
+    const formData = new FormData()
+    formData.append('image', imageFile)
+    return this.putFormData<string>('/channel/put_banner_image', formData)
+  }
+
+  // Удаление канала
+  async deleteChannel(): Promise<string> {
+    return this.delete<string>('/channel/delete_channel')
+  }
+
+  // === SUBSCRIPTION ENDPOINTS ===
+
+  // Подписаться на канал
+  async subscribe(subscriptionData: SubscriptionCreate): Promise<Subscription> {
+    return this.post<Subscription>('/subscription/post_subscription', subscriptionData)
+  }
+
+  // Получить подписки
+  async getSubscriptions(): Promise<Subscription[]> {
+    return this.get<Subscription[]>('/subscription/get_subscriptions')
+  }
+
+  // Получить подписчиков
+  async getSubscribers(): Promise<Subscription[]> {
+    return this.get<Subscription[]>('/subscription/my_subscribers')
+  }
+
+  // Отписаться от канала
+  async unsubscribe(subscriptionId: number): Promise<string> {
+    return this.delete<string>('/subscription/delete_subscription', { ident: subscriptionId })
+  }
+
+  // === VIDEO ENDPOINTS ===
+
+  // Загрузка видео
+  async uploadVideo(videoFile: File, videoData: VideoUpload): Promise<Video> {
+    const formData = new FormData()
+    formData.append('vidyo', videoFile)
+    formData.append('title', videoData.title)
+    formData.append('description', videoData.description)
+    formData.append('category', videoData.category)
+    return this.postFormData<Video>('/video/post_video', formData)
+  }
+
+  // Получить мои видео
+  async getMyVideos(): Promise<Video[]> {
+    return this.get<Video[]>('/video/my_video')
+  }
+
+  // Получить видео (публичные)
+  async getVideos(ident?: number, category?: VideoCategory): Promise<Video[]> {
+    const params: Record<string, string | number> = {}
+    if (ident) params.ident = ident
+    if (category) params.category = category
+    return this.get<Video[]>('/video/get_video', Object.keys(params).length > 0 ? params : undefined)
+  }
+
+  // Обновление видео
+  async updateVideo(videoData: VideoUpdate): Promise<Video> {
+    return this.put<Video>('/video/put_video', videoData)
+  }
+
+  // Удаление видео
+  async deleteVideo(videoId: number): Promise<string> {
+    return this.delete<string>('/video/delete_video', { video_id: videoId })
+  }
+
+  // === LIKE ENDPOINTS ===
+
+  // Поставить лайк/дизлайк
+  async addLike(likeData: LikeCreate): Promise<Like> {
+    return this.post<Like>('/like/post_like', likeData)
+  }
+
+  // Получить лайки
+  async getLikes(): Promise<Like[]> {
+    return this.get<Like[]>('/like/get_like')
+  }
+
+  // Удалить лайк
+  async deleteLike(likeId: number): Promise<string> {
+    return this.delete<string>('/like/delete_like', { ident: likeId })
+  }
+
+  // === COMMENT ENDPOINTS ===
+
+  // Добавить комментарий
+  async addComment(commentData: CommentCreate): Promise<Comment> {
+    return this.post<Comment>('/comment/post_comment', commentData)
+  }
+
+  // Получить комментарии
+  async getComments(): Promise<Comment[]> {
+    return this.get<Comment[]>('/comment/get_join')
+  }
+
+  // Обновить комментарий
+  async updateComment(commentData: CommentUpdate): Promise<Comment> {
+    return this.put<Comment>('/comment/put_comment', commentData)
+  }
+
+  // Удалить комментарий
+  async deleteComment(commentId: number): Promise<string> {
+    return this.delete<string>('/comment/delete_comment', { ident: commentId })
+  }
+
+  // === HISTORY ENDPOINTS ===
+
+  // Добавить в историю
+  async addToHistory(historyData: HistoryCreate): Promise<History> {
+    return this.post<History>('/history/post_histor', historyData)
+  }
+
+  // Получить историю
+  async getHistory(): Promise<History[]> {
+    return this.get<History[]>('/history/get_history')
+  }
+
+  // Удалить из истории
+  async deleteFromHistory(historyId: number): Promise<string> {
+    return this.delete<string>('/history/delete_history', { ident: historyId })
+  }
+
+  // === PLAYLIST ENDPOINTS ===
+
+  // Создать плейлист
+  async createPlaylist(playlistData: PlaylistCreate): Promise<Playlist> {
+    return this.post<Playlist>('/playlist/post_playlist', playlistData)
+  }
+
+  // Получить мои плейлисты
+  async getMyPlaylists(): Promise<Playlist[]> {
+    return this.get<Playlist[]>('/playlist/my_playlist')
+  }
+
+  // Получить плейлисты (публичные)
+  async getPlaylists(): Promise<Playlist[]> {
+    return this.get<Playlist[]>('/playlist/get_playlist')
+  }
+
+  // Обновить плейлист
+  async updatePlaylist(playlistId: number, playlistData: PlaylistUpdate): Promise<Playlist> {
+    return this.put<Playlist>(`/playlist/put_playlist/${playlistId}`, playlistData)
+  }
+
+  // Удалить плейлист
+  async deletePlaylist(playlistId: number): Promise<string> {
+    return this.delete<string>('/playlist/delete_playlist', { playlist_id: playlistId })
+  }
+
+  // === PLAYLIST VIDEO ENDPOINTS ===
+
+  // Добавить видео в плейлист
+  async addVideoToPlaylist(playlistVideoData: PlaylistVideoCreate): Promise<PlaylistVideo> {
+    return this.post<PlaylistVideo>('/playlist_video/post_playlist_video', playlistVideoData)
+  }
+
+  // Получить мои видео плейлисты
+  async getMyPlaylistVideos(): Promise<PlaylistVideo[]> {
+    return this.get<PlaylistVideo[]>('/playlist_video/my_playlist_video')
+  }
+
+  // Получить видео плейлисты (публичные)
+  async getPlaylistVideos(): Promise<PlaylistVideo[]> {
+    return this.get<PlaylistVideo[]>('/playlist_video/get_playlist_video')
+  }
+
+  // Удалить видео из плейлиста
+  async removeVideoFromPlaylist(playlistVideoId: number): Promise<string> {
+    return this.delete<string>('/playlist_video/delete_playlist_video', { ident: playlistVideoId })
+  }
+
+  // === SHORTS ENDPOINTS ===
+
+  // Загрузка Shorts
+  async uploadShorts(videoFile: File, shortsData: ShortsUpload): Promise<Shorts> {
+    const formData = new FormData()
+    formData.append('vidyo', videoFile)
+    formData.append('title', shortsData.title)
+    formData.append('description', shortsData.description)
+    formData.append('category', shortsData.category)
+    return this.postFormData<Shorts>('/shorts/post_shorts', formData)
+  }
+
+  // Получить Shorts
+  async getShorts(): Promise<Shorts[]> {
+    return this.get<Shorts[]>('/shorts/get_shorts')
+  }
+
+  // Удалить Shorts
+  async deleteShorts(shortsId: number): Promise<string> {
+    return this.delete<string>('/shorts/delete_shorts', { ident: shortsId })
+  }
+
+  // === AUTH ENDPOINTS ===
+
+  // Логин
+  async login(credentials: LoginCredentials): Promise<TokenResponse> {
+    return this.postFormUrlencoded<TokenResponse>('/login/token', {
+      grant_type: 'password',
+      username: credentials.username,
+      password: credentials.password,
+      scope: '',
+      client_id: '',
+      client_secret: ''
+    })
+  }
+
+  // Обновление токена
+  async refreshToken(refreshToken: string): Promise<TokenResponse> {
+    return this.post<TokenResponse>('/login/refresh_token', { refresh_token: refreshToken })
   }
 }
 

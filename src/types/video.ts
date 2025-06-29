@@ -18,6 +18,7 @@ export interface Video {
   views: number
   likes?: number
   dislikes?: number
+  commentsCount?: number
   channel: Channel
   preview: string
   videoUrl?: string

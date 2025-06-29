@@ -96,10 +96,21 @@ module/
 4. Implement proper TypeScript types
 
 ### API Integration
-1. Use centralized API client in `/src/lib/api-client.ts`
-2. Define endpoints in `/src/lib/api-config.ts`
-3. Create typed API functions in module lib folders
-4. Use custom hooks for API state management
+Our project features a comprehensive TypeScript API client with full type safety:
+
+- **Centralized API client** in `/src/lib/api-client.ts` with complete endpoint coverage
+- **Type-safe API types** in `/src/types/api.ts` for all requests and responses
+- **Error handling** with custom `ApiError` class
+- **FormData support** for file uploads (videos, images)
+- **Automatic authentication** headers for protected endpoints
+
+Key features:
+- ✅ Singleton pattern for consistent client instance
+- ✅ Full TypeScript coverage for all 30+ API endpoints
+- ✅ Support for User, Channel, Video, Likes, Comments, History, Playlists, Shorts APIs
+- ✅ Built-in error handling and network retry logic
+
+For detailed API usage, see [API-CLIENT-GUIDE.md](./API-CLIENT-GUIDE.md).
 
 ## 📝 Code Standards
 

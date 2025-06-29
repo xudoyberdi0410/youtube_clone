@@ -5,7 +5,7 @@ import type { User, LoginData, RegisterData, TokenResponse } from '@/types/auth'
 export async function loginUser(data: LoginData): Promise<TokenResponse> {
   try {
     const response = await apiClient.postFormUrlencoded<TokenResponse>(
-      '/login/token', // Текущий endpoint бэкенда
+      API_CONFIG.ENDPOINTS.AUTH.LOGIN,
       {
         username: data.username,
         password: data.password,
@@ -36,7 +36,7 @@ export async function loginUser(data: LoginData): Promise<TokenResponse> {
 export async function registerUser(data: RegisterData): Promise<User> {
   try {
     const response = await apiClient.post<User>(
-      '/post_user', // Текущий endpoint бэкенда
+      API_CONFIG.ENDPOINTS.USERS.CREATE,
       data
     )
     
@@ -62,7 +62,7 @@ export async function logout(): Promise<void> {
     }
       // Опционально: отправляем запрос на бэкенд для invalidation токена
     try {
-      await apiClient.post('/auth/logout') // Будущий endpoint
+      await apiClient.post(API_CONFIG.ENDPOINTS.AUTH.LOGOUT)
     } catch {
       // Игнорируем ошибки logout на бэкенде
       console.warn('Backend logout failed')
@@ -79,7 +79,7 @@ export async function isAuthenticated(): Promise<boolean> {
       return false    }
 
     // Проверяем токен, делая запрос к защищенному endpoint
-    await apiClient.get('/get_own_lock') // Текущий endpoint бэкенда
+    await apiClient.get(API_CONFIG.ENDPOINTS.USERS.GET_OWN)
     return true
   } catch {
     // Если токен невалидный, очищаем localStorage
@@ -98,7 +98,7 @@ export async function getCurrentUser(): Promise<User | null> {
       return null
     }
 
-    const user = await apiClient.get<User>('/get_own_lock') // Текущий endpoint бэкенда
+    const user = await apiClient.get<User>(API_CONFIG.ENDPOINTS.USERS.GET_OWN)
     console.log('User data from API:', user) // Отладка
     return user
   } catch (error) {
@@ -120,7 +120,7 @@ export async function refreshToken(): Promise<TokenResponse | null> {
     }
 
     const response = await apiClient.post<TokenResponse>(
-      '/login/refresh_token', // Текущий endpoint бэкенда
+      API_CONFIG.ENDPOINTS.AUTH.REFRESH,
       { refresh_token }
     )
 
@@ -149,7 +149,7 @@ export async function refreshToken(): Promise<TokenResponse | null> {
 export async function updateProfile(data: Partial<User>): Promise<User> {
   try {
     const response = await apiClient.put<User>(
-      '/put_own', // Текущий endpoint бэкенда
+      API_CONFIG.ENDPOINTS.USERS.UPDATE_OWN,
       data
     )
     
@@ -175,7 +175,7 @@ export async function uploadAvatar(file: File): Promise<User> {
     console.log('Uploading avatar file:', file.name, file.size) // Отладка
 
     const response = await apiClient.postFormData<User>(
-      '/load_image', // Текущий endpoint бэкенда
+      API_CONFIG.ENDPOINTS.USERS.UPLOAD_AVATAR,
       formData
     )
     
@@ -209,7 +209,7 @@ export async function deleteAccount(): Promise<void> {
 
 export async function getAllUsers(): Promise<User[]> {
   try {
-    const response = await apiClient.get<User[]>('/get_all_users') // Текущий endpoint бэкенда
+    const response = await apiClient.get<User[]>(API_CONFIG.ENDPOINTS.USERS.GET_ALL)
     return response
   } catch (error) {
     console.error('Get all users error:', error)

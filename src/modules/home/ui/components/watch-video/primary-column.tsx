@@ -8,7 +8,9 @@ import { Comments } from './comments'
 import { VideoDescription } from '@/components/video/VideoDescription'
 import { VideoPlayer } from '@/components/video/VideoPlayer'
 import { useAuth } from '@/hooks/use-auth'
+import { useVideoStats } from '@/hooks/use-video-stats'
 import { AuthRequiredDialog } from '@/components/auth/AuthRequiredDialog'
+import { ErrorDisplay } from '@/components/ui/error-display'
 import { 
   ThumbsUp, 
   ThumbsDown, 
@@ -24,81 +26,58 @@ interface PrimaryColumnProps {
   title?: string
   channelName?: string
   channelAvatar?: string
+  channelId?: string
   subscriberCount?: string
   viewCount?: string
   publishDate?: string
   description?: string
+  videoUrl?: string
+  likes?: number
+  dislikes?: number
   isSubscribed?: boolean
+  commentsCount?: number
 }
 
 export function PrimaryColumn({ 
-  videoId = "big-buck-bunny",
-  title = "Building a YouTube Clone",
-  channelName = "TsodingDaily",
-  channelAvatar = "/avatars/channel_photo1.png",
-  subscriberCount = "162K",
-  viewCount = "45,892",
-  publishDate = "2 days ago",
-  description = `🔥 Building a Complete YouTube Clone with Next.js & React
-
-00:00 Introduction and Project Overview
-02:15 Setting up Next.js and TypeScript
-05:30 Creating the Layout Components
-12:45 Implementing the Video Player
-18:20 Building the Comments System
-25:10 Adding User Authentication
-32:40 State Management with Zustand
-
-🔗 Useful Resources:
-→ GitHub Repository: https://github.com/tsoding/youtube-clone
-→ Live Demo: https://youtube-clone-demo.vercel.app
-→ Figma Design: https://figma.com/youtube-design
-
-In this comprehensive tutorial, we'll build a fully functional YouTube clone using modern web technologies. We'll cover everything from the basic layout to advanced features like video streaming and real-time comments.
-
-📚 What you'll learn:
-• Next.js 14 with App Router
-• TypeScript for type safety
-• Tailwind CSS for styling
-• shadcn/ui component library
-• Video player integration
-• Comment system with replies
-• Responsive design principles
-
-💻 Prerequisites:
-• Basic knowledge of React
-• Understanding of JavaScript/TypeScript
-• Familiarity with CSS
-
-🎯 Perfect for developers looking to build modern video platforms!
-
-#nextjs #react #typescript #webdev #tutorial`,
-  isSubscribed = false
+  videoId,
+  title,
+  channelName,
+  channelAvatar,
+  channelId,
+  subscriberCount,
+  viewCount,
+  publishDate,
+  description,
+  videoUrl,
+  likes = 0,
+  dislikes = 0,
+  isSubscribed = false,
+  commentsCount = 0
 }: PrimaryColumnProps) {
   const { requireAuth, showAuthDialog, setShowAuthDialog } = useAuth()
-  const [liked, setLiked] = useState(false)
-  const [disliked, setDisliked] = useState(false)
   const [saved, setSaved] = useState(false)
-  const [subscribed, setSubscribed] = useState(isSubscribed)
+  
+  // Используем объединенный хук для получения актуальной статистики и методов действий
+  const { 
+    views,
+    likesCount, 
+    dislikesCount,
+    commentsCount: realCommentsCount,
+    isLiked, 
+    isDisliked, 
+    isSubscribed: subscribed,
+    isLoading,
+    isLoadingLikes,
+    isLoadingSubscription,
+    error,
+    refreshStats,
+    handleLike,
+    handleDislike,
+    handleToggleSubscription
+  } = useVideoStats({ videoId, channelId })
 
-  const handleLike = () => {
-    requireAuth(() => {
-      setLiked(!liked)
-      if (disliked) setDisliked(false)
-    })
-  }
-
-  const handleDislike = () => {
-    requireAuth(() => {
-      setDisliked(!disliked)
-      if (liked) setLiked(false)
-    })
-  }
-
-  const handleSubscribe = () => {
-    requireAuth(() => {
-      setSubscribed(!subscribed)
-    })
+  const handleSubscribe = async () => {
+    await handleToggleSubscription()
   }
 
   const handleSave = () => {
@@ -119,8 +98,8 @@ In this comprehensive tutorial, we'll build a fully functional YouTube clone usi
         <VideoPlayer
           videoId={videoId}
           title={title}
+          src={videoUrl}
           autoPlay={false}
-          poster="/previews/previews1.png"
           fallbackSrc="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
         />
 
@@ -137,7 +116,7 @@ In this comprehensive tutorial, we'll build a fully functional YouTube clone usi
             {/* Channel Avatar and Info */}
             <Avatar className="w-10 h-10">
               <AvatarImage src={channelAvatar} alt={channelName} />
-              <AvatarFallback>{channelName[0]}</AvatarFallback>
+              <AvatarFallback>{channelName?.[0] || 'C'}</AvatarFallback>
             </Avatar>
             
             <div className="flex flex-col">
@@ -151,6 +130,7 @@ In this comprehensive tutorial, we'll build a fully functional YouTube clone usi
             {/* Subscribe Button */}
             <Button
               onClick={handleSubscribe}
+              disabled={isLoadingSubscription}
               variant="ghost"
               className={`ml-4 px-4 py-2 rounded-full font-medium text-sm transition-all duration-200 ${
                 subscribed 
@@ -158,7 +138,9 @@ In this comprehensive tutorial, we'll build a fully functional YouTube clone usi
                   : "bg-black hover:bg-gray-800 text-white dark:bg-white dark:hover:bg-gray-200 dark:text-black"
               }`}
             >
-              {subscribed ? (
+              {isLoadingSubscription ? (
+                "Loading..."
+              ) : subscribed ? (
                 <>
                   <Bell className="w-4 h-4 mr-2" />
                   Subscribed
@@ -177,19 +159,22 @@ In this comprehensive tutorial, we'll build a fully functional YouTube clone usi
                 variant="ghost"
                 size="sm"
                 onClick={handleLike}
-                className={`rounded-l-full ${liked ? "text-blue-500" : "text-foreground"} hover:bg-secondary/80`}
+                disabled={isLoadingLikes}
+                className={`rounded-l-full ${isLiked ? "text-blue-500" : "text-foreground"} hover:bg-secondary/80`}
               >
                 <ThumbsUp className="w-4 h-4 mr-2" />
-                125K
+                {isLoadingLikes ? '...' : likesCount.toLocaleString()}
               </Button>
               <Separator orientation="vertical" className="h-6 bg-border" />
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={handleDislike}
-                className={`rounded-r-full ${disliked ? "text-red-500" : "text-foreground"} hover:bg-secondary/80`}
+                disabled={isLoadingLikes}
+                className={`rounded-r-full ${isDisliked ? "text-red-500" : "text-foreground"} hover:bg-secondary/80`}
               >
                 <ThumbsDown className="w-4 h-4" />
+                {isLoadingLikes ? '...' : (dislikesCount > 0 ? dislikesCount.toLocaleString() : '')}
               </Button>
             </div>
 
@@ -219,15 +204,24 @@ In this comprehensive tutorial, we'll build a fully functional YouTube clone usi
 
         {/* Video Description */}
         <VideoDescription
-          description={description}
-          viewCount={viewCount}
+          description={description || ''}
+          viewCount={views?.toLocaleString() || viewCount}
           publishDate={publishDate}
           onSeek={handleSeek}
           maxPreviewLength={150}
         />
 
+        {/* Error displays */}
+        {error && (
+          <ErrorDisplay 
+            error={error} 
+            onRetry={refreshStats}
+            onDismiss={() => {/* TODO: implement error dismissal */}}
+          />
+        )}
+
         {/* Comments Section */}
-        <Comments videoId={videoId} commentsCount={1247} />
+        <Comments videoId={videoId} commentsCount={realCommentsCount || commentsCount} />
 
         {/* Auth Required Dialog */}
         <AuthRequiredDialog

@@ -17,6 +17,7 @@ export function useAuth() {
       
       try {
         const token = getAuthToken()
+        
         if (!token) {
           setIsLoggedIn(false)
           setUser(null)
@@ -34,7 +35,7 @@ export function useAuth() {
           setUser(null)
         }
       } catch (error) {
-        console.error('Error checking auth:', error)
+        console.error('❌ Error checking auth:', error)
         setIsLoggedIn(false)
         setUser(null)
       } finally {
