@@ -58,7 +58,7 @@ export const testProxy = async () => {
 
 // Глобальная функция для удобного тестирования
 if (typeof window !== 'undefined') {
-  (window as any).testProxy = testProxy
+  (window as { testProxy?: typeof testProxy }).testProxy = testProxy
 }
 
 // Функция для быстрого переключения проксирования

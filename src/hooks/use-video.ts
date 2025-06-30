@@ -70,7 +70,7 @@ export function useVideo(options: UseVideoOptions) {
     if (immediate && videoId) {
       loadVideo()
     }
-  }, [immediate, videoId])
+  }, [immediate, videoId, loadVideo])
 
   return {
     ...state,

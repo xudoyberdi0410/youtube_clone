@@ -58,7 +58,7 @@ export function mapApiVideoToVideo(apiVideo: ApiVideo): Video {
 /**
  * Форматирует количество подписчиков в читаемый вид
  */
-function formatSubscriberCount(count: number): string {
+export function formatSubscriberCount(count: number): string {
   if (count >= 1000000) {
     return `${(count / 1000000).toFixed(1)}M`
   } else if (count >= 1000) {

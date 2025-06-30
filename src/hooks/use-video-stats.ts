@@ -2,11 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import { ApiClient } from '@/lib/api-client'
-import { mapApiVideoToVideo } from '@/lib/utils/video-mapper'
 import { useLikes } from '@/hooks/use-likes'
 import { useComments } from '@/hooks/use-comments'
 import { useSubscriptions } from '@/hooks/use-subscriptions'
-import type { Video } from '@/types/api'
 
 interface VideoStats {
   views: number
@@ -126,7 +124,7 @@ export function useVideoStats(options: UseVideoStatsOptions) {
     if (immediate && videoId) {
       loadVideoStats()
     }
-  }, [immediate, videoId])
+  }, [immediate, videoId, loadVideoStats])
 
   const refreshStats = async () => {
     await loadVideoStats()

@@ -22,7 +22,7 @@ interface UseCommentsState {
  */
 export function useComments(options: UseCommentsOptions = {}) {
   const { videoId, immediate = true } = options
-  const { requireAuth, isAuthenticated } = useAuth()
+  const { requireAuth } = useAuth()
   
   const [state, setState] = useState<UseCommentsState>({
     comments: [],
@@ -149,7 +149,7 @@ export function useComments(options: UseCommentsOptions = {}) {
     if (immediate && videoId) {
       loadComments()
     }
-  }, [immediate, videoId])
+  }, [immediate, videoId, loadComments])
 
   return {
     ...state,

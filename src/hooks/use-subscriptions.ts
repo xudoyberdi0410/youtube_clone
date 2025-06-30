@@ -128,7 +128,7 @@ export function useSubscriptions(options: UseSubscriptionsOptions = {}) {
     if (immediate && isAuthenticated) {
       loadSubscriptions()
     }
-  }, [immediate, isAuthenticated, channelId])
+  }, [immediate, isAuthenticated, channelId, loadSubscriptions])
 
   return {
     ...state,

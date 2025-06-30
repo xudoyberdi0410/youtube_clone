@@ -1,5 +1,5 @@
 import { API_CONSTANTS } from './constants'
-import { getApiUrl, getProxyHeaders, PROXY_CONFIG } from './proxy-config'
+import { getApiUrl, getProxyHeaders } from './proxy-config'
 
 // API Configuration
 export const API_CONFIG = {

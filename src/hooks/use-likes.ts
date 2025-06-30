@@ -137,7 +137,7 @@ export function useLikes(options: UseLikesOptions = {}) {
     if (immediate && isAuthenticated) {
       loadLikes()
     }
-  }, [immediate, isAuthenticated, videoId])
+  }, [immediate, isAuthenticated, videoId, loadLikes])
 
   return {
     ...state,

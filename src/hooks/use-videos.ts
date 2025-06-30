@@ -67,7 +67,7 @@ export function useVideos(options: UseVideosOptions = {}) {
     if (immediate) {
       loadVideos()
     }
-  }, [immediate, ident]) // убираем category из зависимостей, так как теперь используем changeCategory
+  }, [immediate, ident, loadVideos]) // убираем category из зависимостей, так как теперь используем changeCategory
 
   return {
     ...state,

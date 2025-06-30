@@ -49,9 +49,6 @@ export function PrimaryColumn({
   publishDate,
   description,
   videoUrl,
-  likes = 0,
-  dislikes = 0,
-  isSubscribed = false,
   commentsCount = 0
 }: PrimaryColumnProps) {
   const { requireAuth, showAuthDialog, setShowAuthDialog } = useAuth()
@@ -66,7 +63,6 @@ export function PrimaryColumn({
     isLiked, 
     isDisliked, 
     isSubscribed: subscribed,
-    isLoading,
     isLoadingLikes,
     isLoadingSubscription,
     error,
