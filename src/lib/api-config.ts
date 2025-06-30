@@ -22,7 +22,7 @@ export const API_CONFIG = {
     // User endpoints (из реальной Swagger документации)
     USERS: {
       // Основные endpoints из Swagger
-      CREATE: '/post_user',              // POST - Создание пользователя (регистрация)
+      CREATE: '/user/post_user',              // POST - Создание пользователя (регистрация)
       GET_USER: '/user/get_user',        // GET - Получить пользователя (требует авторизации)
       PUT_USER: '/user/put_user',        // PUT - Обновить пользователя (требует авторизации)
       POST_IMAGE: '/user/post_image',    // POST - Загрузить изображение пользователя
