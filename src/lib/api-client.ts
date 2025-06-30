@@ -345,15 +345,43 @@ export class ApiClient {
     return this.get<Channel>('/channel/my_channel')
   }
 
+  // Получение всех моих каналов (для будущего расширения API)
+  async getMyChannels(): Promise<Channel[]> {
+    try {
+      // Пока API поддерживает только один канал, возвращаем массив с одним каналом
+      const channel = await this.getMyChannel()
+      return [channel]
+    } catch (error: unknown) {
+      // Если канала нет, возвращаем пустой массив
+      if (error && typeof error === 'object' && 'status' in error && error.status === 404) {
+        return []
+      }
+      if (error instanceof Error && error.message?.includes('not found')) {
+        return []
+      }
+      throw error
+    }
+  }
+
   // Получение канала (публичный)
   async getChannel(name?: string): Promise<Channel> {
     const params = name ? { name } : undefined
     return this.get<Channel>('/channel/get_channel', params)
   }
 
+  // Получение канала по ID (для будущего расширения API)
+  async getChannelById(channelId: number): Promise<Channel> {
+    return this.get<Channel>(`/channel/${channelId}`)
+  }
+
   // Обновление канала
   async updateChannel(channelData: ChannelUpdate): Promise<Channel> {
     return this.put<Channel>('/channel/put_channel', channelData)
+  }
+
+  // Обновление конкретного канала по ID (для будущего расширения API)
+  async updateChannelById(channelId: number, channelData: ChannelUpdate): Promise<Channel> {
+    return this.put<Channel>(`/channel/${channelId}`, channelData)
   }
 
   // Обновление изображения профиля канала
@@ -363,6 +391,13 @@ export class ApiClient {
     return this.putFormData<string>('/channel/put_profile_image', formData)
   }
 
+  // Обновление изображения профиля конкретного канала
+  async updateChannelProfileImageById(channelId: number, imageFile: File): Promise<string> {
+    const formData = new FormData()
+    formData.append('image', imageFile)
+    return this.putFormData<string>(`/channel/${channelId}/profile_image`, formData)
+  }
+
   // Обновление баннера канала
   async updateChannelBannerImage(imageFile: File): Promise<string> {
     const formData = new FormData()
@@ -370,9 +405,21 @@ export class ApiClient {
     return this.putFormData<string>('/channel/put_banner_image', formData)
   }
 
+  // Обновление баннера конкретного канала
+  async updateChannelBannerImageById(channelId: number, imageFile: File): Promise<string> {
+    const formData = new FormData()
+    formData.append('image', imageFile)
+    return this.putFormData<string>(`/channel/${channelId}/banner_image`, formData)
+  }
+
   // Удаление канала
   async deleteChannel(): Promise<string> {
     return this.delete<string>('/channel/delete_channel')
+  }
+
+  // Удаление конкретного канала по ID (для будущего расширения API)
+  async deleteChannelById(channelId: number): Promise<string> {
+    return this.delete<string>(`/channel/${channelId}`)
   }
 
   // === SUBSCRIPTION ENDPOINTS ===

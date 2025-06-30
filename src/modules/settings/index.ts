@@ -1,3 +1,6 @@
 export { SettingsPage } from './ui/components/settings-page'
+export { AccountTab } from './ui/components/account-tab'
+export { ChannelsTab } from './ui/components/channels-tab'
 export { useSettings } from './hooks/use-settings'
+export { useChannels } from './hooks/use-channels'
 export type { SettingsFormData } from './types'

@@ -53,6 +53,20 @@ export const API_CONFIG = {
       BY_CATEGORY: (category: string) => `/videos/category/${category}`,
       BY_USER: (userId: string) => `/videos/user/${userId}`,
     },
+
+    // Channels endpoints
+    CHANNELS: {
+      CREATE: '/channel/post_channel',                    // POST - Создать канал
+      GET_MY: '/channel/my_channel',                      // GET - Получить мой канал
+      GET_CHANNEL: '/channel/get_channel',                // GET - Получить канал (публичный)
+      UPDATE: '/channel/put_channel',                     // PUT - Обновить канал
+      DELETE: '/channel/delete_channel',                  // DELETE - Удалить канал
+      UPLOAD_PROFILE: '/channel/post_profile_image',      // POST - Загрузить профильное изображение
+      UPLOAD_BANNER: '/channel/post_banner_image',        // POST - Загрузить баннер
+      UPDATE_PROFILE: '/channel/put_profile_image',       // PUT - Обновить профильное изображение
+      UPDATE_BANNER: '/channel/put_banner_image',         // PUT - Обновить баннер
+    },
+
     
     // Static files (временно локальные)
     STATIC: {
@@ -120,6 +134,19 @@ export const getEndpoint = {
     byUser: (userId: string) => API_CONFIG.ENDPOINTS.VIDEOS.BY_USER(userId),
   },
   
+  // Channel endpoints
+  channels: {
+    create: () => API_CONFIG.ENDPOINTS.CHANNELS.CREATE,
+    getMy: () => API_CONFIG.ENDPOINTS.CHANNELS.GET_MY,
+    getChannel: () => API_CONFIG.ENDPOINTS.CHANNELS.GET_CHANNEL,
+    update: () => API_CONFIG.ENDPOINTS.CHANNELS.UPDATE,
+    delete: () => API_CONFIG.ENDPOINTS.CHANNELS.DELETE,
+    uploadProfile: () => API_CONFIG.ENDPOINTS.CHANNELS.UPLOAD_PROFILE,
+    uploadBanner: () => API_CONFIG.ENDPOINTS.CHANNELS.UPLOAD_BANNER,
+    updateProfile: () => API_CONFIG.ENDPOINTS.CHANNELS.UPDATE_PROFILE,
+    updateBanner: () => API_CONFIG.ENDPOINTS.CHANNELS.UPDATE_BANNER,
+  },
+  
   // Static files
   static: {
     images: () => API_CONFIG.ENDPOINTS.STATIC.IMAGES,
@@ -136,7 +163,9 @@ export const buildApiUrl = (endpoint: string): string => {
 
 // Helper функция для построения URL изображения
 export const buildImageUrl = (imagePath: string): string => {
-  if (!imagePath) return ''
+  if (!imagePath) {
+    return ''
+  }
   
   // Если это уже полный URL
   if (imagePath.startsWith('http')) {
@@ -145,7 +174,8 @@ export const buildImageUrl = (imagePath: string): string => {
   
   // Временно для локальных файлов - возвращаем file:// URL
   if (imagePath.includes('C:\\')) {
-    return `file:///${imagePath.replace(/\\/g, '/')}`
+    const fileUrl = `file:///${imagePath.replace(/\\/g, '/')}`
+    return fileUrl
   }
   
   // Обрабатываем пути от API (например: "images\\20250626161836.jpg")
@@ -157,13 +187,19 @@ export const buildImageUrl = (imagePath: string): string => {
   // Убираем начальный слеш если есть
   cleanPath = cleanPath.replace(/^\/+/, '')
   
-  // Добавляем /upload/ префикс если пути начинается с images/ или videos/
-  if (cleanPath.startsWith('images/') || cleanPath.startsWith('videos/')) {
-    cleanPath = `upload/${cleanPath}`
+  // Если путь не содержит папку и выглядит как имя файла, добавляем images/
+  if (!cleanPath.includes('/') && (cleanPath.includes('.png') || cleanPath.includes('.jpg') || cleanPath.includes('.jpeg') || cleanPath.includes('.gif'))) {
+    cleanPath = `images/${cleanPath}`
+  }
+  
+  // Добавляем начальный слеш если его нет
+  if (!cleanPath.startsWith('/')) {
+    cleanPath = `/${cleanPath}`
   }
   
   // Формируем полный URL
-  return `${API_CONFIG.BASE_URL}/${cleanPath}`
+  const finalUrl = `${API_CONFIG.BASE_URL}${cleanPath}`
+  return finalUrl
 }
 
 // Helper функция для получения токена
