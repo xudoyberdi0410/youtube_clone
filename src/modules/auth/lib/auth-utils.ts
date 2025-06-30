@@ -223,6 +223,49 @@ export function getAuthToken(): string | null {
   return localStorage.getItem('access_token') || localStorage.getItem('authToken')
 }
 
+// Helper функция для декодирования JWT токена (без проверки подписи)
+function decodeJWTPayload(token: string): { exp?: number; iat?: number } | null {
+  try {
+    const parts = token.split('.')
+    if (parts.length !== 3) return null
+    
+    const payload = JSON.parse(atob(parts[1]))
+    return payload
+  } catch {
+    return null
+  }
+}
+
+// Helper функция для проверки, нужно ли обновить токен
+export function shouldRefreshToken(): boolean {
+  if (typeof window === 'undefined') return false
+  
+  const token = localStorage.getItem('access_token') || localStorage.getItem('authToken')
+  if (!token) return false
+  
+  const payload = decodeJWTPayload(token)
+  if (!payload || !payload.exp) return false
+  
+  // Проверяем, истекает ли токен в ближайшие 5 минут
+  const now = Math.floor(Date.now() / 1000)
+  const timeUntilExpiry = payload.exp - now
+  
+  return timeUntilExpiry < 300 // 5 минут в секундах
+}
+
+// Helper функция для автоматического обновления токена если нужно
+export async function ensureValidToken(): Promise<boolean> {
+  if (!shouldRefreshToken()) return true
+  
+  try {
+    const newToken = await refreshToken()
+    return !!newToken?.access_token
+  } catch (error) {
+    console.error('Failed to ensure valid token:', error)
+    return false
+  }
+}
+
 // Helper функция для получения URL аватара с учетом временного локального пути
 export function getAvatarUrl(user: User | Partial<User>, cacheBuster?: string): string {
   if (!user.avatar) return ''

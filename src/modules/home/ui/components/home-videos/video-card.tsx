@@ -114,12 +114,13 @@ export function VideoCard({
           
           {/* Channel Name with Verification */}
           <div className="flex items-center gap-1 mb-1">
-            <p 
+            <Link
+              href={`/channel?name=${encodeURIComponent(channel.name)}`}
               className="text-xs md:text-sm text-gray-600 hover:text-gray-900 cursor-pointer transition-colors truncate"
-              onClick={handleChannelClick}
+              onClick={e => e.stopPropagation()}
             >
               {channel.name}
-            </p>
+            </Link>
             {channel.isVerified && (
               <VerifiedIcon className="w-4 h-4 text-blue-500" />
             )}

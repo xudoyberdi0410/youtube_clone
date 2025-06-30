@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { getCurrentUser, getAuthToken } from '../lib/auth-utils'
+import { useState, useEffect, useRef } from 'react'
+import { getCurrentUser, getAuthToken, shouldRefreshToken, ensureValidToken } from '../lib/auth-utils'
 import type { User } from '@/types/auth'
 
 export function useAuth() {
@@ -9,6 +9,7 @@ export function useAuth() {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   const [refreshKey, setRefreshKey] = useState(0)
+  const tokenCheckInterval = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     // Проверяем статус авторизации при загрузке
@@ -23,6 +24,18 @@ export function useAuth() {
           setUser(null)
           setLoading(false)
           return
+        }
+
+        // Проверяем, нужно ли обновить токен
+        if (shouldRefreshToken()) {
+          console.log('Token expires soon, refreshing...')
+          const tokenValid = await ensureValidToken()
+          if (!tokenValid) {
+            setIsLoggedIn(false)
+            setUser(null)
+            setLoading(false)
+            return
+          }
         }
 
         // Пытаемся получить данные пользователя
@@ -45,6 +58,19 @@ export function useAuth() {
 
     checkAuth()
 
+    // Устанавливаем интервал для периодической проверки токена
+    if (tokenCheckInterval.current) {
+      clearInterval(tokenCheckInterval.current)
+    }
+    
+    tokenCheckInterval.current = setInterval(async () => {
+      const token = getAuthToken()
+      if (token && shouldRefreshToken()) {
+        console.log('Periodic token check - refreshing...')
+        await ensureValidToken()
+      }
+    }, 60000) // Проверяем каждую минуту
+
     // Слушаем изменения в localStorage
     const handleStorageChange = () => {
       setRefreshKey(prev => prev + 1) // Принудительно перезапускаем эффект
@@ -56,6 +82,9 @@ export function useAuth() {
     window.addEventListener('authStateChanged', handleStorageChange)
 
     return () => {
+      if (tokenCheckInterval.current) {
+        clearInterval(tokenCheckInterval.current)
+      }
       window.removeEventListener('storage', handleStorageChange)
       window.removeEventListener('authStateChanged', handleStorageChange)
     }
