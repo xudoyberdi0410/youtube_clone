@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { buildImageUrl } from '@/lib/api-config'
 import { getChannelUrl } from '@/lib/channel-utils'
+import { formatShortNumber } from '@/lib/utils/format'
 import type { Channel } from '@/types/api'
 
 interface ChannelCardProps {
@@ -53,7 +54,7 @@ export function ChannelCard({
         </p>
         {showSubscribersCount && (
           <p className="text-xs text-muted-foreground">
-            {channel.subscribers_count || 0} подписчиков
+            {formatShortNumber(channel.subscribers_count || 0)} подписчиков
           </p>
         )}
       </div>

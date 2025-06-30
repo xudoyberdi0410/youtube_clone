@@ -12,16 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { VerifiedIcon } from '@/components/youtube-icons'
-
-// Функция для форматирования количества просмотров
-function formatViews(views: number): string {
-  if (views >= 1000000) {
-    return `${(views / 1000000).toFixed(1)}M views`;
-  } else if (views >= 1000) {
-    return `${(views / 1000).toFixed(1)}K views`;
-  }
-  return `${views} views`;
-}
+import { formatShortNumber } from '@/lib/utils/format'
 
 export function VideoCard({
   id, 
@@ -128,7 +119,7 @@ export function VideoCard({
           
           {/* Views and Upload Time */}
           <div className="flex items-center gap-1 text-xs md:text-sm text-gray-600">
-            <span>{formatViews(views)}</span>
+            <span>{formatShortNumber(views)} views</span>
             <span>•</span>
             <span>{uploadedAt}</span>
           </div>

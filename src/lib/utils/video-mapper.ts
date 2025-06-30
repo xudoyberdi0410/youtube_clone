@@ -2,6 +2,7 @@
 
 import type { Video as ApiVideo } from '@/types/api'
 import type { Video } from '@/types/video'
+import { formatDuration, formatRelativeTime } from '@/lib/utils/format'
 
 /**
  * Преобразует видео из API формата в формат компонентов
@@ -65,63 +66,4 @@ export function formatSubscriberCount(count: number): string {
     return `${(count / 1000).toFixed(1)}K`
   }
   return count.toString()
-}
-
-/**
- * Форматирует длительность из секунд в формат HH:MM:SS или MM:SS
- */
-function formatDuration(seconds: number): string {
-  const hours = Math.floor(seconds / 3600)
-  const minutes = Math.floor((seconds % 3600) / 60)
-  const remainingSeconds = seconds % 60
-
-  if (hours > 0) {
-    return `${hours}:${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`
-  } else {
-    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`
-  }
-}
-
-/**
- * Форматирует дату в относительное время
- */
-function formatRelativeTime(dateString: string): string {
-  // Парсим формат "26.06.2025 21:20:49"
-  const [datePart, timePart] = dateString.split(' ')
-  const [day, month, year] = datePart.split('.')
-  const [hours, minutes, seconds] = timePart.split(':')
-  
-  const date = new Date(
-    parseInt(year),
-    parseInt(month) - 1, // месяцы в JS начинаются с 0
-    parseInt(day),
-    parseInt(hours),
-    parseInt(minutes),
-    parseInt(seconds)
-  )
-  
-  const now = new Date()
-  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000)
-
-  if (diffInSeconds < 60) {
-    return 'Just now'
-  } else if (diffInSeconds < 3600) {
-    const minutes = Math.floor(diffInSeconds / 60)
-    return `${minutes} minute${minutes > 1 ? 's' : ''} ago`
-  } else if (diffInSeconds < 86400) {
-    const hours = Math.floor(diffInSeconds / 3600)
-    return `${hours} hour${hours > 1 ? 's' : ''} ago`
-  } else if (diffInSeconds < 604800) {
-    const days = Math.floor(diffInSeconds / 86400)
-    return `${days} day${days > 1 ? 's' : ''} ago`
-  } else if (diffInSeconds < 2629746) {
-    const weeks = Math.floor(diffInSeconds / 604800)
-    return `${weeks} week${weeks > 1 ? 's' : ''} ago`
-  } else if (diffInSeconds < 31556952) {
-    const months = Math.floor(diffInSeconds / 2629746)
-    return `${months} month${months > 1 ? 's' : ''} ago`
-  } else {
-    const years = Math.floor(diffInSeconds / 31556952)
-    return `${years} year${years > 1 ? 's' : ''} ago`
-  }
 }
