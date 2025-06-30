@@ -49,23 +49,45 @@ export const formatFileSize = (bytes: number): string => {
  * @returns Formatted relative time string
  */
 export const formatRelativeTime = (date: string | Date): string => {
+  let targetDate: Date
+  if (typeof date === 'string' && date.match(/^\d{2}\.\d{2}\.\d{4} \d{2}:\d{2}:\d{2}$/)) {
+    const [datePart, timePart] = date.split(' ')
+    const [day, month, year] = datePart.split('.')
+    const [hours, minutes, seconds] = timePart.split(':')
+    targetDate = new Date(
+      parseInt(year),
+      parseInt(month) - 1,
+      parseInt(day),
+      parseInt(hours),
+      parseInt(minutes),
+      parseInt(seconds)
+    )
+  } else {
+    targetDate = new Date(date)
+  }
   const now = new Date()
-  const targetDate = new Date(date)
-  const diffInMs = now.getTime() - targetDate.getTime()
-  const diffInMinutes = Math.floor(diffInMs / (1000 * 60))
-  const diffInHours = Math.floor(diffInMinutes / 60)
-  const diffInDays = Math.floor(diffInHours / 24)
-  const diffInWeeks = Math.floor(diffInDays / 7)
-  const diffInMonths = Math.floor(diffInDays / 30)
-  const diffInYears = Math.floor(diffInDays / 365)
-
-  if (diffInMinutes < 1) return 'Just now'
-  if (diffInMinutes < 60) return `${diffInMinutes} minute${diffInMinutes === 1 ? '' : 's'} ago`
-  if (diffInHours < 24) return `${diffInHours} hour${diffInHours === 1 ? '' : 's'} ago`
-  if (diffInDays < 7) return `${diffInDays} day${diffInDays === 1 ? '' : 's'} ago`
-  if (diffInWeeks < 4) return `${diffInWeeks} week${diffInWeeks === 1 ? '' : 's'} ago`
-  if (diffInMonths < 12) return `${diffInMonths} month${diffInMonths === 1 ? '' : 's'} ago`
-  return `${diffInYears} year${diffInYears === 1 ? '' : 's'} ago`
+  const diffInSeconds = Math.floor((now.getTime() - targetDate.getTime()) / 1000)
+  if (diffInSeconds < 60) {
+    return 'Just now'
+  } else if (diffInSeconds < 3600) {
+    const minutes = Math.floor(diffInSeconds / 60)
+    return `${minutes} minute${minutes > 1 ? 's' : ''} ago`
+  } else if (diffInSeconds < 86400) {
+    const hours = Math.floor(diffInSeconds / 3600)
+    return `${hours} hour${hours > 1 ? 's' : ''} ago`
+  } else if (diffInSeconds < 604800) {
+    const days = Math.floor(diffInSeconds / 86400)
+    return `${days} day${days > 1 ? 's' : ''} ago`
+  } else if (diffInSeconds < 2629746) {
+    const weeks = Math.floor(diffInSeconds / 604800)
+    return `${weeks} week${weeks > 1 ? 's' : ''} ago`
+  } else if (diffInSeconds < 31556952) {
+    const months = Math.floor(diffInSeconds / 2629746)
+    return `${months} month${months > 1 ? 's' : ''} ago`
+  } else {
+    const years = Math.floor(diffInSeconds / 31556952)
+    return `${years} year${years > 1 ? 's' : ''} ago`
+  }
 }
 
 /**
@@ -80,11 +102,13 @@ export const truncateText = (text: string, maxLength: number): string => {
 }
 
 /**
- * Format subscriber count in YouTube style
- * @param count - Number of subscribers
- * @returns Formatted string (e.g., "1.2K subscribers", "3.4M subscribers")
+ * Форматирует количество подписчиков или просмотров в читаемый вид (1.2K, 3.4M)
  */
-export const formatSubscriberCount = (count: number): string => {
-  const formatted = formatViews(count)
-  return `${formatted} subscriber${count === 1 ? '' : 's'}`
+export const formatShortNumber = (count: number): string => {
+  if (count >= 1000000) {
+    return `${(count / 1000000).toFixed(1)}M`
+  } else if (count >= 1000) {
+    return `${(count / 1000).toFixed(1)}K`
+  }
+  return count.toString()
 }

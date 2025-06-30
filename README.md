@@ -185,6 +185,35 @@ See [API-GUIDE.md](./API-GUIDE.md) for detailed API documentation.
 - ⏳ Comments and interactions
 - ⏳ Search and filtering
 
+## 🎯 Key Features
+
+### 📺 Channel Viewing System
+- **Dynamic Channel Pages**: Browse channels with URLs like `/@channelname`
+- **Channel Management**: Create, edit, and manage multiple channels  
+- **Subscriptions**: Subscribe/unsubscribe to channels
+- **Channel Navigation**: Tabs for Home, Videos, Shorts, Playlists, About
+- **Responsive Design**: Optimized for all screen sizes
+
+For detailed channel functionality, see [CHANNEL_VIEWING_FEATURE.md](./CHANNEL_VIEWING_FEATURE.md).
+
+### 🔐 Authentication System
+- **JWT-based Auth**: Secure token-based authentication
+- **Auto Token Refresh**: Seamless token management
+- **Protected Routes**: Automatic redirect for protected content
+- **User Management**: Profile creation and management
+
+### 🎬 Video System  
+- **Video Upload**: Support for video file uploads
+- **Video Player**: Custom video player with controls
+- **Categories**: Organized video categorization
+- **Statistics**: Views, likes, and engagement tracking
+
+### 🎨 Modern UI
+- **shadcn/ui Components**: Beautiful, accessible components
+- **Dark/Light Mode**: Theme switching support
+- **Mobile Responsive**: Optimized for all devices
+- **Loading States**: Smooth loading experiences
+
 ## 🤝 Contributing
 
 1. Follow the established code structure

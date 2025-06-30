@@ -26,9 +26,9 @@ import type {
   PlaylistUpdate,
   PlaylistVideoCreate,
   SubscriptionCreate,
-  ShortsUpload,
-  TokenResponse
+  ShortsUpload
 } from '../types/api'
+import type { TokenResponse } from '../types/auth'
 
 // Типы для API ответов
 export interface ApiResponse<T = unknown> {
@@ -60,9 +60,74 @@ export class ApiClient {
     return ApiClient.instance
   }
 
+  // Попытка обновить токен
+  private async tryRefreshToken(): Promise<boolean> {
+    try {
+      const refreshToken = localStorage.getItem('refresh_token') || localStorage.getItem('refreshToken')
+      if (!refreshToken) {
+        console.log('No refresh token available')
+        return false
+      }
+
+      console.log('Attempting to refresh token...')
+      const response = await this.refreshTokenRequest(refreshToken)
+      
+      if (response.access_token) {
+        localStorage.setItem('access_token', response.access_token)
+        if (response.refresh_token) {
+          localStorage.setItem('refresh_token', response.refresh_token)
+        }
+        
+        // Уведомляем об изменении состояния
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new Event('authStateChanged'))
+        }
+        
+        console.log('Token refreshed successfully')
+        return true
+      }
+      
+      return false
+    } catch (error) {
+      console.error('Failed to refresh token:', error)
+      // Очищаем невалидные токены
+      localStorage.removeItem('access_token')
+      localStorage.removeItem('refresh_token')
+      localStorage.removeItem('authToken')
+      localStorage.removeItem('refreshToken')
+      
+      // Уведомляем об изменении состояния (выход из аккаунта)
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('authStateChanged'))
+      }
+      
+      return false
+    }
+  }
+
+  // Прямой запрос на обновление токена (без интерцептора)
+  private async refreshTokenRequest(refreshToken: string): Promise<TokenResponse> {
+    const url = buildApiUrl('/login/refresh_token')
+    
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ refresh_token: refreshToken }),
+    })
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`)
+    }
+
+    return response.json()
+  }
+
   private async request<T>(
     endpoint: string,
-    options: RequestInit = {}
+    options: RequestInit = {},
+    isRetry: boolean = false
   ): Promise<T> {
     const url = buildApiUrl(endpoint)
     const headers = getAuthHeaders()
@@ -79,6 +144,16 @@ export class ApiClient {
       const response = await fetch(url, config)
       
       if (!response.ok) {
+        // Если получили 401 ошибку и это не повторный запрос
+        if (response.status === 401 && !isRetry) {
+          // Пытаемся обновить токен
+          const tokenRefreshed = await this.tryRefreshToken()
+          if (tokenRefreshed) {
+            // Повторяем запрос с новым токеном
+            return this.request<T>(endpoint, options, true)
+          }
+        }
+        
         const errorData = await response.json().catch(() => ({}))
         throw new ApiError(
           errorData.detail || errorData.message || `HTTP ${response.status}`,
@@ -158,7 +233,7 @@ export class ApiClient {
   }
 
   // POST запрос с FormData (для загрузки файлов)
-  async postFormData<T>(endpoint: string, formData: FormData): Promise<T> {
+  async postFormData<T>(endpoint: string, formData: FormData, isRetry: boolean = false): Promise<T> {
     const url = buildApiUrl(endpoint)
     const token = getAuthHeaders().Authorization
 
@@ -175,6 +250,14 @@ export class ApiClient {
       })
 
       if (!response.ok) {
+        // Если получили 401 ошибку и это не повторный запрос
+        if (response.status === 401 && !isRetry) {
+          const tokenRefreshed = await this.tryRefreshToken()
+          if (tokenRefreshed) {
+            return this.postFormData<T>(endpoint, formData, true)
+          }
+        }
+        
         const errorData = await response.json().catch(() => ({}))
         throw new ApiError(
           errorData.detail || errorData.message || `HTTP ${response.status}`,
@@ -200,7 +283,7 @@ export class ApiClient {
   }
 
   // PUT запрос с FormData (для обновления файлов)
-  async putFormData<T>(endpoint: string, formData: FormData): Promise<T> {
+  async putFormData<T>(endpoint: string, formData: FormData, isRetry: boolean = false): Promise<T> {
     const url = buildApiUrl(endpoint)
     const token = getAuthHeaders().Authorization
 
@@ -217,6 +300,14 @@ export class ApiClient {
       })
 
       if (!response.ok) {
+        // Если получили 401 ошибку и это не повторный запрос
+        if (response.status === 401 && !isRetry) {
+          const tokenRefreshed = await this.tryRefreshToken()
+          if (tokenRefreshed) {
+            return this.putFormData<T>(endpoint, formData, true)
+          }
+        }
+        
         const errorData = await response.json().catch(() => ({}))
         throw new ApiError(
           errorData.detail || errorData.message || `HTTP ${response.status}`,
@@ -260,6 +351,7 @@ export class ApiClient {
       })
 
       if (!response.ok) {
+        // Для логина не делаем retry, так как это и есть получение токена
         const errorData = await response.json().catch(() => ({}))
         throw new ApiError(
           errorData.detail || errorData.message || `HTTP ${response.status}`,
@@ -345,15 +437,43 @@ export class ApiClient {
     return this.get<Channel>('/channel/my_channel')
   }
 
+  // Получение всех моих каналов (для будущего расширения API)
+  async getMyChannels(): Promise<Channel[]> {
+    try {
+      // Пока API поддерживает только один канал, возвращаем массив с одним каналом
+      const channel = await this.getMyChannel()
+      return [channel]
+    } catch (error: unknown) {
+      // Если канала нет, возвращаем пустой массив
+      if (error && typeof error === 'object' && 'status' in error && error.status === 404) {
+        return []
+      }
+      if (error instanceof Error && error.message?.includes('not found')) {
+        return []
+      }
+      throw error
+    }
+  }
+
   // Получение канала (публичный)
   async getChannel(name?: string): Promise<Channel> {
     const params = name ? { name } : undefined
     return this.get<Channel>('/channel/get_channel', params)
   }
 
+  // Получение канала по ID (для будущего расширения API)
+  async getChannelById(channelId: number): Promise<Channel> {
+    return this.get<Channel>(`/channel/${channelId}`)
+  }
+
   // Обновление канала
   async updateChannel(channelData: ChannelUpdate): Promise<Channel> {
     return this.put<Channel>('/channel/put_channel', channelData)
+  }
+
+  // Обновление конкретного канала по ID (для будущего расширения API)
+  async updateChannelById(channelId: number, channelData: ChannelUpdate): Promise<Channel> {
+    return this.put<Channel>(`/channel/${channelId}`, channelData)
   }
 
   // Обновление изображения профиля канала
@@ -363,6 +483,13 @@ export class ApiClient {
     return this.putFormData<string>('/channel/put_profile_image', formData)
   }
 
+  // Обновление изображения профиля конкретного канала
+  async updateChannelProfileImageById(channelId: number, imageFile: File): Promise<string> {
+    const formData = new FormData()
+    formData.append('image', imageFile)
+    return this.putFormData<string>(`/channel/${channelId}/profile_image`, formData)
+  }
+
   // Обновление баннера канала
   async updateChannelBannerImage(imageFile: File): Promise<string> {
     const formData = new FormData()
@@ -370,9 +497,21 @@ export class ApiClient {
     return this.putFormData<string>('/channel/put_banner_image', formData)
   }
 
+  // Обновление баннера конкретного канала
+  async updateChannelBannerImageById(channelId: number, imageFile: File): Promise<string> {
+    const formData = new FormData()
+    formData.append('image', imageFile)
+    return this.putFormData<string>(`/channel/${channelId}/banner_image`, formData)
+  }
+
   // Удаление канала
   async deleteChannel(): Promise<string> {
     return this.delete<string>('/channel/delete_channel')
+  }
+
+  // Удаление конкретного канала по ID (для будущего расширения API)
+  async deleteChannelById(channelId: number): Promise<string> {
+    return this.delete<string>(`/channel/${channelId}`)
   }
 
   // === SUBSCRIPTION ENDPOINTS ===

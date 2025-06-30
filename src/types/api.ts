@@ -17,7 +17,11 @@ export interface Channel {
   updated_at?: string
   profile_image_url?: string
   banner_image_url?: string
+  // Альтернативные поля, которые приходят от API
+  profile_image?: string
+  banner_image?: string
   subscribers_count?: number
+  subscription_amount?: number // Добавляем поле, которое приходит от API
 }
 
 export interface Video {
