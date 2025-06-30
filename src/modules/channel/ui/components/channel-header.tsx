@@ -9,6 +9,7 @@ import { useState } from 'react'
 import { apiClient } from '@/lib/api-client'
 import { toast } from '@/hooks/use-toast'
 import type { Channel } from '@/types/api'
+import Image from 'next/image'
 
 interface ChannelHeaderProps {
   channel: Channel
@@ -72,10 +73,13 @@ export function ChannelHeader({ channel }: ChannelHeaderProps) {
       {/* Баннер канала */}
       {channel.banner_image_url && (
         <div className="h-32 md:h-48 lg:h-64 overflow-hidden">
-          <img
+          <Image
             src={buildImageUrl(channel.banner_image_url)}
             alt={`${channel.name} banner`}
             className="w-full h-full object-cover"
+            fill
+            sizes="100vw"
+            priority
           />
         </div>
       )}

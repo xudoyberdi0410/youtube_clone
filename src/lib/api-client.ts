@@ -333,7 +333,7 @@ export class ApiClient {
   }
 
   // POST запрос с form-urlencoded (для логина)
-  async postFormUrlencoded<T>(endpoint: string, data: Record<string, string>, isRetry: boolean = false): Promise<T> {
+  async postFormUrlencoded<T>(endpoint: string, data: Record<string, string>): Promise<T> {
     const url = buildApiUrl(endpoint)
     
     const formData = new URLSearchParams()

@@ -1,7 +1,7 @@
 'use client'
 
+import { Suspense, useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
 import { apiClient } from '@/lib/api-client'
 import type { Channel, Video } from '@/types/api'
 import { ChannelHeader } from '@/modules/channel/ui/components/channel-header'
@@ -10,7 +10,15 @@ import { VideoGrid } from '@/components/video/video-grid'
 import { LoadingSpinner } from '@/components/ui/loading-spinner'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 
-export default function ChannelPage() {
+export default function ChannelPageWrapper() {
+  return (
+    <Suspense>
+      <ChannelPage />
+    </Suspense>
+  )
+}
+
+function ChannelPage() {
   const searchParams = useSearchParams()
   const channelName = searchParams.get('name')
   

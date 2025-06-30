@@ -9,10 +9,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
-import { Upload, Trash2, Users, Calendar, Image } from "lucide-react"
+import { Upload, Trash2, Users, Calendar, Image as LucideImage } from "lucide-react"
 import { useChannels } from '@/modules/settings/hooks/use-channels'
 import { ChannelCreate, ChannelUpdate } from '@/types/api'
 import { buildImageUrl } from '@/lib/api-config'
+import Image from 'next/image'
 
 export const ChannelsTab = () => {
   const profileImageInputRef = useRef<HTMLInputElement>(null)
@@ -264,10 +265,13 @@ export const ChannelsTab = () => {
               <div className="mt-2">
                 {(channel.banner_image_url || channel.banner_image) ? (
                   <div className="relative">
-                    <img 
+                    <Image 
                       src={buildImageUrl(channel.banner_image_url || channel.banner_image || '')} 
                       alt="Channel banner" 
                       className="w-full h-32 object-cover rounded-lg"
+                      fill
+                      sizes="100vw"
+                      priority
                     />
                     <Button
                       variant="outline"
@@ -276,13 +280,13 @@ export const ChannelsTab = () => {
                       onClick={() => bannerImageInputRef.current?.click()}
                       disabled={saving}
                     >
-                      <Image className="mr-2 h-4 w-4" />
+                      <LucideImage className="mr-2 h-4 w-4" />
                       Change Banner
                     </Button>
                   </div>
                 ) : (
                   <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-                    <Image className="mx-auto h-8 w-8 text-gray-400 mb-2" />
+                    <LucideImage className="mx-auto h-8 w-8 text-gray-400 mb-2" />
                     <p className="text-sm text-gray-500 mb-4">No banner image uploaded</p>
                     <Button
                       variant="outline"

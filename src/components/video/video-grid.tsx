@@ -5,6 +5,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { buildImageUrl } from '@/lib/api-config'
 import type { Video } from '@/types/api'
+import Image from 'next/image'
 
 interface VideoGridProps {
   videos: Video[]
@@ -44,10 +45,13 @@ function VideoCard({ video }: VideoCardProps) {
           {/* Превью видео */}
           <div className="relative aspect-video bg-gray-100">
             {video.thumbnail_path ? (
-              <img
+              <Image
                 src={buildImageUrl(video.thumbnail_path)}
                 alt={video.title}
                 className="w-full h-full object-cover"
+                fill
+                sizes="(max-width: 768px) 100vw, 33vw"
+                priority={true}
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-gray-200">

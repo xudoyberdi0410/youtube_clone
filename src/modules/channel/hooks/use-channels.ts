@@ -46,15 +46,13 @@ export function useChannels() {
 
 // Хук для получения популярных или рекомендуемых каналов (заглушка)
 export function usePopularChannels() {
-  const [channels, setChannels] = useState<Channel[]>([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [channels] = useState<Channel[]>([])
 
   // Пока возвращаем пустой список, так как API не поддерживает эту функцию
   return {
     channels,
-    loading,
-    error,
+    loading: false,
+    error: null,
     refetch: () => {}
   }
 }
