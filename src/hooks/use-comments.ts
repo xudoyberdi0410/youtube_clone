@@ -1,6 +1,6 @@
 // src/hooks/use-comments.ts
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { ApiClient } from '@/lib/api-client'
 import { useAuth } from '@/hooks/use-auth'
 import type { Comment, CommentCreate, CommentUpdate } from '@/types/api'
@@ -31,7 +31,7 @@ export function useComments(options: UseCommentsOptions = {}) {
     isPosting: false,
   })
 
-  const loadComments = async () => {
+  const loadComments = useCallback(async () => {
     setState(prev => ({ ...prev, isLoading: true, error: null }))
     
     try {
@@ -62,7 +62,7 @@ export function useComments(options: UseCommentsOptions = {}) {
         error: errorMessage,
       }))
     }
-  }
+  }, [videoId])
 
   const addComment = async (content: string) => {
     if (!videoId || !content.trim()) return

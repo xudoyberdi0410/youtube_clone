@@ -1,6 +1,6 @@
 // src/hooks/use-video-stats.ts
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { ApiClient } from '@/lib/api-client'
 import { useLikes } from '@/hooks/use-likes'
 import { useComments } from '@/hooks/use-comments'
@@ -71,7 +71,7 @@ export function useVideoStats(options: UseVideoStatsOptions) {
   } = subscriptionsHook
 
   // Загружаем актуальную информацию о видео (включая like_amount)
-  const loadVideoStats = async () => {
+  const loadVideoStats = useCallback(async () => {
     if (!videoId) return
 
     setState(prev => ({ ...prev, isLoading: true, error: null }))
@@ -107,7 +107,7 @@ export function useVideoStats(options: UseVideoStatsOptions) {
         isLoading: false,
       }))
     }
-  }
+  }, [videoId])
 
   // Объединяем данные состояния пользователя (лайки, подписки) с загруженной статистикой
   useEffect(() => {

@@ -17,7 +17,7 @@ interface CommentsProps {
 }
 
 export function Comments({ videoId, commentsCount = 0 }: CommentsProps) {
-  const { requireAuth } = useAuth()
+  const { isAuthenticated } = useAuth()
   const [newComment, setNewComment] = useState('')
   
   const { 

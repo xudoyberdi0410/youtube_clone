@@ -1,6 +1,6 @@
 // src/hooks/use-subscriptions.ts
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { ApiClient } from '@/lib/api-client'
 import { useAuth } from '@/hooks/use-auth'
 import type { Subscription, SubscriptionCreate } from '@/types/api'
@@ -33,7 +33,7 @@ export function useSubscriptions(options: UseSubscriptionsOptions = {}) {
     isToggling: false,
   })
 
-  const loadSubscriptions = async () => {
+  const loadSubscriptions = useCallback(async () => {
     if (!isAuthenticated) return
     
     setState(prev => ({ ...prev, isLoading: true, error: null }))
@@ -62,7 +62,7 @@ export function useSubscriptions(options: UseSubscriptionsOptions = {}) {
         error: errorMessage,
       }))
     }
-  }
+  }, [isAuthenticated, channelId])
 
   const toggleSubscription = async () => {
     if (!channelId) return

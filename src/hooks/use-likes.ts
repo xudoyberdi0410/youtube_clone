@@ -1,6 +1,6 @@
 // src/hooks/use-likes.ts
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { ApiClient } from '@/lib/api-client'
 import { getCurrentUserId } from '@/lib/auth-utils'
 import { useAuth } from '@/hooks/use-auth'
@@ -36,7 +36,7 @@ export function useLikes(options: UseLikesOptions = {}) {
     dislikesCount: 0,
   })
 
-  const loadLikes = async () => {
+  const loadLikes = useCallback(async () => {
     if (!isAuthenticated) return
     
     setState(prev => ({ ...prev, isLoading: true, error: null }))
@@ -76,7 +76,7 @@ export function useLikes(options: UseLikesOptions = {}) {
         error: errorMessage,
       }))
     }
-  }
+  }, [isAuthenticated, videoId])
 
   const toggleLike = async (isLike: boolean) => {
     if (!videoId) return

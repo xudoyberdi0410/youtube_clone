@@ -1,6 +1,6 @@
 // src/hooks/use-videos.ts
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { ApiClient } from '@/lib/api-client'
 import { mapApiVideoToVideo } from '@/lib/utils/video-mapper'
 import type { Video } from '@/types/video'
@@ -30,7 +30,7 @@ export function useVideos(options: UseVideosOptions = {}) {
     error: null,
   })
 
-  const loadVideos = async (categoryParam?: VideoCategory, identParam?: number) => {
+  const loadVideos = useCallback(async (categoryParam?: VideoCategory, identParam?: number) => {
     setState(prev => ({ ...prev, isLoading: true, error: null }))
     
     try {
@@ -53,7 +53,7 @@ export function useVideos(options: UseVideosOptions = {}) {
         error: errorMessage,
       }))
     }
-  }
+  }, [ident, category])
 
   const refetch = () => {
     loadVideos()
