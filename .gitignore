@@ -41,8 +41,23 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# API testing results (generated files)
+/api-analysis/*.json
+/api-analysis/*-20*.md
+# Keep only README.md and example reports
+!/api-analysis/README.md
+!/api-analysis/example-report.md
+
+# Test files (keep base test files, ignore generated ones)
+/scripts/test-files/generated-*
+/scripts/test-files/temp-*
+
 # video files
 **.mp4
 **.webm
 **.mkv
 **.avi
+
+# But allow test video files
+!/scripts/test-files/test-video.mp4
+!/scripts/test-files/test-image.png

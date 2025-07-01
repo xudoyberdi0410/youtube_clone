@@ -1,6 +1,7 @@
 {
   "name": "youtube_clone",
   "version": "0.1.0",
+  "type": "module",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -17,7 +18,8 @@
     "export": "next build",
     "deploy": "bun run export && gh-pages -d out",
     "clean": "rm -rf .next out dist",
-    "analyze": "ANALYZE=true bun run build"
+    "analyze": "ANALYZE=true bun run build",
+    "api:test": "bun run scripts/simple-api-tester.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",

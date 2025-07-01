@@ -9,6 +9,7 @@ import type {
   Playlist,
   PlaylistVideo,
   Subscription,
+  SubscriptionResponse,
   Shorts,
   VideoCategory,
   LoginCredentials,
@@ -90,16 +91,10 @@ export class ApiClient {
       return false
     } catch (error) {
       console.error('Failed to refresh token:', error)
-      // Очищаем невалидные токены
-      localStorage.removeItem('access_token')
-      localStorage.removeItem('refresh_token')
-      localStorage.removeItem('authToken')
-      localStorage.removeItem('refreshToken')
       
-      // Уведомляем об изменении состояния (выход из аккаунта)
-      if (typeof window !== 'undefined') {
-        window.dispatchEvent(new Event('authStateChanged'))
-      }
+      // Используем умную очистку токенов
+      const { clearTokensOnCriticalError } = await import('../modules/auth/lib/auth-utils')
+      clearTokensOnCriticalError(error)
       
       return false
     }
@@ -146,20 +141,41 @@ export class ApiClient {
       if (!response.ok) {
         // Если получили 401 ошибку и это не повторный запрос
         if (response.status === 401 && !isRetry) {
+          console.log('Received 401 error, attempting token refresh...')
+          
           // Пытаемся обновить токен
           const tokenRefreshed = await this.tryRefreshToken()
           if (tokenRefreshed) {
-            // Повторяем запрос с новым токеном
-            return this.request<T>(endpoint, options, true)
+            console.log('Token refreshed, retrying original request...')
+            // Повторяем запрос с новым токеном, обновляя заголовки
+            const newHeaders = getAuthHeaders()
+            const retryConfig = {
+              ...options,
+              headers: {
+                ...newHeaders,
+                ...options.headers,
+              },
+            }
+            return this.request<T>(endpoint, retryConfig, true)
+          } else {
+            console.log('Token refresh failed')
           }
         }
         
         const errorData = await response.json().catch(() => ({}))
-        throw new ApiError(
+        const apiError = new ApiError(
           errorData.detail || errorData.message || `HTTP ${response.status}`,
           response.status,
           errorData
         )
+        
+        // Если это 401 и мы не смогли обновить токен, используем умную очистку
+        if (response.status === 401) {
+          const { clearTokensOnCriticalError } = await import('../modules/auth/lib/auth-utils')
+          clearTokensOnCriticalError(apiError)
+        }
+        
+        throw apiError
       }
 
       // Пытаемся получить JSON напрямую
@@ -522,8 +538,8 @@ export class ApiClient {
   }
 
   // Получить подписки
-  async getSubscriptions(): Promise<Subscription[]> {
-    return this.get<Subscription[]>('/subscription/get_subscriptions')
+  async getSubscriptions(): Promise<SubscriptionResponse[]> {
+    return this.get<SubscriptionResponse[]>('/subscription/get_subscriptions')
   }
 
   // Получить подписчиков
@@ -644,6 +660,11 @@ export class ApiClient {
     return this.get<Playlist[]>('/playlist/get_playlist')
   }
 
+  // Получить плейлист по ID
+  async getPlaylistById(playlistId: number): Promise<Playlist> {
+    return this.get<Playlist>(`/playlist/get_playlist/${playlistId}`)
+  }
+
   // Обновить плейлист
   async updatePlaylist(playlistId: number, playlistData: PlaylistUpdate): Promise<Playlist> {
     return this.put<Playlist>(`/playlist/put_playlist/${playlistId}`, playlistData)
@@ -669,6 +690,11 @@ export class ApiClient {
   // Получить видео плейлисты (публичные)
   async getPlaylistVideos(): Promise<PlaylistVideo[]> {
     return this.get<PlaylistVideo[]>('/playlist_video/get_playlist_video')
+  }
+
+  // Получить видео конкретного плейлиста
+  async getPlaylistVideosByPlaylistId(playlistId: number): Promise<PlaylistVideo[]> {
+    return this.get<PlaylistVideo[]>(`/playlist_video/get_playlist_video/${playlistId}`)
   }
 
   // Удалить видео из плейлиста

@@ -31,7 +31,7 @@ interface UseVideoStatsState extends VideoStats {
  * Хук для загрузки актуальной статистики видео при открытии страницы
  */
 export function useVideoStats(options: UseVideoStatsOptions) {
-  const { videoId, channelId, immediate = true } = options
+  const { videoId, immediate = true } = options
   
   const [state, setState] = useState<UseVideoStatsState>({
     views: 0,
@@ -62,12 +62,10 @@ export function useVideoStats(options: UseVideoStatsOptions) {
     error: commentsError
   } = useComments({ videoId, immediate })
 
-  const subscriptionsHook = useSubscriptions({ channelId, immediate })
+  const subscriptionsHook = useSubscriptions({ immediate })
   const {
-    isSubscribed,
     isLoading: subscriptionLoading,
     error: subscriptionError,
-    toggleSubscription
   } = subscriptionsHook
 
   // Загружаем актуальную информацию о видео (включая like_amount)
@@ -109,16 +107,16 @@ export function useVideoStats(options: UseVideoStatsOptions) {
     }
   }, [videoId])
 
-  // Объединяем данные состояния пользователя (лайки, подписки) с загруженной статистикой
+  // Объединяем данные состояния пользователя (лайки) с загруженной статистикой
   useEffect(() => {
     setState(prev => ({
       ...prev,
       isLiked,
       isDisliked,
       commentsCount: userCommentsCount,
-      isSubscribed,
+      isSubscribed: false, // TODO: Implement subscription logic
     }))
-  }, [isLiked, isDisliked, userCommentsCount, isSubscribed])
+  }, [isLiked, isDisliked, userCommentsCount])
 
   useEffect(() => {
     if (immediate && videoId) {
@@ -142,7 +140,8 @@ export function useVideoStats(options: UseVideoStatsOptions) {
   }
 
   const handleToggleSubscription = async () => {
-    await toggleSubscription()
+    // TODO: Implement subscription toggle logic
+    console.log('Subscription toggle not implemented yet')
     await refreshStats() // Обновляем статистику после подписки
   }
 

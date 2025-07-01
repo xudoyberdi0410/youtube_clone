@@ -5,17 +5,48 @@ import { getCurrentUser, getAuthToken, shouldRefreshToken, ensureValidToken } fr
 import type { User } from '@/types/auth'
 
 export function useAuth() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(true)
+  // Синхронно проверяем наличие токена при инициализации
+  const initialToken = typeof window !== 'undefined' ? getAuthToken() : null
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    if (typeof window === 'undefined') return false
+    // Проверяем кэш в sessionStorage
+    const cachedAuth = sessionStorage.getItem('auth_cache')
+    if (cachedAuth) {
+      try {
+        const { isLoggedIn: cached } = JSON.parse(cachedAuth)
+        return cached && !!initialToken
+      } catch {
+        return !!initialToken
+      }
+    }
+    return !!initialToken
+  })
+  const [user, setUser] = useState<User | null>(() => {
+    if (typeof window === 'undefined') return null
+    // Проверяем кэш пользователя в sessionStorage
+    const cachedAuth = sessionStorage.getItem('auth_cache')
+    if (cachedAuth) {
+      try {
+        const { user: cachedUser } = JSON.parse(cachedAuth)
+        return cachedUser
+      } catch {
+        return null
+      }
+    }
+    return null
+  })
+  const [loading, setLoading] = useState(() => {
+    if (typeof window === 'undefined') return true
+    // Если есть кэш, не показываем загрузку
+    const cachedAuth = sessionStorage.getItem('auth_cache')
+    return !cachedAuth && !!initialToken
+  })
   const [refreshKey, setRefreshKey] = useState(0)
   const tokenCheckInterval = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     // Проверяем статус авторизации при загрузке
     const checkAuth = async () => {
-      setLoading(true)
-      
       try {
         const token = getAuthToken()
         
@@ -24,6 +55,11 @@ export function useAuth() {
           setUser(null)
           setLoading(false)
           return
+        }
+
+        // Если токен есть, но загрузка не активна, активируем её
+        if (!loading) {
+          setLoading(true)
         }
 
         // Проверяем, нужно ли обновить токен
@@ -43,14 +79,29 @@ export function useAuth() {
         if (userData) {
           setIsLoggedIn(true)
           setUser(userData)
+          // Сохраняем в кэш
+          if (typeof window !== 'undefined') {
+            sessionStorage.setItem('auth_cache', JSON.stringify({
+              isLoggedIn: true,
+              user: userData
+            }))
+          }
         } else {
           setIsLoggedIn(false)
           setUser(null)
+          // Очищаем кэш
+          if (typeof window !== 'undefined') {
+            sessionStorage.removeItem('auth_cache')
+          }
         }
       } catch (error) {
         console.error('❌ Error checking auth:', error)
         setIsLoggedIn(false)
         setUser(null)
+        // Очищаем кэш при ошибке
+        if (typeof window !== 'undefined') {
+          sessionStorage.removeItem('auth_cache')
+        }
       } finally {
         setLoading(false)
       }
@@ -73,6 +124,10 @@ export function useAuth() {
 
     // Слушаем изменения в localStorage
     const handleStorageChange = () => {
+      // Очищаем кэш при изменении авторизации
+      if (typeof window !== 'undefined') {
+        sessionStorage.removeItem('auth_cache')
+      }
       setRefreshKey(prev => prev + 1) // Принудительно перезапускаем эффект
     }
 
@@ -88,7 +143,7 @@ export function useAuth() {
       window.removeEventListener('storage', handleStorageChange)
       window.removeEventListener('authStateChanged', handleStorageChange)
     }
-  }, [refreshKey]) // Добавляем refreshKey как зависимость
+  }, [refreshKey, loading]) // Добавляем loading как зависимость
 
   return { isLoggedIn, user, loading }
 }

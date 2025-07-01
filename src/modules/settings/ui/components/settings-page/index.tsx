@@ -2,11 +2,11 @@
 
 import { useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { HomeButton } from "@/components/ui/home-button"
 import { useSettings } from '@/modules/settings/hooks/use-settings'
 import { AccountTab } from '@/modules/settings/ui/components/account-tab'
 import { ChannelsTab } from '@/modules/settings/ui/components/channels-tab'
 import { User, Video } from "lucide-react"
+import { LoadingSpinner } from '@/components/ui/loading-spinner'
 
 export const SettingsPage = () => {
   const { user, loading } = useSettings()
@@ -14,8 +14,8 @@ export const SettingsPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      <div className="flex items-center justify-center h-full">
+        <LoadingSpinner />
       </div>
     )
   }
@@ -25,37 +25,34 @@ export const SettingsPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-4xl mx-auto px-4">
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-3xl font-bold">Settings</h1>
-            <HomeButton />
-          </div>
-          <p className="text-gray-600">Manage your account settings and preferences</p>
+    <div className="max-w-4xl mx-auto">
+      <div className="mb-8">
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-3xl font-bold">Settings</h1>
         </div>
-
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="account" className="flex items-center gap-2">
-              <User className="h-4 w-4" />
-              Account
-            </TabsTrigger>
-            <TabsTrigger value="channels" className="flex items-center gap-2">
-              <Video className="h-4 w-4" />
-              Channels
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="account" className="space-y-6">
-            <AccountTab />
-          </TabsContent>
-
-          <TabsContent value="channels" className="space-y-6">
-            <ChannelsTab />
-          </TabsContent>
-        </Tabs>
+        <p className="text-gray-600">Manage your account settings and preferences</p>
       </div>
+
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="account" className="flex items-center gap-2">
+            <User className="h-4 w-4" />
+            Account
+          </TabsTrigger>
+          <TabsTrigger value="channels" className="flex items-center gap-2">
+            <Video className="h-4 w-4" />
+            Channels
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="account" className="space-y-6">
+          <AccountTab />
+        </TabsContent>
+
+        <TabsContent value="channels" className="space-y-6">
+          <ChannelsTab />
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }

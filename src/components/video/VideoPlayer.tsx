@@ -20,6 +20,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { apiClient } from '@/lib/api-client'
 
 interface VideoPlayerProps {
   videoId?: string
@@ -55,6 +56,7 @@ export function VideoPlayer({
   const [playbackRate, setPlaybackRate] = useState(1)
   const [isLoading, setIsLoading] = useState(true)
   const [hasError, setHasError] = useState(false)
+  const hasAddedToHistory = useRef(false)
 
   const hideControlsTimeout = useRef<NodeJS.Timeout | null>(null)
   
@@ -167,6 +169,10 @@ export function VideoPlayer({
   const handlePlay = () => {
     setIsPlaying(true)
     setIsBuffering(false)
+    if (!hasAddedToHistory.current && videoId && videoId !== 'demo') {
+      hasAddedToHistory.current = true
+      apiClient.addToHistory({ video_id: Number(videoId) }).catch(() => {})
+    }
   }
 
   const handlePause = () => {

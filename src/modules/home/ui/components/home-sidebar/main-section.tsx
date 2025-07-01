@@ -3,6 +3,7 @@
 import { SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 import { HomeIcon, ShortsIcon, SubscriptionsIcon } from "@/components/youtube-icons";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const items = [
     {
@@ -24,15 +25,18 @@ const items = [
 ];
 
 export const MainSection = () => {
+    const pathname = usePathname();
+
     return (
         <SidebarGroup className="py-0">
             <SidebarGroupContent>
                 <SidebarMenu className="space-y-0">
                     {items.map((item) => (
-                        <SidebarMenuItem key={item.title}>                            <SidebarMenuButton
+                        <SidebarMenuItem key={item.title}>
+                            <SidebarMenuButton
                                 tooltip={item.title}
                                 asChild
-                                isActive={item.title === "Home"} // TODO: Change to look at current pathname
+                                isActive={pathname === item.url}
                                 className="h-10 px-2 rounded-lg hover:bg-gray-100 data-[active=true]:bg-gray-100 group-data-[state=collapsed]:px-2 group-data-[state=collapsed]:justify-center"
                             >
                                 <Link href={item.url} className="flex items-center gap-6 group-data-[state=collapsed]:gap-0">
