@@ -2,7 +2,6 @@
 
 "use client"
 
-import { useState, useEffect } from "react"
 import { useParams } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -26,11 +25,9 @@ import {
   ArrowLeft,
   PlaySquare
 } from "lucide-react"
-import { ApiClient } from "@/lib/api-client"
 import { useAuth } from "@/modules/auth/hooks/use-auth"
 import { usePlaylist } from "@/hooks/use-playlist"
 import { formatDistanceToNow } from "date-fns"
-import type { Playlist, PlaylistVideo } from "@/types/api"
 
 export default function PlaylistPage() {
   const params = useParams()

@@ -49,7 +49,7 @@ export default function HistoryPage() {
       <h2 className="text-xl font-semibold mb-2">В вашей истории пока нет видео</h2>
       <p className="text-muted-foreground mb-4">Здесь будут отображаться видео, которые вы смотрели.</p>
       <Button asChild variant="outline">
-        <a href="/">Перейти на главную</a>
+        <Link href="/">Перейти на главную</Link>
       </Button>
     </div>
   );

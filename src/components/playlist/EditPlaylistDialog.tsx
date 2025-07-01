@@ -79,7 +79,7 @@ export function EditPlaylistDialog({
       })
       
       onOpenChange(false)
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to update playlist",

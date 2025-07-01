@@ -53,7 +53,7 @@ export function CreatePlaylistDialog({ onPlaylistCreated, trigger }: CreatePlayl
       
       setOpen(false)
       setFormData({ name: "", description: "", is_personal: false })
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to create playlist",

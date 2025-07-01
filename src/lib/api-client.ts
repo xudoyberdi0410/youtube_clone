@@ -9,6 +9,7 @@ import type {
   Playlist,
   PlaylistVideo,
   Subscription,
+  SubscriptionResponse,
   Shorts,
   VideoCategory,
   LoginCredentials,
@@ -537,8 +538,8 @@ export class ApiClient {
   }
 
   // Получить подписки
-  async getSubscriptions(): Promise<Subscription[]> {
-    return this.get<Subscription[]>('/subscription/get_subscriptions')
+  async getSubscriptions(): Promise<SubscriptionResponse[]> {
+    return this.get<SubscriptionResponse[]>('/subscription/get_subscriptions')
   }
 
   // Получить подписчиков

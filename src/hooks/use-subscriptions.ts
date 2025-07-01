@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { ApiClient } from '@/lib/api-client'
 import { useAuth } from '@/modules/auth/hooks/use-auth'
-import type { Subscription, SubscriptionCreate, SubscriptionResponse } from '@/types/api'
+import type { SubscriptionResponse } from '@/types/api'
 
 interface UseSubscriptionsOptions {
   immediate?: boolean
@@ -49,9 +49,9 @@ export function useSubscriptions(options: UseSubscriptionsOptions = {}) {
         isLoading: false,
         error: null,
       })
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Failed to load subscriptions:', error)
-      const errorMessage = error?.message || 'Failed to load subscriptions'
+      const errorMessage = error instanceof Error ? error.message : 'Failed to load subscriptions'
       setState(prev => ({
         ...prev,
         isLoading: false,

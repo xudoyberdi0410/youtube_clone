@@ -117,3 +117,5 @@ export const PersonalSection = memo(() => {
         </SidebarGroup>
     )
 })
+
+PersonalSection.displayName = 'PersonalSection'

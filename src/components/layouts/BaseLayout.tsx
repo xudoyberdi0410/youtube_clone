@@ -7,11 +7,12 @@ import { usePathname } from 'next/navigation';
 
 interface BaseLayoutProps {
     children: React.ReactNode;
+    withContainer?: boolean;
 }
 
-export const BaseLayout = ({ children }: BaseLayoutProps) => {
+export const BaseLayout = ({ children, withContainer: propWithContainer }: BaseLayoutProps) => {
     const pathname = usePathname();
-    const withContainer = pathname !== '/';
+    const withContainer = propWithContainer ?? pathname !== '/';
     
     // Исключаем определенные маршруты, которые имеют свой собственный layout
     const shouldRenderLayout = !pathname.startsWith('/watch') && !pathname.startsWith('/auth');

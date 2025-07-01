@@ -143,7 +143,7 @@ export function useAuth() {
       window.removeEventListener('storage', handleStorageChange)
       window.removeEventListener('authStateChanged', handleStorageChange)
     }
-  }, [refreshKey]) // Добавляем refreshKey как зависимость
+  }, [refreshKey, loading]) // Добавляем loading как зависимость
 
   return { isLoggedIn, user, loading }
 }

@@ -287,22 +287,23 @@ export function getAvatarUrl(user: User | Partial<User>, cacheBuster?: string): 
 }
 
 // Helper функция для очистки токенов только при критических ошибках
-export function clearTokensOnCriticalError(error: any): boolean {
+export function clearTokensOnCriticalError(error: unknown): boolean {
+  const authError = error as { status?: number; message?: string; detail?: string }
   // Очищаем токены при критических ошибках аутентификации
   const shouldClear = 
     // Invalid token ошибки
-    (error?.status === 401 && (
-      error?.message?.includes('invalid_token') ||
-      error?.message?.includes('token_expired') ||
-      error?.message?.includes('invalid_grant') ||
-      error?.detail?.includes('invalid_token') ||
-      error?.detail?.includes('token_expired')
+    (authError?.status === 401 && (
+      authError?.message?.includes('invalid_token') ||
+      authError?.message?.includes('token_expired') ||
+      authError?.message?.includes('invalid_grant') ||
+      authError?.detail?.includes('invalid_token') ||
+      authError?.detail?.includes('token_expired')
     )) ||
     // Если refresh token тоже невалиден
-    (error?.status === 401 && error?.message?.includes('refresh'))
+    (authError?.status === 401 && authError?.message?.includes('refresh'))
   
   if (shouldClear) {
-    console.log('Critical auth error detected, clearing tokens:', error?.message || error?.detail)
+    console.log('Critical auth error detected, clearing tokens:', authError?.message || authError?.detail)
     localStorage.removeItem('access_token')
     localStorage.removeItem('refresh_token')
     localStorage.removeItem('authToken')
@@ -315,6 +316,6 @@ export function clearTokensOnCriticalError(error: any): boolean {
   }
   
   // Для других ошибок (сеть, сервер) не очищаем токены
-  console.log('Non-critical error, keeping tokens:', error?.message || error?.detail)
+  console.log('Non-critical error, keeping tokens:', authError?.message || authError?.detail)
   return false
 }

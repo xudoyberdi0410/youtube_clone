@@ -8,7 +8,7 @@ import { PlaylistCard } from "@/components/playlist/PlaylistCard";
 import { usePlaylists } from "@/hooks/use-playlists";
 import { List, Plus } from "lucide-react";
 import { useState } from "react";
-import type { Playlist, PlaylistUpdate } from "@/types/api";
+import type { Playlist, PlaylistUpdate, PlaylistCreate } from "@/types/api";
 
 export default function PlaylistsPage() {
     const { isLoggedIn, loading: authLoading } = useAuth();
@@ -16,7 +16,7 @@ export default function PlaylistsPage() {
     const [showAuthDialog, setShowAuthDialog] = useState(false);
     const [editingPlaylist, setEditingPlaylist] = useState<Playlist | null>(null);
 
-    const handlePlaylistCreated = async (playlistData: any) => {
+    const handlePlaylistCreated = async (playlistData: PlaylistCreate) => {
         try {
             await createPlaylist(playlistData);
         } catch (error) {

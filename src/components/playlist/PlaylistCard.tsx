@@ -37,7 +37,6 @@ export function PlaylistCard({ playlist, onEdit, onDelete }: PlaylistCardProps) 
   }
 
   // Используем lucide иконку вместо SVG
-  const thumbnailUrl = null // Будем использовать иконку вместо изображения
   const videoCount = playlist.videos_count || 0
 
   return (

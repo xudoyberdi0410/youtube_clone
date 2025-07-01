@@ -2,10 +2,9 @@
 
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useAuth } from '@/modules/auth/hooks/use-auth'
 import { useSubscriptions } from '@/hooks/use-subscriptions'
-import { ApiClient } from '@/lib/api-client'
 import { AuthRequiredDialog } from '@/components/auth/AuthRequiredDialog'
 import { LoadingSpinner } from '@/components/ui/loading-spinner'
 import { Alert, AlertDescription } from '@/components/ui/alert'
@@ -14,28 +13,27 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { SubscriptionsIcon, VerifiedIcon } from '@/components/youtube-icons'
-import { Users, Bell, BellOff, ExternalLink } from 'lucide-react'
+import { Users, BellOff, ExternalLink } from 'lucide-react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
-import type { SubscriptionResponse } from '@/types/api'
 
 export default function SubscriptionsPage() {
   const { isLoggedIn, loading: authLoading } = useAuth()
   const { subscriptions, isLoading, error, loadSubscriptions } = useSubscriptions()
   const [showAuthDialog, setShowAuthDialog] = useState(false)
 
-  const handleUnsubscribe = async (channelId: number) => {
+  const handleUnsubscribe = async () => {
     if (!window.confirm('Are you sure you want to unsubscribe?')) return
     
     try {
-      const apiClient = ApiClient.getInstance()
+      // TODO: Implement unsubscribe functionality
       // Нужно использовать endpoint для отписки по channel ID
       // или найти способ получить subscription ID
       // Пока что просто перезагружаем список
       await loadSubscriptions()
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Failed to unsubscribe:', error)
-      const errorMessage = error?.message || 'Failed to unsubscribe. Please try again.'
+      const errorMessage = error instanceof Error ? error.message : 'Failed to unsubscribe. Please try again.'
       alert(errorMessage)
     }
   }
@@ -201,7 +199,7 @@ export default function SubscriptionsPage() {
                 <Button 
                   variant="outline" 
                   size="sm"
-                  onClick={() => handleUnsubscribe(subscription.id)}
+                  onClick={() => handleUnsubscribe()}
                   className="text-red-600 hover:text-red-700 hover:bg-red-50"
                 >
                   <BellOff className="w-4 h-4" />
