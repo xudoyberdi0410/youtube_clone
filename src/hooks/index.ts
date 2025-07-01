@@ -11,6 +11,8 @@ export { useLikes } from './use-likes'
 export { useComments } from './use-comments'
 export { useSubscriptions } from './use-subscriptions'
 export { useVideoStats } from './use-video-stats'
+export { usePlaylists } from './use-playlists'
+export { usePlaylist } from './use-playlist'
 
 // Re-export existing hooks from components/ui
 export { useIsMobile } from './use-mobile'

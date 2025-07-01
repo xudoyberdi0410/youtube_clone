@@ -82,11 +82,8 @@ export async function isAuthenticated(): Promise<boolean> {
     await apiClient.get(API_CONFIG.ENDPOINTS.USERS.GET_OWN)
     return true
   } catch {
-    // Если токен невалидный, очищаем localStorage
-    localStorage.removeItem('access_token')
-    localStorage.removeItem('refresh_token')
-    localStorage.removeItem('authToken')
-    localStorage.removeItem('refreshToken')
+    // Если токен невалидный, НЕ очищаем localStorage сразу
+    // Возможно это временная проблема с сетью
     return false
   }
 }
@@ -103,11 +100,8 @@ export async function getCurrentUser(): Promise<User | null> {
     return user
   } catch (error) {
     console.error('Get current user error:', error)
-    // Если токен невалидный, очищаем localStorage
-    localStorage.removeItem('access_token')
-    localStorage.removeItem('refresh_token')
-    localStorage.removeItem('authToken')
-    localStorage.removeItem('refreshToken')
+    // НЕ очищаем токены при ошибке получения пользователя
+    // Возможно проблема с сетью, а не с токеном
     return null
   }
 }
@@ -140,8 +134,9 @@ export async function refreshToken(): Promise<TokenResponse | null> {
     return response
   } catch (error) {
     console.error('Token refresh error:', error)
-    // Очищаем невалидные токены
-    logout()
+    // Очищаем токены только при критических ошибках
+    clearTokensOnCriticalError(error)
+    
     return null
   }
 }
@@ -289,4 +284,37 @@ export function getAvatarUrl(user: User | Partial<User>, cacheBuster?: string): 
   
   // По умолчанию добавляем базовый URL
   return `${API_CONFIG.BASE_URL}/${user.avatar}${cacheBuster || ''}`
+}
+
+// Helper функция для очистки токенов только при критических ошибках
+export function clearTokensOnCriticalError(error: any): boolean {
+  // Очищаем токены при критических ошибках аутентификации
+  const shouldClear = 
+    // Invalid token ошибки
+    (error?.status === 401 && (
+      error?.message?.includes('invalid_token') ||
+      error?.message?.includes('token_expired') ||
+      error?.message?.includes('invalid_grant') ||
+      error?.detail?.includes('invalid_token') ||
+      error?.detail?.includes('token_expired')
+    )) ||
+    // Если refresh token тоже невалиден
+    (error?.status === 401 && error?.message?.includes('refresh'))
+  
+  if (shouldClear) {
+    console.log('Critical auth error detected, clearing tokens:', error?.message || error?.detail)
+    localStorage.removeItem('access_token')
+    localStorage.removeItem('refresh_token')
+    localStorage.removeItem('authToken')
+    localStorage.removeItem('refreshToken')
+    
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new Event('authStateChanged'))
+    }
+    return true
+  }
+  
+  // Для других ошибок (сеть, сервер) не очищаем токены
+  console.log('Non-critical error, keeping tokens:', error?.message || error?.detail)
+  return false
 }

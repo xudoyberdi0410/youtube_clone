@@ -18,11 +18,16 @@ interface UseVideosState {
   error: string | null
 }
 
+const CACHE_KEY = 'youtube_videos_cache'
+const CACHE_TIMESTAMP_KEY = 'youtube_videos_cache_timestamp'
+const CACHE_DURATION = 5 * 60 * 1000 // 5 минут
+
 /**
- * Хук для загрузки видео с бэкенда
+ * Хук для загрузки видео с бэкенда с кэшированием
  */
 export function useVideos(options: UseVideosOptions = {}) {
   const { category, ident, immediate = true } = options
+  const [isHydrated, setIsHydrated] = useState(false)
   
   const [state, setState] = useState<UseVideosState>({
     videos: [],
@@ -30,7 +35,61 @@ export function useVideos(options: UseVideosOptions = {}) {
     error: null,
   })
 
-  const loadVideos = useCallback(async (categoryParam?: VideoCategory, identParam?: number) => {
+  // Эффект для гидратации
+  useEffect(() => {
+    setIsHydrated(true)
+  }, [])
+
+  // Функция для получения данных из кэша
+  const getCachedData = useCallback(() => {
+    if (typeof window === 'undefined') return null
+    
+    try {
+      const cachedData = sessionStorage.getItem(CACHE_KEY)
+      const cachedTimestamp = sessionStorage.getItem(CACHE_TIMESTAMP_KEY)
+      
+      if (cachedData && cachedTimestamp) {
+        const timestamp = parseInt(cachedTimestamp)
+        const now = Date.now()
+        
+        // Проверяем, не истёк ли кэш
+        if (now - timestamp < CACHE_DURATION) {
+          return JSON.parse(cachedData) as Video[]
+        }
+      }
+    } catch (error) {
+      console.warn('Error reading from cache:', error)
+    }
+    
+    return null
+  }, [])
+
+  // Функция для сохранения данных в кэш
+  const setCachedData = useCallback((videos: Video[]) => {
+    if (typeof window === 'undefined') return
+    
+    try {
+      sessionStorage.setItem(CACHE_KEY, JSON.stringify(videos))
+      sessionStorage.setItem(CACHE_TIMESTAMP_KEY, Date.now().toString())
+    } catch (error) {
+      console.warn('Error saving to cache:', error)
+    }
+  }, [])
+
+  const loadVideos = useCallback(async (categoryParam?: VideoCategory, identParam?: number, forceRefresh = false) => {
+    // Если не форсируем обновление и нет параметров категории/ident, проверяем кэш
+    if (!forceRefresh && !categoryParam && !identParam && !category && !ident && isHydrated) {
+      const cachedVideos = getCachedData()
+      if (cachedVideos) {
+        setState({
+          videos: cachedVideos,
+          isLoading: false,
+          error: null,
+        })
+        return
+      }
+    }
+
     setState(prev => ({ ...prev, isLoading: true, error: null }))
     
     try {
@@ -39,6 +98,11 @@ export function useVideos(options: UseVideosOptions = {}) {
       
       // Преобразуем API данные в формат компонентов
       const videos = apiVideos.map(mapApiVideoToVideo)
+      
+      // Кэшируем данные только если это запрос без фильтров
+      if (!categoryParam && !identParam && !category && !ident) {
+        setCachedData(videos)
+      }
       
       setState({
         videos,
@@ -53,21 +117,21 @@ export function useVideos(options: UseVideosOptions = {}) {
         error: errorMessage,
       }))
     }
-  }, [ident, category])
+  }, [ident, category, getCachedData, setCachedData, isHydrated])
 
   const refetch = () => {
-    loadVideos()
+    loadVideos(category, ident, true) // Форсируем обновление при refetch
   }
 
   const changeCategory = (newCategory?: VideoCategory) => {
-    loadVideos(newCategory)
+    loadVideos(newCategory, ident, true) // Форсируем обновление при смене категории
   }
 
   useEffect(() => {
-    if (immediate) {
+    if (immediate && isHydrated) {
       loadVideos()
     }
-  }, [immediate, ident, loadVideos]) // убираем category из зависимостей, так как теперь используем changeCategory
+  }, [immediate, ident, loadVideos, isHydrated]) // убираем category из зависимостей, так как теперь используем changeCategory
 
   return {
     ...state,

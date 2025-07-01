@@ -20,8 +20,10 @@ export interface Channel {
   // Альтернативные поля, которые приходят от API
   profile_image?: string
   banner_image?: string
+  profile_picture?: string // Добавляем для аватара
   subscribers_count?: number
   subscription_amount?: number // Добавляем поле, которое приходит от API
+  is_verified?: boolean // Добавляем для значка верификации
 }
 
 export interface Video {
@@ -59,10 +61,13 @@ export interface Comment {
 
 export interface History {
   id: number
-  user_id: number
-  video_id: number
+  username: string
+  name: string
+  title: string
+  file_path: string
+  thumbnail_path: string
+  views: number
   watched_at: string
-  video?: Video
 }
 
 export interface Playlist {
@@ -71,6 +76,7 @@ export interface Playlist {
   description: string
   user_id: number
   is_public: boolean
+  is_personal?: boolean
   created_at: string
   updated_at?: string
   videos_count?: number
@@ -90,6 +96,16 @@ export interface Subscription {
   channel_id: number
   created_at: string
   channel?: Channel
+}
+
+// Новый тип для ответа API подписок
+export interface SubscriptionResponse {
+  id: number
+  name: string
+  profile_image: string
+  subscription_amount: number
+  username: string
+  created_at: string
 }
 
 export interface Shorts {
@@ -189,11 +205,13 @@ export interface HistoryCreate {
 export interface PlaylistCreate {
   name: string
   description: string
+  is_personal: boolean
 }
 
 export interface PlaylistUpdate {
   name: string
   description: string
+  is_personal?: boolean
 }
 
 export interface PlaylistVideoCreate {

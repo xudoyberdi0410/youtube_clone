@@ -2,9 +2,12 @@
 
 import { SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 import { HistoryIcon, UserCircleIcon } from "@/components/youtube-icons";
+import { List, Play, Clock, ThumbsUp } from "lucide-react";
 import Link from "next/link";
-import { useAuth } from "@/modules/auth/hooks/use-auth";
+import { useAuthContext } from "@/modules/auth/context/auth-context";
 import { Button } from "@/components/ui/button";
+import { usePathname } from "next/navigation";
+import { memo } from "react";
 
 const items = [
     {
@@ -19,17 +22,46 @@ const items = [
         icon: HistoryIcon,
         auth: true
     },
+    {
+        title: "Playlists",
+        url: "/feed/playlists",
+        icon: List,
+        auth: true
+    },
+    {
+        title: "Your videos",
+        url: "/feed/your-videos",
+        icon: Play,
+        auth: true
+    },
+    {
+        title: "Watch later",
+        url: "/feed/watch-later",
+        icon: Clock,
+        auth: true
+    },
+    {
+        title: "Liked videos",
+        url: "/feed/liked-videos",
+        icon: ThumbsUp,
+        auth: true
+    },
 ];
 
-export const PersonalSection = () => {
-    const { isLoggedIn, loading } = useAuth();
+export const PersonalSection = memo(() => {
+    const { isLoggedIn, loading } = useAuthContext();
+    const pathname = usePathname();
 
-    // Show loading state
+    // Show loading state only on initial load when we don't know auth status
     if (loading) {
         return (
             <SidebarGroup className="py-0">
                 <SidebarGroupContent>
                     <div className="animate-pulse space-y-2">
+                        <div className="h-10 bg-gray-200 rounded-lg"></div>
+                        <div className="h-10 bg-gray-200 rounded-lg"></div>
+                        <div className="h-10 bg-gray-200 rounded-lg"></div>
+                        <div className="h-10 bg-gray-200 rounded-lg"></div>
                         <div className="h-10 bg-gray-200 rounded-lg"></div>
                         <div className="h-10 bg-gray-200 rounded-lg"></div>
                     </div>
@@ -66,11 +98,12 @@ export const PersonalSection = () => {
             <SidebarGroupContent>
                 <SidebarMenu className="space-y-0">
                     {items.map((item) => (
-                        <SidebarMenuItem key={item.title}>                            <SidebarMenuButton
+                        <SidebarMenuItem key={item.title}>
+                            <SidebarMenuButton
                                 tooltip={item.title}
                                 asChild
-                                isActive={false} // TODO: Change to look at current pathname
-                                className="h-10 px-2 rounded-lg hover:bg-gray-100 group-data-[state=collapsed]:px-2 group-data-[state=collapsed]:justify-center"
+                                isActive={pathname === item.url}
+                                className="h-10 px-2 rounded-lg hover:bg-gray-100 data-[active=true]:bg-gray-100 group-data-[state=collapsed]:px-2 group-data-[state=collapsed]:justify-center"
                             >
                                 <Link href={item.url} className="flex items-center gap-6 group-data-[state=collapsed]:gap-0">
                                     <item.icon className="w-6 h-6 flex-shrink-0"/>
@@ -83,4 +116,4 @@ export const PersonalSection = () => {
             </SidebarGroupContent>
         </SidebarGroup>
     )
-}
+})

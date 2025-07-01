@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Roboto, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import { APP_CONFIG } from "@/lib/constants";
+import { AuthProvider } from "@/modules/auth/context/auth-context";
+import { BaseLayout } from "@/components/layouts/BaseLayout";
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -48,11 +50,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${roboto.variable} ${robotoMono.variable} antialiased`}
-        suppressHydrationWarning={true}
-      >
-        {children}
+      <body className={`${roboto.variable} ${robotoMono.variable} font-sans`}>
+        <AuthProvider>
+          <BaseLayout>
+            {children}
+          </BaseLayout>
+        </AuthProvider>
       </body>
     </html>
   );

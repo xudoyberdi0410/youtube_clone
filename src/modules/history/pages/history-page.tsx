@@ -2,11 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { apiClient } from "@/lib/api-client";
-import type { History, Video } from "@/types/api";
-import { VideoGrid } from "@/components/video/video-grid";
+import type { History } from "@/types/api";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { HistoryIcon } from "@/components/youtube-icons";
+import { buildImageUrl } from "@/lib/api-config";
+import Image from "next/image";
+import Link from "next/link";
+import { Trash2 } from "lucide-react";
 
 export default function HistoryPage() {
   const [history, setHistory] = useState<History[]>([]);
@@ -54,21 +57,52 @@ export default function HistoryPage() {
   return (
     <>
       <h1 className="text-2xl font-bold mb-6">История просмотров</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="space-y-4">
         {history.map((item) => (
-          item.video ? (
-            <div key={item.id} className="relative group border rounded-lg p-2">
-              <VideoGrid videos={[item.video as Video]} />
-              <Button
-                variant="destructive"
-                size="sm"
-                className="absolute top-2 right-2 opacity-80 group-hover:opacity-100"
-                onClick={() => handleDelete(item.id)}
+          <div key={item.id} className="flex gap-4 p-4 bg-white border rounded-lg hover:shadow-md transition-shadow group">
+            {/* Превью видео */}
+            <div className="relative w-48 h-28 bg-gray-100 rounded-md overflow-hidden flex-shrink-0">
+              {item.thumbnail_path ? (
+                <Image
+                  src={buildImageUrl(item.thumbnail_path)}
+                  alt={item.title}
+                  fill
+                  className="object-cover"
+                  sizes="192px"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                  <span className="text-gray-400 text-sm">Нет превью</span>
+                </div>
+              )}
+            </div>
+
+            {/* Информация о видео */}
+            <div className="flex-1 min-w-0">
+              <h3 className="font-medium text-lg mb-1 line-clamp-2">{item.title}</h3>
+              <Link 
+                href={`/channel?name=${encodeURIComponent(item.name)}`}
+                className="text-sm text-gray-600 mb-1 hover:text-blue-600 cursor-pointer inline-block"
               >
-                Удалить
+                Канал: {item.name}
+              </Link>
+              <p className="text-sm text-gray-500 mb-2">{item.views.toLocaleString()} просмотров</p>
+              <p className="text-xs text-gray-400">Просмотрено: {item.watched_at}</p>
+            </div>
+
+            {/* Кнопка удаления */}
+            <div className="flex items-start">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="opacity-0 group-hover:opacity-100 transition-opacity text-red-600 hover:text-red-700 hover:bg-red-50"
+                onClick={() => handleDelete(item.id)}
+                title="Удалить из истории"
+              >
+                <Trash2 className="w-4 h-4" />
               </Button>
             </div>
-          ) : null
+          </div>
         ))}
       </div>
     </>
