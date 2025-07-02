@@ -223,12 +223,6 @@ export interface SubscriptionCreate {
   channel_id: number
 }
 
-export interface ShortsUpload {
-  title: string
-  description: string
-  category: VideoCategory
-}
-
 export interface TokenResponse {
   access_token: string
   token_type: string
