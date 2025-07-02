@@ -111,8 +111,15 @@ export function UploadVideoForm() {
   }
 
   const handleUpload = async () => {
-    if (!selectedFile || !title.trim()) {
-      setUploadState(prev => ({ ...prev, error: 'Заполните все обязательные поля' }))
+    // For shorts, only video file is required
+    // For regular videos, both file and title are required
+    if (!selectedFile) {
+      setUploadState(prev => ({ ...prev, error: 'Выберите файл для загрузки' }))
+      return
+    }
+
+    if (uploadState.videoType === 'video' && !title.trim()) {
+      setUploadState(prev => ({ ...prev, error: 'Для обычного видео необходимо указать название' }))
       return
     }
 
@@ -139,7 +146,7 @@ export function UploadVideoForm() {
       }, 500)
 
       if (uploadState.videoType === 'shorts') {
-        await apiClient.uploadShorts(selectedFile, uploadData)
+        await apiClient.uploadShorts(selectedFile)
       } else {
         await apiClient.uploadVideo(selectedFile, uploadData)
       }
@@ -262,40 +269,70 @@ export function UploadVideoForm() {
         {/* Form Fields */}
         <div className="space-y-4">
           <div>
-            <Label htmlFor="title">Название *</Label>
+            <Label htmlFor="title">
+              Название {uploadState.videoType === 'video' ? '*' : '(не используется для Shorts)'}
+            </Label>
             <Input
               id="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Введите название видео"
+              placeholder={
+                uploadState.videoType === 'shorts' 
+                  ? "Для Shorts название не требуется" 
+                  : "Введите название видео"
+              }
               maxLength={100}
               className="mt-1"
+              disabled={uploadState.videoType === 'shorts'}
             />
             <p className="text-xs text-muted-foreground mt-1">
-              {title.length}/100 символов
+              {uploadState.videoType === 'shorts' 
+                ? 'Shorts загружаются только с видеофайлом'
+                : `${title.length}/100 символов`
+              }
             </p>
           </div>
 
           <div>
-            <Label htmlFor="description">Описание</Label>
+            <Label htmlFor="description">
+              Описание {uploadState.videoType === 'shorts' ? '(не используется для Shorts)' : ''}
+            </Label>
             <Textarea
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Опишите ваше видео (необязательно)"
+              placeholder={
+                uploadState.videoType === 'shorts'
+                  ? "Для Shorts описание не требуется"
+                  : "Опишите ваше видео (необязательно)"
+              }
               maxLength={5000}
               className="mt-1 min-h-[100px]"
+              disabled={uploadState.videoType === 'shorts'}
             />
             <p className="text-xs text-muted-foreground mt-1">
-              {description.length}/5000 символов
+              {uploadState.videoType === 'shorts'
+                ? 'Shorts загружаются только с видеофайлом'
+                : `${description.length}/5000 символов`
+              }
             </p>
           </div>
 
           <div>
-            <Label htmlFor="category">Категория</Label>
-            <Select value={category} onValueChange={(value: VideoCategory) => setCategory(value)}>
+            <Label htmlFor="category">
+              Категория {uploadState.videoType === 'shorts' ? '(не используется для Shorts)' : ''}
+            </Label>
+            <Select 
+              value={category} 
+              onValueChange={(value: VideoCategory) => setCategory(value)}
+              disabled={uploadState.videoType === 'shorts'}
+            >
               <SelectTrigger className="mt-1">
-                <SelectValue placeholder="Выберите категорию" />
+                <SelectValue placeholder={
+                  uploadState.videoType === 'shorts'
+                    ? "Для Shorts категория не требуется"
+                    : "Выберите категорию"
+                } />
               </SelectTrigger>
               <SelectContent>
                 {VIDEO_CATEGORIES.map((cat) => (
@@ -343,7 +380,11 @@ export function UploadVideoForm() {
         <div className="flex gap-3 pt-4">
           <Button
             onClick={handleUpload}
-            disabled={!selectedFile || !title.trim() || uploadState.isUploading}
+            disabled={
+              !selectedFile || 
+              (uploadState.videoType === 'video' && !title.trim()) ||
+              uploadState.isUploading
+            }
             className="flex-1"
           >
             {uploadState.isUploading ? (
