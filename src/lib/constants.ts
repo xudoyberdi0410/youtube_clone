@@ -9,7 +9,8 @@ export const APP_CONFIG = {
 
 // File Upload Constants
 export const UPLOAD_CONFIG = {
-  MAX_FILE_SIZE: Number(process.env.NEXT_PUBLIC_MAX_FILE_SIZE) || 5 * 1024 * 1024, // 5MB
+  MAX_FILE_SIZE: Number(process.env.NEXT_PUBLIC_MAX_FILE_SIZE) || 5 * 1024 * 1024, // 5MB for images
+  MAX_VIDEO_SIZE: Number(process.env.NEXT_PUBLIC_MAX_VIDEO_SIZE) || 100 * 1024 * 1024, // 100MB for videos
   ALLOWED_IMAGE_TYPES: (process.env.NEXT_PUBLIC_ALLOWED_IMAGE_TYPES || 'image/jpeg,image/png,image/gif,image/webp').split(','),
   ALLOWED_VIDEO_TYPES: ['video/mp4', 'video/webm', 'video/mov', 'video/avi'] as const,
 } as const
@@ -39,6 +40,7 @@ export const VIDEO_CONFIG = {
 export const ROUTES = {
   HOME: '/',
   WATCH: '/watch',
+  UPLOAD: '/upload',
   SETTINGS: '/settings',
   AUTH: {
     SIGNIN: '/auth/signin',

@@ -26,8 +26,7 @@ import type {
   PlaylistCreate,
   PlaylistUpdate,
   PlaylistVideoCreate,
-  SubscriptionCreate,
-  ShortsUpload
+  SubscriptionCreate
 } from '../types/api'
 import type { TokenResponse } from '../types/auth'
 
@@ -705,12 +704,9 @@ export class ApiClient {
   // === SHORTS ENDPOINTS ===
 
   // Загрузка Shorts
-  async uploadShorts(videoFile: File, shortsData: ShortsUpload): Promise<Shorts> {
+  async uploadShorts(videoFile: File): Promise<Shorts> {
     const formData = new FormData()
-    formData.append('vidyo', videoFile)
-    formData.append('title', shortsData.title)
-    formData.append('description', shortsData.description)
-    formData.append('category', shortsData.category)
+    formData.append('video', videoFile)
     return this.postFormData<Shorts>('/shorts/post_shorts', formData)
   }
 
