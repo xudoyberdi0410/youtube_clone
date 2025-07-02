@@ -3,7 +3,8 @@ import Link from "next/link"
 import Image from "next/image"
 import { SearchInput } from "./search-input"
 import { AuthButton } from "@/modules/auth/ui/components/auth-botton"
-import { SearchIcon } from "lucide-react"
+import { SearchIcon, Upload } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
 export const HomeNavbar = () => {
     return (
@@ -33,12 +34,21 @@ export const HomeNavbar = () => {
                     <SearchInput />
                 </div>
 
-                {/* Right side - Auth button and mobile search */}
+                {/* Right side - Upload button, Auth button and mobile search */}
                 <div className="flex items-center gap-2 md:gap-4 flex-shrink-0">
                     {/* Mobile search button */}
                     <button className="md:hidden p-2 hover:bg-gray-100 rounded-full">
                         <SearchIcon className="w-5 h-5" />
                     </button>
+                    
+                    {/* Upload button */}
+                    <Link href="/upload">
+                        <Button variant="ghost" size="sm" className="flex items-center gap-2">
+                            <Upload className="w-4 h-4" />
+                            <span className="hidden sm:inline">Загрузить</span>
+                        </Button>
+                    </Link>
+                    
                     <AuthButton />
                 </div>
             </div>
