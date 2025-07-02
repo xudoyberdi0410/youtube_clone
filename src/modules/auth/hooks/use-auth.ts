@@ -57,10 +57,8 @@ export function useAuth() {
           return
         }
 
-        // Если токен есть, но загрузка не активна, активируем её
-        if (!loading) {
-          setLoading(true)
-        }
+        // Устанавливаем loading только если он не установлен
+        setLoading(prev => prev === false ? true : prev)
 
         // Проверяем, нужно ли обновить токен
         if (shouldRefreshToken()) {
@@ -143,7 +141,7 @@ export function useAuth() {
       window.removeEventListener('storage', handleStorageChange)
       window.removeEventListener('authStateChanged', handleStorageChange)
     }
-  }, [refreshKey, loading]) // Добавляем loading как зависимость
+  }, [refreshKey]) // Убираем loading из зависимостей чтобы избежать бесконечного цикла
 
   return { isLoggedIn, user, loading }
 }
