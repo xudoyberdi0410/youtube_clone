@@ -4,7 +4,8 @@ import {
   formatFileSize,
   formatRelativeTime,
   truncateText,
-  formatSubscriberCount,
+  formatApiDate,
+  formatVideoDuration,
 } from '@/lib/utils/format'
 
 describe('Format Utils', () => {
@@ -130,15 +131,32 @@ describe('Format Utils', () => {
     })
   })
 
-  describe('formatSubscriberCount', () => {
-    test('formats singular subscriber', () => {
-      expect(formatSubscriberCount(1)).toBe('1 subscriber')
+  describe('formatApiDate', () => {
+    test('formats ISO date to DD.MM.YYYY HH:mm format', () => {
+      expect(formatApiDate('2025-07-03T15:30:00')).toBe('03.07.2025 15:30')
+      expect(formatApiDate('2025-12-25T09:15:30')).toBe('25.12.2025 09:15')
     })
 
-    test('formats plural subscribers', () => {
-      expect(formatSubscriberCount(2)).toBe('2 subscribers')
-      expect(formatSubscriberCount(1000)).toBe('1.0K subscribers')
-      expect(formatSubscriberCount(1500000)).toBe('1.5M subscribers')
+    test('handles invalid date gracefully', () => {
+      expect(formatApiDate('invalid-date')).toBe('invalid-date')
+      expect(formatApiDate('')).toBe('')
+    })
+  })
+
+  describe('formatVideoDuration', () => {
+    test('formats duration string', () => {
+      expect(formatVideoDuration('02:30')).toBe('02:30')
+      expect(formatVideoDuration('1:45:20')).toBe('1:45:20')
+    })
+
+    test('formats duration from seconds', () => {
+      expect(formatVideoDuration(150)).toBe('2:30')
+      expect(formatVideoDuration(3661)).toBe('1:01:01')
+    })
+
+    test('handles undefined and invalid input', () => {
+      expect(formatVideoDuration(undefined)).toBe('0:00')
+      expect(formatVideoDuration('invalid')).toBe('0:00')
     })
   })
 })

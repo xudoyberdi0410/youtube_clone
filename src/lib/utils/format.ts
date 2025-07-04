@@ -1,5 +1,8 @@
 // src/lib/utils/format.ts
 
+import { format, parseISO } from 'date-fns'
+import { ru } from 'date-fns/locale'
+
 /**
  * Format number of views in YouTube style
  * @param views - Number of views
@@ -111,4 +114,50 @@ export const formatShortNumber = (count: number): string => {
     return `${(count / 1000).toFixed(1)}K`
   }
   return count.toString()
+}
+
+/**
+ * Format API date from "2025-07-03T15:30:00" to "03.07.2025 15:30"
+ * @param dateString - Date string from API
+ * @returns Formatted date string
+ */
+export const formatApiDate = (dateString: string): string => {
+  try {
+    // Парсим ISO строку даты
+    const date = parseISO(dateString)
+    
+    // Форматируем в нужный формат
+    return format(date, 'dd.MM.yyyy HH:mm', { locale: ru })
+  } catch (error) {
+    // Если не удалось распарсить, возвращаем исходную строку
+    console.warn('Failed to parse date:', dateString, error)
+    return dateString
+  }
+}
+
+/**
+ * Format duration from video API (seconds or duration_video field)
+ * @param duration - Duration in seconds or string format like "02:00"
+ * @returns Formatted duration string
+ */
+export const formatVideoDuration = (duration: number | string | undefined): string => {
+  if (!duration) return '0:00'
+  
+  // Если уже строка в правильном формате, возвращаем как есть
+  if (typeof duration === 'string' && duration.includes(':')) {
+    return duration
+  }
+  
+  // Если число, форматируем из секунд
+  if (typeof duration === 'number') {
+    return formatDuration(duration)
+  }
+  
+  // Пытаемся преобразовать строку в число
+  const seconds = parseInt(duration.toString(), 10)
+  if (!isNaN(seconds)) {
+    return formatDuration(seconds)
+  }
+  
+  return '0:00'
 }

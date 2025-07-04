@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { buildImageUrl } from '@/lib/api-config'
+import { formatApiDate } from '@/lib/utils/format'
 import type { Video } from '@/types/api'
 import Image from 'next/image'
 
@@ -35,8 +36,12 @@ interface VideoCardProps {
 }
 
 function VideoCard({ video }: VideoCardProps) {
-  const channelName = video.name // Используем поле name для имени канала
+  // Используем новые поля API с fallback на старые
+  const channelName = video.channel_name || video.name || 'Unknown Channel'
   const profileImage = video.profile_image
+  const videoTitle = video.video_title || video.title || 'Untitled'
+  const videoViews = video.video_views || video.views || 0
+  const videoDuration = video.duration_video || video.duration
 
   return (
     <Card className="overflow-hidden hover:shadow-md transition-shadow">
@@ -47,7 +52,7 @@ function VideoCard({ video }: VideoCardProps) {
             {video.thumbnail_path ? (
               <Image
                 src={buildImageUrl(video.thumbnail_path)}
-                alt={video.title}
+                alt={videoTitle}
                 className="w-full h-full object-cover"
                 fill
                 sizes="(max-width: 768px) 100vw, 33vw"
@@ -60,9 +65,9 @@ function VideoCard({ video }: VideoCardProps) {
             )}
             
             {/* Продолжительность видео */}
-            {video.duration && (
+            {videoDuration && (
               <div className="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-1.5 py-0.5 rounded">
-                {formatDuration(video.duration)}
+                {typeof videoDuration === 'string' ? videoDuration : formatDuration(videoDuration)}
               </div>
             )}
           </div>
@@ -86,7 +91,7 @@ function VideoCard({ video }: VideoCardProps) {
               {/* Детали видео */}
               <div className="flex-1 min-w-0">
                 <h3 className="font-medium line-clamp-2 text-sm leading-5 mb-1">
-                  {video.title}
+                  {videoTitle}
                 </h3>
                 <p className="text-sm text-muted-foreground mb-1">
                   <Link href={`/channel?name=${encodeURIComponent(channelName)}`} className="hover:underline focus:underline">
@@ -94,10 +99,10 @@ function VideoCard({ video }: VideoCardProps) {
                   </Link>
                 </p>
                 <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                  <span>{video.views || 0} просмотров</span>
+                  <span>{videoViews} просмотров</span>
                   <span>•</span>
                   <span>
-                    {video.created_at}
+                    {formatApiDate(video.created_at)}
                   </span>
                 </div>
               </div>
