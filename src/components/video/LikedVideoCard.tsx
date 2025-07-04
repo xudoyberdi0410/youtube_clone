@@ -3,27 +3,29 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
-import { Trash2, ThumbsUp } from 'lucide-react'
+import { Trash2 } from 'lucide-react'
 import { buildImageUrl } from '@/lib/api-config'
+import { formatApiDateLocal } from '@/lib/utils/format'
+import type { Video as ApiVideo } from '@/types/api'
 
 interface LikedVideoCardProps {
-  video: any
+  video: ApiVideo
   likeId: number
   onRemoveLike: (likeId: number) => Promise<boolean>
 }
 
 export function LikedVideoCard({ video, likeId, onRemoveLike }: LikedVideoCardProps) {
   // YouTube-style card layout, using only available fields from API
-  const channelName = video.channel_name || video.username || 'Канал'
+  const channelName = video.channel_name || video.name || 'Канал'
   const videoTitle = video.video_title || video.title || 'Без названия'
   const thumbnail = video.thumbnail_path
   const views = video.video_views || video.views || 0
   const createdAt = video.created_at
-  const videoId = video.video_id || video.id
+  const videoId = video.id
+
+  // Корректно строим URL превью через buildImageUrl
+  const thumbnailUrl = thumbnail ? buildImageUrl(thumbnail) : ''
 
   const handleRemoveLike = async (e: React.MouseEvent) => {
     e.preventDefault()
@@ -31,28 +33,12 @@ export function LikedVideoCard({ video, likeId, onRemoveLike }: LikedVideoCardPr
     await onRemoveLike(likeId)
   }
 
-  const formatTimeAgo = (dateString: string): string => {
-    try {
-      const date = new Date(dateString)
-      const now = new Date()
-      const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000)
-      if (diffInSeconds < 60) return 'только что'
-      if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} мин назад`
-      if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} ч назад`
-      if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 86400)} дней назад`
-      if (diffInSeconds < 31536000) return `${Math.floor(diffInSeconds / 2592000)} мес назад`
-      return `${Math.floor(diffInSeconds / 31536000)} лет назад`
-    } catch {
-      return dateString
-    }
-  }
-
   return (
     <div className="w-full max-w-full flex flex-col cursor-pointer group">
       <Link href={`/watch?v=${videoId}`} className="block w-full aspect-video bg-gray-200 dark:bg-gray-700 relative overflow-hidden rounded-xl">
-        {thumbnail ? (
+        {thumbnailUrl ? (
           <Image
-            src={thumbnail.replace(/\\/g, '/')}
+            src={thumbnailUrl}
             alt={videoTitle}
             fill
             className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-200"
@@ -82,7 +68,7 @@ export function LikedVideoCard({ video, likeId, onRemoveLike }: LikedVideoCardPr
           <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
             <span>{views} просмотров</span>
             <span>•</span>
-            <span>{formatTimeAgo(createdAt)}</span>
+            <span>{formatApiDateLocal(createdAt)}</span>
           </div>
         </div>
         <Button

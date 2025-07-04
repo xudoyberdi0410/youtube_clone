@@ -8,9 +8,13 @@ import { AuthButton } from "@/modules/auth/ui/components/auth-botton"
 import { SearchIcon, Upload } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/modules/auth/hooks/use-auth"
+import { useIsClient } from "@/hooks/use-is-client"
 
 export const HomeNavbar = () => {
+    const isClient = useIsClient();
     const { isLoggedIn, loading } = useAuth();
+
+    if (!isClient || loading) return null;
 
     return (
         <nav className="fixed top-0 left-0 right-0 h-16 bg-white flex items-center px-2 md:px-4 z-50 border-b border-gray-200">
@@ -47,13 +51,13 @@ export const HomeNavbar = () => {
                     </button>
                     
                     {/* Upload button - only show for authenticated users */}
-                    {!loading && isLoggedIn && (
-                        <Link href="/upload">
-                            <Button variant="ghost" size="sm" className="flex items-center gap-2">
-                                <Upload className="w-4 h-4" />
-                                <span className="hidden sm:inline">Загрузить</span>
-                            </Button>
-                        </Link>
+                    {loading ? null : isLoggedIn && (
+                    <Link href="/upload">
+                        <Button variant="ghost" size="sm" className="flex items-center gap-2">
+                        <Upload className="w-4 h-4" />
+                        <span className="hidden sm:inline">Загрузить</span>
+                        </Button>
+                    </Link>
                     )}
                     
                     <AuthButton />

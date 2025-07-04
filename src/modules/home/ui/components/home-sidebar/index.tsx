@@ -4,7 +4,6 @@ import { Sidebar, SidebarContent, useSidebar } from "@/components/ui/sidebar";
 import { MainSection } from "./main-section";
 import { Separator } from "@/components/ui/separator";
 import { PersonalSection } from "./personal-section";
-import { ExploreSection } from "./explore-section";
 import { useEffect, useState } from "react";
 
 export const HomeSidebar = () => {
@@ -47,8 +46,6 @@ export const HomeSidebar = () => {
                 <MainSection />
                 <Separator className="my-3 bg-gray-200" />
                 <PersonalSection />
-                <Separator className="my-3 bg-gray-200" />
-                <ExploreSection />
             </SidebarContent>
         </Sidebar>
     );
