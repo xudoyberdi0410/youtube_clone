@@ -98,7 +98,6 @@ export const WatchVideo = ({ videoId }: WatchVideoProps) => {
                     likes={video.likes}
                     dislikes={video.dislikes}
                     isSubscribed={false}
-                    commentsCount={video.commentsCount || 0}
                 />
             </div>
 

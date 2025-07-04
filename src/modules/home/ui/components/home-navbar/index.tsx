@@ -1,11 +1,17 @@
+"use client"
+
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import Link from "next/link"
 import Image from "next/image"
 import { SearchInput } from "./search-input"
 import { AuthButton } from "@/modules/auth/ui/components/auth-botton"
-import { SearchIcon } from "lucide-react"
+import { SearchIcon, Upload } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { useAuth } from "@/modules/auth/hooks/use-auth"
 
 export const HomeNavbar = () => {
+    const { isLoggedIn, loading } = useAuth();
+
     return (
         <nav className="fixed top-0 left-0 right-0 h-16 bg-white flex items-center px-2 md:px-4 z-50 border-b border-gray-200">
             <div className="flex items-center justify-between w-full">
@@ -33,12 +39,23 @@ export const HomeNavbar = () => {
                     <SearchInput />
                 </div>
 
-                {/* Right side - Auth button and mobile search */}
+                {/* Right side - Upload button, Auth button and mobile search */}
                 <div className="flex items-center gap-2 md:gap-4 flex-shrink-0">
                     {/* Mobile search button */}
                     <button className="md:hidden p-2 hover:bg-gray-100 rounded-full">
                         <SearchIcon className="w-5 h-5" />
                     </button>
+                    
+                    {/* Upload button - only show for authenticated users */}
+                    {!loading && isLoggedIn && (
+                        <Link href="/upload">
+                            <Button variant="ghost" size="sm" className="flex items-center gap-2">
+                                <Upload className="w-4 h-4" />
+                                <span className="hidden sm:inline">Загрузить</span>
+                            </Button>
+                        </Link>
+                    )}
+                    
                     <AuthButton />
                 </div>
             </div>

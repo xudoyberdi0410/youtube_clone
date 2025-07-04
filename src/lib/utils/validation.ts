@@ -52,11 +52,12 @@ export const validateFileUpload = (
   file: File, 
   type: 'image' | 'video' = 'image'
 ): { isValid: boolean; error?: string } => {
-  // Check file size
-  if (file.size > UPLOAD_CONFIG.MAX_FILE_SIZE) {
+  // Check file size based on type
+  const maxSize = type === 'video' ? UPLOAD_CONFIG.MAX_VIDEO_SIZE : UPLOAD_CONFIG.MAX_FILE_SIZE
+  if (file.size > maxSize) {
     return {
       isValid: false,
-      error: `File size must be less than ${UPLOAD_CONFIG.MAX_FILE_SIZE / (1024 * 1024)}MB`
+      error: `File size must be less than ${maxSize / (1024 * 1024)}MB`
     }
   }
   
