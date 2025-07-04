@@ -5,7 +5,12 @@ import { ApiClient } from '@/lib/api-client'
 import { useAuth } from '@/hooks/use-auth'
 import type { Like, Video } from '@/types/api'
 
-interface LikedVideoWithDetails extends Like {
+interface LikedVideoWithDetails {
+  id: number
+  user_id: number
+  video_id: number
+  is_like: boolean
+  created_at: string
   video?: Video
 }
 
