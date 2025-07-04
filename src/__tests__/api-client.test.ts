@@ -83,15 +83,20 @@ describe('ApiClient', () => {
       const mockVideos: Video[] = [
         {
           id: 1,
-          title: 'Test Video',
-          description: 'Test Description',
+          // Используем новые поля API
+          video_title: 'Test Video',
+          video_description: 'Test Description',
+          video_views: 100,
+          channel_name: 'Test Channel',
+          profile_image: 'test-avatar.jpg',
+          file_path: 'videos/test.mp4',
+          thumbnail_path: 'thumbnails/test.jpg',
           category: 'Texnologiya',
-          channel_id: 1,
-          video_url: 'https://example.com/video.mp4',
-          views_count: 100,
-          likes_count: 10,
-          dislikes_count: 2,
-          created_at: '2023-01-01T00:00:00Z'
+          like_amount: 10,
+          dislike_amount: 2,
+          created_at: '2025-07-03T15:30:00',
+          duration: 120,
+          duration_video: '02:00'
         }
       ]
 

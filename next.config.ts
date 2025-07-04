@@ -5,6 +5,10 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
+  experimental: {
+    reactCompiler: true,
+  },
+
   webpack(config) {
     // Find the existing rule that handles SVG imports
     const fileLoaderRule = config.module.rules.find((rule: any) =>

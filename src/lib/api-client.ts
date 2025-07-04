@@ -26,9 +26,9 @@ import type {
   PlaylistCreate,
   PlaylistUpdate,
   PlaylistVideoCreate,
-  SubscriptionCreate,
-  ShortsUpload
+  SubscriptionCreate
 } from '../types/api'
+import type { VideoComment } from '../types/common'
 import type { TokenResponse } from '../types/auth'
 
 // Типы для API ответов
@@ -611,9 +611,9 @@ export class ApiClient {
     return this.post<Comment>('/comment/post_comment', commentData)
   }
 
-  // Получить комментарии
-  async getComments(): Promise<Comment[]> {
-    return this.get<Comment[]>('/comment/get_join')
+  // Получить комментарии видео (новый эндпоинт)
+  async getVideoComments(videoId: string): Promise<VideoComment[]> {
+    return this.get<VideoComment[]>(`/video/video_comment?video_id=${videoId}`)
   }
 
   // Обновить комментарий
@@ -705,12 +705,9 @@ export class ApiClient {
   // === SHORTS ENDPOINTS ===
 
   // Загрузка Shorts
-  async uploadShorts(videoFile: File, shortsData: ShortsUpload): Promise<Shorts> {
+  async uploadShorts(videoFile: File): Promise<Shorts> {
     const formData = new FormData()
-    formData.append('vidyo', videoFile)
-    formData.append('title', shortsData.title)
-    formData.append('description', shortsData.description)
-    formData.append('category', shortsData.category)
+    formData.append('video', videoFile)
     return this.postFormData<Shorts>('/shorts/post_shorts', formData)
   }
 

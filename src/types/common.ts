@@ -104,3 +104,12 @@ export interface SearchResult<T = unknown> {
   type: 'video' | 'channel' | 'playlist'
   data: T
 }
+
+// Comment types
+export interface VideoComment {
+  id: number // video_id
+  comment: string
+  channel_name: string
+  comment_id: number
+  created_at: string
+}

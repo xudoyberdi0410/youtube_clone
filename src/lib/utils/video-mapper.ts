@@ -2,7 +2,7 @@
 
 import type { Video as ApiVideo } from '@/types/api'
 import type { Video } from '@/types/video'
-import { formatDuration, formatRelativeTime } from '@/lib/utils/format'
+import { formatApiDateLocal, formatVideoDuration } from '@/lib/utils/format'
 
 /**
  * Преобразует видео из API формата в формат компонентов
@@ -13,15 +13,16 @@ export function mapApiVideoToVideo(apiVideo: ApiVideo): Video {
   
   return {
     id: apiVideo.id.toString(),
-    title: apiVideo.title,
-    description: apiVideo.description,
-    views: apiVideo.views || 0,
+    // Используем новые поля API с fallback на старые для совместимости
+    title: apiVideo.video_title || apiVideo.title || 'Untitled',
+    description: apiVideo.video_description || apiVideo.description || '',
+    views: apiVideo.video_views || apiVideo.views || 0,
     likes: apiVideo.like_amount || 0,
-    dislikes: 0, // Нет в API
+    dislikes: apiVideo.dislike_amount || 0,
     commentsCount: 0, // Нет в API, пока устанавливаем 0
     channel: {
       id: `channel-${apiVideo.id}`, // Используем уникальный ID для каждого видео
-      name: apiVideo.name || 'Unknown Channel',
+      name: apiVideo.channel_name || apiVideo.name || 'Unknown Channel',
       avatarUrl: apiVideo.profile_image 
         ? `${baseUrl}/images/${apiVideo.profile_image}`
         : '/avatars/g53bfu5y.png',
@@ -37,8 +38,8 @@ export function mapApiVideoToVideo(apiVideo: ApiVideo): Video {
     videoUrl: apiVideo.file_path 
       ? `${baseUrl}/${apiVideo.file_path.replace(/\\/g, '/')}`
       : '',
-    duration: formatDuration(apiVideo.duration || 0),
-    uploadedAt: formatRelativeTime(apiVideo.created_at),
+    duration: formatVideoDuration(apiVideo.duration_video || apiVideo.duration),
+    uploadedAt: formatApiDateLocal(apiVideo.created_at),
     isPrivate: false,
     tags: [],
     category: apiVideo.category,
