@@ -10,6 +10,18 @@ import { buildImageUrl } from "@/lib/api-config";
 import Image from "next/image";
 import Link from "next/link";
 import { Trash2 } from "lucide-react";
+import { format, parseISO } from "date-fns";
+import { ru } from "date-fns/locale";
+
+function formatApiDateLocal(dateString: string): string {
+  try {
+    const date = parseISO(dateString);
+    return format(date, "dd.MM.yyyy HH:mm", { locale: ru });
+  } catch (error) {
+    console.warn("Failed to parse date:", dateString, error);
+    return dateString;
+  }
+}
 
 export default function HistoryPage() {
   const [history, setHistory] = useState<History[]>([]);
@@ -62,18 +74,22 @@ export default function HistoryPage() {
           <div key={item.id} className="flex gap-4 p-4 bg-white border rounded-lg hover:shadow-md transition-shadow group">
             {/* Превью видео */}
             <div className="relative w-48 h-28 bg-gray-100 rounded-md overflow-hidden flex-shrink-0">
-              {item.thumbnail_path ? (
+              {buildImageUrl(item.thumbnail_path) ? (
                 <Image
-                  src={buildImageUrl(item.thumbnail_path)}
+                  src={buildImageUrl(item.thumbnail_path) || "/api/placeholder/320/180"}
                   alt={item.title}
                   fill
                   className="object-cover"
                   sizes="192px"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center bg-gray-200">
-                  <span className="text-gray-400 text-sm">Нет превью</span>
-                </div>
+                <Image
+                  src="/api/placeholder/320/180"
+                  alt="Нет превью"
+                  fill
+                  className="object-cover"
+                  sizes="192px"
+                />
               )}
             </div>
 
@@ -87,7 +103,7 @@ export default function HistoryPage() {
                 Канал: {item.name}
               </Link>
               <p className="text-sm text-gray-500 mb-2">{item.views.toLocaleString()} просмотров</p>
-              <p className="text-xs text-gray-400">Просмотрено: {item.watched_at}</p>
+              <p className="text-xs text-gray-400">Просмотрено: {formatApiDateLocal(item.watched_at)}</p>
             </div>
 
             {/* Кнопка удаления */}

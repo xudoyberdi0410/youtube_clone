@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { VerifiedIcon } from '@/components/youtube-icons'
-import { formatShortNumber } from '@/lib/utils/format'
+import { formatApiDateLocal, formatShortNumber } from '@/lib/utils/format'
 
 export function VideoCard({
   id, 
@@ -40,44 +40,47 @@ export function VideoCard({
   };
   
   return (
-    <Link href={`/watch?v=${id}`} className="block">
-      <div className="group cursor-pointer animate-in fade-in-0 duration-700">
-      {/* Thumbnail Container */}
-      <div className="relative w-full aspect-video mb-3">
-        <div className="relative w-full h-full bg-gray-100 rounded-xl overflow-hidden shadow-sm md:hover:shadow-md transition-shadow duration-300">
-          <Image 
-            src={preview || "/api/placeholder/320/180"} 
-            alt={title} 
-            fill 
-            className="object-cover transition-transform duration-300 md:group-hover:scale-105"
-            priority={isFirstVideo}
-            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-          />
-          
-          {/* Duration Badge */}
-          {duration && !isLive && (
-            <Badge 
-              variant="secondary" 
-              className="absolute bottom-2 right-2 bg-black/80 text-white hover:bg-black/80 text-xs font-medium px-1.5 py-0.5 backdrop-blur-sm"
-            >
-              {duration}
-            </Badge>
-          )}
-          
-          {/* Live Badge */}
-          {isLive && (
-            <Badge 
-              variant="destructive" 
-              className="absolute bottom-2 right-2 bg-red-600 text-white hover:bg-red-600 text-xs font-medium px-1.5 py-0.5 animate-pulse"
-            >
-              🔴 LIVE
-            </Badge>
-          )}
-          
-          {/* Hover overlay - only on desktop */}
-          <div className="absolute inset-0 bg-black/0 md:group-hover:bg-black/5 transition-colors duration-300" />
+    <div className="group cursor-pointer animate-in fade-in-0 duration-700">
+      {/* Thumbnail and Title link to video */}
+      <Link href={`/watch?v=${id}`} className="block">
+        {/* Thumbnail Container */}
+        <div className="relative w-full aspect-video mb-3">
+          <div className="relative w-full h-full bg-gray-100 rounded-xl overflow-hidden shadow-sm md:hover:shadow-md transition-shadow duration-300">
+            <Image 
+              src={preview || "/api/placeholder/320/180"} 
+              alt={title} 
+              fill 
+              className="object-cover transition-transform duration-300 md:group-hover:scale-105"
+              priority={isFirstVideo}
+              sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            />
+            {/* Duration Badge */}
+            {duration && !isLive && (
+              <Badge 
+                variant="secondary" 
+                className="absolute bottom-2 right-2 bg-black/80 text-white hover:bg-black/80 text-xs font-medium px-1.5 py-0.5 backdrop-blur-sm"
+              >
+                {duration}
+              </Badge>
+            )}
+            {/* Live Badge */}
+            {isLive && (
+              <Badge 
+                variant="destructive" 
+                className="absolute bottom-2 right-2 bg-red-600 text-white hover:bg-red-600 text-xs font-medium px-1.5 py-0.5 animate-pulse"
+              >
+                🔴 LIVE
+              </Badge>
+            )}
+            {/* Hover overlay - only on desktop */}
+            <div className="absolute inset-0 bg-black/0 md:group-hover:bg-black/5 transition-colors duration-300" />
+          </div>
         </div>
-      </div>
+        {/* Video Title */}
+        <h3 className="font-medium text-sm md:text-sm leading-5 text-gray-900 mb-1 line-clamp-2 md:group-hover:text-gray-700 transition-colors">
+          {title}
+        </h3>
+      </Link>
 
       {/* Video Info */}
       <div className="flex gap-3">
@@ -98,11 +101,6 @@ export function VideoCard({
 
         {/* Video Details */}
         <div className="flex-1 min-w-0">
-          {/* Video Title */}
-          <h3 className="font-medium text-sm md:text-sm leading-5 text-gray-900 mb-1 line-clamp-2 md:group-hover:text-gray-700 transition-colors">
-            {title}
-          </h3>
-          
           {/* Channel Name with Verification */}
           <div className="flex items-center gap-1 mb-1">
             <Link
@@ -116,12 +114,11 @@ export function VideoCard({
               <VerifiedIcon className="w-4 h-4 text-blue-500" />
             )}
           </div>
-          
           {/* Views and Upload Time */}
           <div className="flex items-center gap-1 text-xs md:text-sm text-gray-600">
             <span>{formatShortNumber(views)} views</span>
             <span>•</span>
-            <span>{uploadedAt}</span>
+            <span>{formatApiDateLocal(uploadedAt)}</span>
           </div>
         </div>
 
@@ -151,6 +148,5 @@ export function VideoCard({
         </div>
       </div>
     </div>
-    </Link>
   );
 }

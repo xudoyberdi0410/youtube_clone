@@ -8,6 +8,7 @@ import { useAuthContext } from "@/modules/auth/context/auth-context";
 import { Button } from "@/components/ui/button";
 import { usePathname } from "next/navigation";
 import { memo } from "react";
+import { useIsClient } from "@/hooks/use-is-client";
 
 const items = [
     {
@@ -49,9 +50,10 @@ const items = [
 ];
 
 export const PersonalSection = memo(() => {
+    const isClient = useIsClient();
     const { isLoggedIn, loading } = useAuthContext();
     const pathname = usePathname();
-
+    if (!isClient || loading) return null;
     // Show loading state only on initial load when we don't know auth status
     if (loading) {
         return (

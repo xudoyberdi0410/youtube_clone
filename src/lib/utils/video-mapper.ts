@@ -2,7 +2,7 @@
 
 import type { Video as ApiVideo } from '@/types/api'
 import type { Video } from '@/types/video'
-import { formatApiDate, formatVideoDuration } from '@/lib/utils/format'
+import { formatApiDateLocal, formatVideoDuration } from '@/lib/utils/format'
 
 /**
  * Преобразует видео из API формата в формат компонентов
@@ -39,7 +39,7 @@ export function mapApiVideoToVideo(apiVideo: ApiVideo): Video {
       ? `${baseUrl}/${apiVideo.file_path.replace(/\\/g, '/')}`
       : '',
     duration: formatVideoDuration(apiVideo.duration_video || apiVideo.duration),
-    uploadedAt: formatApiDate(apiVideo.created_at),
+    uploadedAt: formatApiDateLocal(apiVideo.created_at),
     isPrivate: false,
     tags: [],
     category: apiVideo.category,

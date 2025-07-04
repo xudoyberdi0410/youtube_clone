@@ -136,6 +136,21 @@ export const formatApiDate = (dateString: string): string => {
 }
 
 /**
+ * Format API date from "2025-07-03T15:30:00" to local time string
+ * @param dateString - Date string from API (UTC+0)
+ * @returns Formatted local date string
+ */
+export const formatApiDateLocal = (dateString: string): string => {
+  try {
+    const date = parseISO(dateString)
+    return format(date, 'dd.MM.yyyy HH:mm', { locale: ru })
+  } catch (error) {
+    console.warn('Failed to parse date:', dateString, error)
+    return dateString
+  }
+}
+
+/**
  * Format duration from video API (seconds or duration_video field)
  * @param duration - Duration in seconds or string format like "02:00"
  * @returns Formatted duration string

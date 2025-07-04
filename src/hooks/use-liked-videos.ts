@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { ApiClient } from '@/lib/api-client'
 import { useAuth } from '@/hooks/use-auth'
-import type { Like, Video } from '@/types/api'
+import type { Video } from '@/types/api'
 
 interface LikedVideoWithDetails {
   id: number

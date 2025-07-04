@@ -110,7 +110,7 @@ export default function LikedVideosPage() {
                     {likedVideos.map((likedVideo) => (
                         <LikedVideoCard
                             key={likedVideo.id}
-                            video={likedVideo as any}
+                            video={likedVideo.video!}
                             likeId={likedVideo.id}
                             onRemoveLike={removeLike}
                         />
