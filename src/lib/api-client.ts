@@ -28,6 +28,7 @@ import type {
   PlaylistVideoCreate,
   SubscriptionCreate
 } from '../types/api'
+import type { VideoComment } from '../types/common'
 import type { TokenResponse } from '../types/auth'
 
 // Типы для API ответов
@@ -610,9 +611,9 @@ export class ApiClient {
     return this.post<Comment>('/comment/post_comment', commentData)
   }
 
-  // Получить комментарии
-  async getComments(): Promise<Comment[]> {
-    return this.get<Comment[]>('/comment/get_join')
+  // Получить комментарии видео (новый эндпоинт)
+  async getVideoComments(videoId: string): Promise<VideoComment[]> {
+    return this.get<VideoComment[]>(`/video/video_comment?video_id=${videoId}`)
   }
 
   // Обновить комментарий

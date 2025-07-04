@@ -4,13 +4,12 @@ import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Separator } from '@/components/ui/separator'
-import { Comments } from './comments'
 import { VideoDescription } from '@/components/video/VideoDescription'
 import { VideoPlayer } from '@/components/video/VideoPlayer'
+import { VideoCommentsWrapper } from '@/components/video/VideoCommentsWrapper'
 import { useAuth } from '@/hooks/use-auth'
 import { useVideoStats } from '@/hooks/use-video-stats'
 import { AuthRequiredDialog } from '@/components/auth/AuthRequiredDialog'
-import { ErrorDisplay } from '@/components/ui/error-display'
 import { 
   ThumbsUp, 
   ThumbsDown, 
@@ -35,7 +34,6 @@ interface PrimaryColumnProps {
   likes?: number
   dislikes?: number
   isSubscribed?: boolean
-  commentsCount?: number
 }
 
 export function PrimaryColumn({ 
@@ -48,8 +46,7 @@ export function PrimaryColumn({
   viewCount,
   publishDate,
   description,
-  videoUrl,
-  commentsCount = 0
+  videoUrl
 }: PrimaryColumnProps) {
   const { requireAuth, showAuthDialog, setShowAuthDialog } = useAuth()
   const [saved, setSaved] = useState(false)
@@ -59,14 +56,11 @@ export function PrimaryColumn({
     views,
     likesCount, 
     dislikesCount,
-    commentsCount: realCommentsCount,
     isLiked, 
     isDisliked, 
     isSubscribed: subscribed,
     isLoadingLikes,
     isLoadingSubscription,
-    error,
-    refreshStats,
     handleLike,
     handleDislike,
     handleToggleSubscription
@@ -207,17 +201,9 @@ export function PrimaryColumn({
           maxPreviewLength={150}
         />
 
-        {/* Error displays */}
-        {error && (
-          <ErrorDisplay 
-            error={error} 
-            onRetry={refreshStats}
-            onDismiss={() => {/* TODO: implement error dismissal */}}
-          />
-        )}
 
         {/* Comments Section */}
-        <Comments videoId={videoId} commentsCount={realCommentsCount || commentsCount} />
+        {videoId && <VideoCommentsWrapper videoId={videoId} className="mt-6" />}
 
         {/* Auth Required Dialog */}
         <AuthRequiredDialog

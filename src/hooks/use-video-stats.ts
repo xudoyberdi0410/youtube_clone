@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { ApiClient } from '@/lib/api-client'
 import { useLikes } from '@/hooks/use-likes'
-import { useComments } from '@/hooks/use-comments'
 import { useSubscriptions } from '@/hooks/use-subscriptions'
 
 interface VideoStats {
@@ -56,12 +55,6 @@ export function useVideoStats(options: UseVideoStatsOptions) {
     dislike
   } = likesHook
 
-  const {
-    commentsCount: userCommentsCount,
-    isLoading: commentsLoading,
-    error: commentsError
-  } = useComments({ videoId, immediate })
-
   const subscriptionsHook = useSubscriptions({ immediate })
   const {
     isLoading: subscriptionLoading,
@@ -87,7 +80,7 @@ export function useVideoStats(options: UseVideoStatsOptions) {
           ...prev,
           views: apiVideo.video_views || apiVideo.views || 0,
           likesCount: apiVideo.like_amount || 0,
-          dislikesCount: apiVideo.dislike_amount || 0, // Теперь есть в API
+          dislikesCount: apiVideo.dislike_amount || 0,
           isLoading: false,
         }))
       } else {
@@ -113,10 +106,10 @@ export function useVideoStats(options: UseVideoStatsOptions) {
       ...prev,
       isLiked,
       isDisliked,
-      commentsCount: userCommentsCount,
+      commentsCount: 0, // Убираем подсчет комментариев отсюда
       isSubscribed: false, // TODO: Implement subscription logic
     }))
-  }, [isLiked, isDisliked, userCommentsCount])
+  }, [isLiked, isDisliked])
 
   useEffect(() => {
     if (immediate && videoId) {
@@ -131,22 +124,22 @@ export function useVideoStats(options: UseVideoStatsOptions) {
   // Обертки для действий пользователя с автообновлением статистики
   const handleLike = async () => {
     await like()
-    await refreshStats() // Обновляем статистику после лайка
+    await refreshStats()
   }
 
   const handleDislike = async () => {
     await dislike()
-    await refreshStats() // Обновляем статистику после дизлайка
+    await refreshStats()
   }
 
   const handleToggleSubscription = async () => {
     // TODO: Implement subscription toggle logic
     console.log('Subscription toggle not implemented yet')
-    await refreshStats() // Обновляем статистику после подписки
+    await refreshStats()
   }
 
-  const isLoadingAny = state.isLoading || likesLoading || commentsLoading || subscriptionLoading
-  const combinedError = state.error || likesError || commentsError || subscriptionError
+  const isLoadingAny = state.isLoading || likesLoading || subscriptionLoading
+  const combinedError = state.error || likesError || subscriptionError
 
   return {
     ...state,
@@ -159,7 +152,7 @@ export function useVideoStats(options: UseVideoStatsOptions) {
     handleToggleSubscription,
     // Отдельные индикаторы загрузки для каждой секции
     isLoadingLikes: likesLoading,
-    isLoadingComments: commentsLoading,
+    isLoadingComments: false, // Убираем, так как комментарии теперь отдельно
     isLoadingSubscription: subscriptionLoading,
     isLoadingViews: state.isLoading,
   }
