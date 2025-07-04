@@ -82,12 +82,12 @@ export function useVideoStats(options: UseVideoStatsOptions) {
       const apiVideo = videos.find(v => v.id.toString() === videoId)
       
       if (apiVideo) {
-        // Используем данные из API напрямую
+        // Используем данные из API с новыми полями
         setState(prev => ({
           ...prev,
-          views: apiVideo.views || 0,
-          likesCount: apiVideo.like_amount || 0, // Используем like_amount из API!
-          dislikesCount: 0, // Нет в API
+          views: apiVideo.video_views || apiVideo.views || 0,
+          likesCount: apiVideo.like_amount || 0,
+          dislikesCount: apiVideo.dislike_amount || 0, // Теперь есть в API
           isLoading: false,
         }))
       } else {

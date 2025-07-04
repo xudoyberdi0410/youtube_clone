@@ -28,17 +28,26 @@ export interface Channel {
 
 export interface Video {
   id: number
-  name: string
+  // Обновленные поля по новому API
+  channel_name: string // было name
   profile_image: string | null
-  title: string
-  description: string
+  video_title: string // было title
+  video_description: string // было description
   file_path: string
   thumbnail_path: string
   category: VideoCategory
-  views: number
-  created_at: string
+  video_views: number // было views
+  created_at: string // формат: "2025-07-03T15:30:00"
   like_amount: number
+  dislike_amount?: number // новое поле
   duration?: number
+  duration_video?: string // новое поле в формате "02:00"
+  
+  // Оставляем старые поля для совместимости
+  name?: string // @deprecated использовать channel_name
+  title?: string // @deprecated использовать video_title
+  description?: string // @deprecated использовать video_description
+  views?: number // @deprecated использовать video_views
 }
 
 export interface Like {

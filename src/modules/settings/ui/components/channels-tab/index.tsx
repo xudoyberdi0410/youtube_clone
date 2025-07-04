@@ -13,6 +13,7 @@ import { Upload, Trash2, Users, Calendar, Image as LucideImage } from "lucide-re
 import { useChannels } from '@/modules/settings/hooks/use-channels'
 import { ChannelCreate, ChannelUpdate } from '@/types/api'
 import { buildImageUrl } from '@/lib/api-config'
+import { formatApiDate } from '@/lib/utils/format'
 import Image from 'next/image'
 
 export const ChannelsTab = () => {
@@ -204,8 +205,7 @@ export const ChannelsTab = () => {
                 <div>
                   <p className="text-sm text-gray-500">Created</p>
                   <p className="font-medium">
-                    {/* TODO: Попросить бэкенд возвращать даты в ISO формате (2025-06-27T17:23:43.000Z) вместо "27.06.2025 17:23:43" */}
-                    {channel.created_at}
+                    {formatApiDate(channel.created_at)}
                   </p>
                 </div>
               </div>
