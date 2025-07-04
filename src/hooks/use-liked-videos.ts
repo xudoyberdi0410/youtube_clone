@@ -33,45 +33,31 @@ export function useLikedVideos() {
   })
 
   const loadLikedVideos = useCallback(async () => {
-    if (!isAuthenticated) return
-    
-    setState(prev => ({ ...prev, isLoading: true, error: null }))
-    
+    if (!isAuthenticated) return;
+    setState(prev => ({ ...prev, isLoading: true, error: null }));
     try {
-      const apiClient = ApiClient.getInstance()
-      
-      // Получаем лайки пользователя
-      const likes = await apiClient.getLikes()
-      
-      // Фильтруем только лайки (не дизлайки)
-      const actualLikes = likes.filter(like => like.is_like === true)
-      
-      // Получаем все видео
-      const allVideos = await apiClient.getVideos()
-      
-      // Сопоставляем лайки с видео
-      const likedVideosWithDetails: LikedVideoWithDetails[] = actualLikes.map(like => ({
-        ...like,
-        video: allVideos.find(video => video.id === like.video_id)
-      }))
-      
-      // Фильтруем только те лайки, для которых найдены видео
-      const validLikedVideos = likedVideosWithDetails.filter(item => item.video)
-      
+      const apiClient = ApiClient.getInstance();
+      const likesObj = await apiClient.getLikes();
+      // Если ответ — объект, преобразуем его в массив
+      const likesArr: LikedVideoWithDetails[] = Array.isArray(likesObj)
+        ? likesObj as LikedVideoWithDetails[]
+        : Object.values(likesObj || {}) as LikedVideoWithDetails[];
+      // Фильтруем только лайки (is_like === true)
+      const actualLikes = likesArr.filter((like) => like.is_like === true);
       setState({
-        likedVideos: validLikedVideos,
+        likedVideos: actualLikes,
         isLoading: false,
         error: null,
-      })
+      });
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to load liked videos'
+      const errorMessage = error instanceof Error ? error.message : 'Failed to load liked videos';
       setState(prev => ({
         ...prev,
         isLoading: false,
         error: errorMessage,
-      }))
+      }));
     }
-  }, [isAuthenticated])
+  }, [isAuthenticated]);
 
   const removeLike = useCallback(async (likeId: number) => {
     try {
