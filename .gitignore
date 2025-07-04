@@ -61,3 +61,5 @@ next-env.d.ts
 # But allow test video files
 !/scripts/test-files/test-video.mp4
 !/scripts/test-files/test-image.png
+
+.vscode/
