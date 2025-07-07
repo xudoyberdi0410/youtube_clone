@@ -12,15 +12,13 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
-import { SubscriptionsIcon, VerifiedIcon } from '@/components/youtube-icons'
-import { Users, BellOff, ExternalLink } from 'lucide-react'
+import { SubscriptionsIcon } from '@/components/youtube-icons'
 import Link from 'next/link'
-import { cn } from '@/lib/utils'
 
 export default function SubscriptionsPage() {
   const { isLoggedIn, loading: authLoading } = useAuth()
   const { subscriptions, isLoading, error, loadSubscriptions } = useSubscriptions()
-  const [showAuthDialog, setShowAuthDialog] = useState(false)
+  const [showAuthDialog, setShowAuthDialog] = useState(true)
 
   const handleUnsubscribe = async (subscriptionId: number) => {
     if (!window.confirm('Are you sure you want to unsubscribe?')) return
@@ -48,7 +46,7 @@ export default function SubscriptionsPage() {
 
   if (!isLoggedIn) {
     return (
-      <AuthRequiredDialog open onOpenChange={() => setShowAuthDialog(false)} />
+      <AuthRequiredDialog open={showAuthDialog} onOpenChange={setShowAuthDialog} />
     )
   }
 
@@ -73,7 +71,7 @@ export default function SubscriptionsPage() {
   if (!subscriptions || subscriptions.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16">
-        <BellOff className="w-12 h-12 mb-4 text-muted-foreground" />
+        {/* <BellOff className="w-12 h-12 mb-4 text-muted-foreground" /> */}
         <div className="text-lg font-semibold mb-2">No subscriptions yet</div>
         <div className="text-muted-foreground mb-4">Subscribe to channels to see their videos here.</div>
         <Link href="/feed">
@@ -110,7 +108,7 @@ export default function SubscriptionsPage() {
             </Button>
             <Link href={`/channel/${sub.channel_name}`} target="_blank" rel="noopener noreferrer">
               <Button variant="ghost" size="icon">
-                <ExternalLink className="w-4 h-4" />
+                {/* <ExternalLink className="w-4 h-4" /> */}
               </Button>
             </Link>
           </Card>

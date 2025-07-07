@@ -2,12 +2,9 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { buildImageUrl } from '@/lib/api-config'
 import { useAuth } from '@/hooks/use-auth'
 import { useState } from 'react'
-import { apiClient } from '@/lib/api-client'
-import { toast } from '@/hooks/use-toast'
 import type { Channel } from '@/types/api'
 import Image from 'next/image'
 
@@ -16,57 +13,10 @@ interface ChannelHeaderProps {
 }
 
 export function ChannelHeader({ channel }: ChannelHeaderProps) {
-  const { isAuthenticated, user } = useAuth()
-  const [isSubscribed, setIsSubscribed] = useState(false)
-  const [subscribersCount, setSubscribersCount] = useState(channel.subscribers_count || 0)
-  const [loading, setLoading] = useState(false)
+  const { user } = useAuth()
+  const [subscribersCount] = useState(channel.subscribers_count || 0)
 
   const isOwnChannel = user?.id === channel.user_id
-
-  const handleSubscribe = async () => {
-    if (!isAuthenticated) {
-      toast({
-        title: 'Требуется авторизация',
-        description: 'Войдите в аккаунт, чтобы подписаться на канал',
-        variant: 'destructive',
-      })
-      return
-    }
-
-    try {
-      setLoading(true)
-      
-      if (isSubscribed) {
-        // Отписаться (нужно знать ID подписки)
-        // Пока не реализовано
-        toast({
-          title: 'Функция отписки',
-          description: 'Будет реализована позже',
-          variant: 'default',
-        })
-      } else {
-        // Подписаться
-        await apiClient.subscribe({
-          channel_id: channel.id
-        })
-        setIsSubscribed(true)
-        setSubscribersCount(prev => prev + 1)
-        toast({
-          title: 'Подписка оформлена',
-          description: `Вы подписались на канал ${channel.channel_name}`,
-        })
-      }
-    } catch (error) {
-      console.error('Subscription error:', error)
-      toast({
-        title: 'Ошибка',
-        description: 'Не удалось изменить подписку',
-        variant: 'destructive',
-      })
-    } finally {
-      setLoading(false)
-    }
-  }
 
   if (!channel || !channel.channel_name) {
     return (
@@ -129,30 +79,10 @@ export function ChannelHeader({ channel }: ChannelHeaderProps) {
 
               {/* Кнопки действий */}
               <div className="flex gap-2">
-                {!isOwnChannel && isAuthenticated && (
-                  <Button
-                    onClick={handleSubscribe}
-                    disabled={loading}
-                    variant={isSubscribed ? 'outline' : 'default'}
-                    className="min-w-[100px]"
-                  >
-                    {loading ? (
-                      <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                        <span>...</span>
-                      </div>
-                    ) : isSubscribed ? (
-                      'Подписан'
-                    ) : (
-                      'Подписаться'
-                    )}
-                  </Button>
-                )}
-                
                 {isOwnChannel && (
-                  <Badge variant="secondary">
-                    Ваш канал
-                  </Badge>
+                  <Button variant="outline" className="min-w-[120px]">
+                    Изменить канал
+                  </Button>
                 )}
               </div>
             </div>
