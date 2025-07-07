@@ -110,9 +110,9 @@ export interface Subscription {
 // Новый тип для ответа API подписок
 export interface SubscriptionResponse {
   id: number
-  name: string
-  profile_image: string
-  subscription_amount: number
+  channel_name: string
+  channel_profile_image: string
+  channel_subscription_amount: number
   username: string
   created_at: string
 }
