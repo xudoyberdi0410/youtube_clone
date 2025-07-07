@@ -19,7 +19,7 @@ export function ChannelCard({
   size = 'medium' 
 }: ChannelCardProps) {
   // Используем утилиту для генерации URL канала
-  const channelUrl = getChannelUrl(channel.name)
+  const channelUrl = getChannelUrl(channel.channel_name)
   
   const avatarSizes = {
     small: 'w-8 h-8',
@@ -41,16 +41,16 @@ export function ChannelCard({
       <Avatar className={avatarSizes[size]}>
         <AvatarImage 
           src={buildImageUrl(channel.profile_image_url || '')} 
-          alt={channel.name}
+          alt={channel.channel_name}
         />
         <AvatarFallback>
-          {channel.name.charAt(0).toUpperCase()}
+          {channel.channel_name.charAt(0).toUpperCase()}
         </AvatarFallback>
       </Avatar>
       
       <div className="flex-1 min-w-0">
         <p className={`font-medium truncate ${textSizes[size]}`}>
-          {channel.name}
+          {channel.channel_name}
         </p>
         {showSubscribersCount && (
           <p className="text-xs text-muted-foreground">

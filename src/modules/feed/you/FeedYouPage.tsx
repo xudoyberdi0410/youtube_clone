@@ -14,23 +14,21 @@ export default function FeedYouPage() {
   const [history, setHistory] = useState<Video[]>([])
   const [likes, setLikes] = useState<Like[]>([])
   const [playlists, setPlaylists] = useState<Playlist[]>([])
-  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function fetchData() {
-      setLoading(true)
       try {
-        const [channel, historyRaw, likes, playlists, myVideos] = await Promise.all([
+        const [channel, historyRaw, likes, playlists] = await Promise.all([
           apiClient.getMyChannel(),
           apiClient.getHistory(),
           apiClient.getLikes(),
           apiClient.getMyPlaylists(),
-          apiClient.getMyVideos(),
         ])
 
         setChannel(channel)
 
-        const historyVideos: Video[] = historyRaw.map((h: any) => ({
+        // Map History[] to Video[] for VideoRowList
+        const historyVideos: Video[] = historyRaw.map((h) => ({
           id: h.id,
           channel_name: h.channel_name,
           profile_image: '',
@@ -45,10 +43,24 @@ export default function FeedYouPage() {
         }))
 
         setHistory(historyVideos)
-        setLikes(likes)
+        // Likes are Like[], need to map to Video[] for VideoRowList
+        const likedVideos: Video[] = likes.map((like) => ({
+          id: like.video_id,
+          channel_name: '',
+          profile_image: '',
+          video_title: '',
+          video_description: '',
+          file_path: '',
+          thumbnail_path: '',
+          category: 'Musiqa',
+          video_views: 0,
+          created_at: like.created_at,
+          like_amount: 0,
+        }))
+        setLikes(likedVideos as unknown as Like[])
         setPlaylists(playlists)
-      } finally {
-        setLoading(false)
+      } catch {
+        // handle error if needed
       }
     }
 
@@ -78,7 +90,7 @@ export default function FeedYouPage() {
             <Button variant="link" className="text-sm">Смотреть всё</Button>
           </Link>
         </div>
-        <VideoRowList videos={likes as any} skeletonCount={8} />
+        <VideoRowList videos={likes as unknown as Video[]} skeletonCount={8} />
       </section>
 
       {/* Плейлисты */}

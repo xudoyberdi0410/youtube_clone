@@ -13,7 +13,7 @@ export function ChannelHeader({ channel, showEditButton }: ChannelHeaderProps) {
   return (
     <div className="flex items-center gap-6 p-6 rounded-xl bg-card shadow-sm">
       <Avatar className="w-20 h-20">
-        <AvatarImage src={buildImageUrl(channel.profile_image || "")} alt={channel.name} />
+        <AvatarImage src={buildImageUrl(channel.profile_image || "")} alt={channel.channel_name} />
         <AvatarFallback>{channel.channel_name?.charAt(0).toUpperCase() || "?"}</AvatarFallback>
       </Avatar>
       <div className="flex-1 min-w-0">

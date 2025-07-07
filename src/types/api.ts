@@ -24,8 +24,6 @@ export interface Channel {
   subscribers_count?: number
   subscription_amount?: number // Добавляем поле, которое приходит от API
   is_verified?: boolean // Добавляем для значка верификации
-  // @deprecated
-  name?: string // @deprecated использовать channel_name
 }
 
 export interface Video {
