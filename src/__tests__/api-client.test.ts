@@ -168,7 +168,7 @@ describe('ApiClient', () => {
       const mockVideos: Video[] = []
       const mockChannel: Channel = {
         id: 1,
-        name: 'Test Channel',
+        channel_name: 'Test Channel',
         description: 'Test Description',
         user_id: 1,
         created_at: '2023-01-01T00:00:00Z'
@@ -200,7 +200,7 @@ describe('ApiClient', () => {
       expect(typeof user.username).toBe('string')
       expect(Array.isArray(videos)).toBe(true)
       expect(typeof channel.id).toBe('number')
-      expect(typeof channel.name).toBe('string')
+      expect(typeof channel.channel_name).toBe('string')
     })
   })
 })

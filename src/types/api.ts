@@ -10,7 +10,7 @@ export interface User {
 
 export interface Channel {
   id: number
-  name: string
+  channel_name: string
   description: string
   user_id: number
   created_at: string
@@ -71,7 +71,7 @@ export interface Comment {
 export interface History {
   id: number
   username: string
-  name: string
+  channel_name: string
   title: string
   file_path: string
   thumbnail_path: string
@@ -110,9 +110,9 @@ export interface Subscription {
 // Новый тип для ответа API подписок
 export interface SubscriptionResponse {
   id: number
-  name: string
-  profile_image: string
-  subscription_amount: number
+  channel_name: string
+  channel_profile_image: string
+  channel_subscription_amount: number
   username: string
   created_at: string
 }
@@ -171,12 +171,12 @@ export interface UserUpdate {
 }
 
 export interface ChannelCreate {
-  name: string
+  channel_name: string
   description: string
 }
 
 export interface ChannelUpdate {
-  name: string
+  channel_name: string
   description: string
 }
 

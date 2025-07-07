@@ -97,10 +97,10 @@ export default function HistoryPage() {
             <div className="flex-1 min-w-0">
               <h3 className="font-medium text-lg mb-1 line-clamp-2">{item.title}</h3>
               <Link 
-                href={`/channel?name=${encodeURIComponent(item.name)}`}
+                href={`/channel?name=${encodeURIComponent(item.channel_name)}`}
                 className="text-sm text-gray-600 mb-1 hover:text-blue-600 cursor-pointer inline-block"
               >
-                Канал: {item.name}
+                Канал: {item.channel_name}
               </Link>
               <p className="text-sm text-gray-500 mb-2">{item.views.toLocaleString()} просмотров</p>
               <p className="text-xs text-gray-400">Просмотрено: {formatApiDateLocal(item.watched_at)}</p>

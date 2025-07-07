@@ -107,8 +107,8 @@ function ChannelPage() {
       <ChannelHeader channel={channel} />
       <ChannelTabs activeTab={activeTab} onTabChange={setActiveTab} />
       <div className="mt-6">
-        {activeTab === 'home' && <VideoGrid videos={videos} />}
-        {activeTab === 'videos' && <VideoGrid videos={videos} />}
+        {activeTab === 'home' && channel && <VideoGrid videos={videos} currentChannelId={channel.id} />}
+        {activeTab === 'videos' && channel && <VideoGrid videos={videos} currentChannelId={channel.id} />}
         {activeTab === 'shorts' && <div>Shorts (в разработке)</div>}
         {activeTab === 'playlists' && <div>Плейлисты (в разработке)</div>}
         {activeTab === 'about' && (
