@@ -53,7 +53,7 @@ export function ChannelHeader({ channel }: ChannelHeaderProps) {
         setSubscribersCount(prev => prev + 1)
         toast({
           title: 'Подписка оформлена',
-          description: `Вы подписались на канал ${channel.name}`,
+          description: `Вы подписались на канал ${channel.channel_name}`,
         })
       }
     } catch (error) {
@@ -68,6 +68,14 @@ export function ChannelHeader({ channel }: ChannelHeaderProps) {
     }
   }
 
+  if (!channel || !channel.channel_name) {
+    return (
+      <div className="flex items-center justify-center h-40 text-muted-foreground">
+        Канал не найден или данные отсутствуют.
+      </div>
+    )
+  }
+
   return (
     <div className="relative">
       {/* Баннер канала */}
@@ -75,7 +83,7 @@ export function ChannelHeader({ channel }: ChannelHeaderProps) {
         <div className="h-32 md:h-48 lg:h-64 overflow-hidden">
           <Image
             src={buildImageUrl(channel.banner_image_url)}
-            alt={`${channel.name} banner`}
+            alt={`${channel.channel_name} banner`}
             className="w-full h-full object-cover"
             fill
             sizes="100vw"
@@ -92,10 +100,10 @@ export function ChannelHeader({ channel }: ChannelHeaderProps) {
             <Avatar className="w-20 h-20 md:w-32 md:h-32">
               <AvatarImage 
                 src={buildImageUrl(channel.profile_image_url || '')} 
-                alt={channel.name}
+                alt={channel.channel_name}
               />
               <AvatarFallback className="text-2xl md:text-4xl">
-                {channel.name.charAt(0).toUpperCase()}
+                {channel.channel_name?.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
           </div>
@@ -105,10 +113,10 @@ export function ChannelHeader({ channel }: ChannelHeaderProps) {
             <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
               <div className="min-w-0">
                 <h1 className="text-2xl md:text-3xl font-bold truncate">
-                  {channel.name}
+                  {channel.channel_name}
                 </h1>
                 <div className="flex flex-wrap items-center gap-2 mt-2 text-sm text-muted-foreground">
-                  <span>@{channel.name}</span>
+                  <span>@{channel.channel_name}</span>
                   <span>•</span>
                   <span>{subscribersCount} подписчиков</span>
                 </div>

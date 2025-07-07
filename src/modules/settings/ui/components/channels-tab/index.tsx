@@ -21,7 +21,7 @@ export const ChannelsTab = () => {
   const bannerImageInputRef = useRef<HTMLInputElement>(null)
   
   const [formData, setFormData] = useState({
-    name: '',
+    channel_name: '',
     description: ''
   })
 
@@ -47,11 +47,11 @@ export const ChannelsTab = () => {
   useEffect(() => {
     if (channel) {
       setFormData({
-        name: channel.name || '',
+        channel_name: channel.channel_name || '',
         description: channel.description || ''
       })
     } else {
-      setFormData({ name: '', description: '' })
+      setFormData({ channel_name: '', description: '' })
     }
   }, [channel])
 
@@ -59,7 +59,7 @@ export const ChannelsTab = () => {
     e.preventDefault()
     clearMessages()
 
-    if (!formData.name.trim()) {
+    if (!formData.channel_name.trim()) {
       return
     }
 
@@ -67,14 +67,14 @@ export const ChannelsTab = () => {
       if (!hasChannel) {
         // Создаем новый канал
         const channelData: ChannelCreate = {
-          name: formData.name.trim(),
+          channel_name: formData.channel_name.trim(),
           description: formData.description.trim()
         }
         await createChannel(channelData)
       } else {
         // Обновляем существующий канал
         const channelData: ChannelUpdate = {
-          name: formData.name.trim(),
+          channel_name: formData.channel_name.trim(),
           description: formData.description.trim()
         }
         await updateChannel(channel.id, channelData)
@@ -103,7 +103,7 @@ export const ChannelsTab = () => {
     
     try {
       await deleteChannel(channel.id)
-      setFormData({ name: '', description: '' })
+      setFormData({ channel_name: '', description: '' })
     } catch {
       // Ошибка уже обработана в хуке
     }
@@ -136,7 +136,7 @@ export const ChannelsTab = () => {
       <Card>
         <CardHeader>
           <CardTitle>
-            {hasChannel ? `Channel: ${channel.name}` : 'Create New Channel'}
+            {hasChannel ? `Channel: ${channel.channel_name}` : 'Create New Channel'}
           </CardTitle>
           <CardDescription>
             {hasChannel 
@@ -151,8 +151,8 @@ export const ChannelsTab = () => {
               <Label htmlFor="channelName">Channel Name</Label>
               <Input
                 id="channelName"
-                value={formData.name}
-                onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                value={formData.channel_name}
+                onChange={(e) => setFormData(prev => ({ ...prev, channel_name: e.target.value }))}
                 placeholder="Enter your channel name"
                 required
               />
@@ -229,10 +229,10 @@ export const ChannelsTab = () => {
                 <Avatar className="h-16 w-16">
                   <AvatarImage 
                     src={buildImageUrl(channel.profile_image_url || channel.profile_image || '')} 
-                    alt={channel.name} 
+                    alt={channel.channel_name} 
                   />
                   <AvatarFallback className="bg-blue-100 text-blue-600">
-                    {channel.name.slice(0, 2).toUpperCase()}
+                    {(channel?.channel_name ? channel.channel_name.slice(0, 2).toUpperCase() : '?')}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col gap-2">
@@ -335,7 +335,7 @@ export const ChannelsTab = () => {
                   <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                   <AlertDialogDescription>
                     This action cannot be undone. This will permanently delete your channel
-                    &quot;{channel.name}&quot; and all associated data including videos, comments, and subscribers.
+                    &quot;{channel.channel_name}&quot; and all associated data including videos, comments, and subscribers.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>

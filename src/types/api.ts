@@ -10,7 +10,7 @@ export interface User {
 
 export interface Channel {
   id: number
-  name: string
+  channel_name: string
   description: string
   user_id: number
   created_at: string
@@ -24,6 +24,8 @@ export interface Channel {
   subscribers_count?: number
   subscription_amount?: number // Добавляем поле, которое приходит от API
   is_verified?: boolean // Добавляем для значка верификации
+  // @deprecated
+  name?: string // @deprecated использовать channel_name
 }
 
 export interface Video {
@@ -171,12 +173,12 @@ export interface UserUpdate {
 }
 
 export interface ChannelCreate {
-  name: string
+  channel_name: string
   description: string
 }
 
 export interface ChannelUpdate {
-  name: string
+  channel_name: string
   description: string
 }
 
