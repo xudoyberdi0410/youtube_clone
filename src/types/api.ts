@@ -71,7 +71,7 @@ export interface Comment {
 export interface History {
   id: number
   username: string
-  name: string
+  channel_name: string
   title: string
   file_path: string
   thumbnail_path: string
