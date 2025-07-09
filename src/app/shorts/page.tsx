@@ -1,8 +1,7 @@
-'use client';
+"use client";
 
-import { ShortsFeed } from '@/modules/shorts/ShortsFeed';
-import { shortsData } from '@/modules/shorts/data';
+import { ShortsFeed } from "@/modules/shorts/ShortsFeed";
 
 export default function ShortsPage() {
-  return <ShortsFeed shorts={shortsData} />;
+  return <ShortsFeed />;
 }
