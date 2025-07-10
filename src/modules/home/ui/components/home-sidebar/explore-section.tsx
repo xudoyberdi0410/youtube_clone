@@ -3,51 +3,51 @@
 import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 import { GaminIcon, LearningIcon, LiveIcon, MusicIcon, NewsIcon, SportsIcon, TrendingIcon } from "@/components/youtube-icons";
 import Link from "next/link";
+import { t } from "@/lib/i18n";
 
 const items = [
     {
-        title: "Trending",
+        title: t("sidebar.trending"),
         url: "/feed/trending",
         icon: TrendingIcon,
     },
     {
-        title: "Music",
+        title: t("sidebar.music"),
         url: "/channels/music",
         icon: MusicIcon,
     },
     {
-        title: "Live",
+        title: t("sidebar.live"),
         url: "/channels/live",
         icon: LiveIcon,
     },
     {
-        title: "Gaming",
+        title: t("sidebar.gaming"),
         url: "/feed/gaming",
         icon: GaminIcon,
     },
     {
-        title: "News",
+        title: t("sidebar.news"),
         url: "/feed/news",
         icon: NewsIcon,
     },
     {
-        title: "Sports",
+        title: t("sidebar.sports"),
         url: "/feed/sports",
         icon: SportsIcon,
     },
     {
-        title: "Learning",
+        title: t("sidebar.learning"),
         url: "/feed/learning",
         icon: LearningIcon,
     },
-
-
 ];
+
 
 export const ExploreSection = () => {
     return (        <SidebarGroup className="py-0">
             <SidebarGroupContent>
-                <SidebarGroupLabel className="px-3 py-2 text-sm font-medium text-gray-900 group-data-[state=collapsed]:hidden">Explore</SidebarGroupLabel>
+                <SidebarGroupLabel className="px-3 py-2 text-sm font-medium text-gray-900 group-data-[state=collapsed]:hidden">{t('sidebar.explore')}</SidebarGroupLabel>
                 <SidebarMenu className="space-y-0">
                     {items.map((item) => (
                         <SidebarMenuItem key={item.title}>

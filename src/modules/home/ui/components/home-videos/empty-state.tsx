@@ -2,6 +2,7 @@
 
 import { Video, PlayCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { t } from "@/lib/i18n";
 
 interface EmptyStateProps {
   onRefresh?: () => void;
@@ -15,20 +16,18 @@ export function EmptyState({ onRefresh }: EmptyStateProps) {
       </div>
       
       <h3 className="text-xl font-semibold text-gray-900 mb-2">
-        Видео не найдены
+        {t('home.videosNotFound')}
       </h3>
-      
       <p className="text-gray-500 text-center mb-6 max-w-md">
-        В данной категории пока нет видео. Попробуйте выбрать другую категорию или обновите страницу.
+        {t('home.noVideosCategory')}
       </p>
-      
       {onRefresh && (
         <Button 
           onClick={onRefresh}
           className="gap-2"
         >
           <PlayCircle className="w-4 h-4" />
-          Обновить
+          {t('home.refresh')}
         </Button>
       )}
     </div>

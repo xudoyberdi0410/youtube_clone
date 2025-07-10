@@ -1,207 +1,227 @@
-'use client'
+"use client";
 
-import { useState, useRef } from 'react'
-import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Progress } from '@/components/ui/progress'
-import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Upload, FileVideo, CheckCircle, AlertTriangle, X } from 'lucide-react'
-import { apiClient } from '@/lib/api-client'
-import { validateFileUpload } from '@/lib/utils/validation'
-import type { VideoCategory } from '@/types/api'
+import { useState, useRef } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Progress } from "@/components/ui/progress";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Upload, FileVideo, CheckCircle, AlertTriangle, X } from "lucide-react";
+import { apiClient } from "@/lib/api-client";
+import { validateFileUpload } from "@/lib/utils/validation";
+import type { VideoCategory } from "@/types/api";
+
+import { t } from "@/lib/i18n";
 
 const VIDEO_CATEGORIES: { value: VideoCategory; label: string }[] = [
-  { value: 'Musiqa', label: 'Музыка' },
-  { value: "Ta'lim", label: 'Образование' },
-  { value: 'Texnologiya', label: 'Технологии' },
-  { value: "O'yinlar", label: 'Игры' },
-  { value: 'Yangiliklar', label: 'Новости' },
-  { value: "Ko'ngilochar", label: 'Развлечения' },
-  { value: 'Sport', label: 'Спорт' },
-  { value: 'Ilm-fan va Tabiat', label: 'Наука и природа' },
-  { value: 'Sayohat', label: 'Путешествия' },
-  { value: 'Oshxona va Pazandachilik', label: 'Кулинария' },
-]
+  { value: "Musiqa", label: t("category.music") },
+  { value: "Ta'lim", label: t("category.education") },
+  { value: "Texnologiya", label: t("category.technology") },
+  { value: "O'yinlar", label: t("category.games") },
+  { value: "Yangiliklar", label: t("category.news") },
+  { value: "Ko'ngilochar", label: t("category.entertainment") },
+  { value: "Sport", label: t("category.sport") },
+  { value: "Ilm-fan va Tabiat", label: t("category.science") },
+  { value: "Sayohat", label: t("category.travel") },
+  { value: "Oshxona va Pazandachilik", label: t("category.cooking") },
+];
 
 interface UploadState {
-  isUploading: boolean
-  progress: number
-  error: string | null
-  success: boolean
-  videoType: 'video' | 'shorts' | null
+  isUploading: boolean;
+  progress: number;
+  error: string | null;
+  success: boolean;
+  videoType: "video" | "shorts" | null;
 }
 
 export function UploadVideoForm() {
-  const router = useRouter()
-  const fileInputRef = useRef<HTMLInputElement>(null)
-  
-  const [selectedFile, setSelectedFile] = useState<File | null>(null)
-  const [title, setTitle] = useState('')
-  const [description, setDescription] = useState('')
-  const [category, setCategory] = useState<VideoCategory>('Musiqa')
+  const router = useRouter();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState<VideoCategory>("Musiqa");
   const [uploadState, setUploadState] = useState<UploadState>({
     isUploading: false,
     progress: 0,
     error: null,
     success: false,
-    videoType: null
-  })
+    videoType: null,
+  });
 
   const handleFileSelect = async (file: File) => {
     // Validate file
-    const validation = validateFileUpload(file, 'video')
+    const validation = validateFileUpload(file, "video");
     if (!validation.isValid) {
-      setUploadState(prev => ({ ...prev, error: validation.error || 'Неверный файл' }))
-      return
+      setUploadState((prev) => ({
+        ...prev,
+        error: validation.error || t("upload.error.invalidFile"),
+      }));
+      return;
     }
 
-    setSelectedFile(file)
-    setUploadState(prev => ({ ...prev, error: null }))
+    setSelectedFile(file);
+    setUploadState((prev) => ({ ...prev, error: null }));
 
     // Detect video orientation
-    const video = document.createElement('video')
-    video.src = URL.createObjectURL(file)
-    
+    const video = document.createElement("video");
+    video.src = URL.createObjectURL(file);
+
     video.onloadedmetadata = () => {
-      const isVertical = video.videoHeight > video.videoWidth
-      setUploadState(prev => ({ 
-        ...prev, 
-        videoType: isVertical ? 'shorts' : 'video' 
-      }))
-      URL.revokeObjectURL(video.src)
-    }
+      const isVertical = video.videoHeight > video.videoWidth;
+      setUploadState((prev) => ({
+        ...prev,
+        videoType: isVertical ? "shorts" : "video",
+      }));
+      URL.revokeObjectURL(video.src);
+    };
 
     video.onerror = () => {
-      setUploadState(prev => ({ ...prev, error: 'Не удалось определить ориентацию видео' }))
-      URL.revokeObjectURL(video.src)
-    }
-  }
+      setUploadState((prev) => ({
+        ...prev,
+        error: t("upload.error.orientationDetect"),
+      }));
+      URL.revokeObjectURL(video.src);
+    };
+  };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
+    const file = event.target.files?.[0];
     if (file) {
-      handleFileSelect(file)
+      handleFileSelect(file);
     }
-  }
+  };
 
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault()
-    const file = event.dataTransfer.files[0]
-    if (file && file.type.startsWith('video/')) {
-      handleFileSelect(file)
+    event.preventDefault();
+    const file = event.dataTransfer.files[0];
+    if (file && file.type.startsWith("video/")) {
+      handleFileSelect(file);
     }
-  }
+  };
 
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault()
-  }
+    event.preventDefault();
+  };
 
   const removeFile = () => {
-    setSelectedFile(null)
-    setUploadState(prev => ({ ...prev, videoType: null, error: null }))
+    setSelectedFile(null);
+    setUploadState((prev) => ({ ...prev, videoType: null, error: null }));
     if (fileInputRef.current) {
-      fileInputRef.current.value = ''
+      fileInputRef.current.value = "";
     }
-  }
+  };
 
   const handleUpload = async () => {
     // For shorts, only video file is required
     // For regular videos, both file and title are required
     if (!selectedFile) {
-      setUploadState(prev => ({ ...prev, error: 'Выберите файл для загрузки' }))
-      return
+      setUploadState((prev) => ({ ...prev, error: t("upload.error.noFile") }));
+      return;
     }
 
-    if (uploadState.videoType === 'video' && !title.trim()) {
-      setUploadState(prev => ({ ...prev, error: 'Для обычного видео необходимо указать название' }))
-      return
+    if (uploadState.videoType === "video" && !title.trim()) {
+      setUploadState((prev) => ({ ...prev, error: t("upload.error.noTitle") }));
+      return;
     }
 
-    setUploadState(prev => ({ 
-      ...prev, 
-      isUploading: true, 
-      progress: 0, 
-      error: null 
-    }))
+    setUploadState((prev) => ({
+      ...prev,
+      isUploading: true,
+      progress: 0,
+      error: null,
+    }));
 
     try {
       const uploadData = {
         title: title.trim(),
         description: description.trim(),
-        category
-      }
+        category,
+      };
 
       // Simulate progress updates
       const progressInterval = setInterval(() => {
-        setUploadState(prev => ({
+        setUploadState((prev) => ({
           ...prev,
-          progress: Math.min(prev.progress + Math.random() * 20, 90)
-        }))
-      }, 500)
+          progress: Math.min(prev.progress + Math.random() * 20, 90),
+        }));
+      }, 500);
 
-      if (uploadState.videoType === 'shorts') {
-        await apiClient.uploadShorts(selectedFile)
+      if (uploadState.videoType === "shorts") {
+        await apiClient.uploadShorts(selectedFile);
       } else {
-        await apiClient.uploadVideo(selectedFile, uploadData)
+        await apiClient.uploadVideo(selectedFile, uploadData);
       }
 
-      clearInterval(progressInterval)
-      setUploadState(prev => ({ 
-        ...prev, 
-        progress: 100, 
-        success: true, 
-        isUploading: false 
-      }))
+      clearInterval(progressInterval);
+      setUploadState((prev) => ({
+        ...prev,
+        progress: 100,
+        success: true,
+        isUploading: false,
+      }));
 
       // Redirect after successful upload
       setTimeout(() => {
-        router.push('/')
-      }, 2000)
-
+        router.push("/");
+      }, 2000);
     } catch (error) {
-      setUploadState(prev => ({ 
-        ...prev, 
-        isUploading: false, 
-        error: error instanceof Error ? error.message : 'Ошибка загрузки видео' 
-      }))
+      setUploadState((prev) => ({
+        ...prev,
+        isUploading: false,
+        error:
+          error instanceof Error
+            ? error.message
+            : t("upload.error.uploadFailed"),
+      }));
     }
-  }
+  };
 
   const reset = () => {
-    setSelectedFile(null)
-    setTitle('')
-    setDescription('')
-    setCategory('Musiqa')
+    setSelectedFile(null);
+    setTitle("");
+    setDescription("");
+    setCategory("Musiqa");
     setUploadState({
       isUploading: false,
       progress: 0,
       error: null,
       success: false,
-      videoType: null
-    })
+      videoType: null,
+    });
     if (fileInputRef.current) {
-      fileInputRef.current.value = ''
+      fileInputRef.current.value = "";
     }
-  }
+  };
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Загрузка видео</CardTitle>
-        <CardDescription>
-          Выберите видеофайл и заполните информацию о нём
-        </CardDescription>
+        <CardTitle>{t("upload.title")}</CardTitle>
+        <CardDescription>{t("upload.description")}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* File Upload Area */}
         <div>
-          <Label htmlFor="video-upload">Видеофайл *</Label>
+          <Label htmlFor="video-upload">{t("upload.fileLabel")}</Label>
           <div
             className="mt-2 border-2 border-dashed border-muted-foreground/25 rounded-lg p-8 text-center hover:border-muted-foreground/50 transition-colors"
             onDrop={handleDrop}
@@ -226,10 +246,18 @@ export function UploadVideoForm() {
                     <X className="h-4 w-4" />
                   </Button>
                 </div>
-                
+
                 {uploadState.videoType && (
-                  <Badge variant={uploadState.videoType === 'shorts' ? 'secondary' : 'default'}>
-                    {uploadState.videoType === 'shorts' ? 'Shorts (Вертикальное)' : 'Видео (Горизонтальное)'}
+                  <Badge
+                    variant={
+                      uploadState.videoType === "shorts"
+                        ? "secondary"
+                        : "default"
+                    }
+                  >
+                    {uploadState.videoType === "shorts"
+                      ? t("upload.shortsBadge")
+                      : t("upload.videoBadge")}
                   </Badge>
                 )}
               </div>
@@ -238,15 +266,15 @@ export function UploadVideoForm() {
                 <Upload className="h-12 w-12 mx-auto text-muted-foreground" />
                 <div>
                   <p className="text-lg font-medium">
-                    Перетащите видеофайл сюда или нажмите для выбора
+                    {t("upload.dropOrSelect")}
                   </p>
                   <p className="text-sm text-muted-foreground mt-1">
-                    Поддерживаются форматы: MP4, WebM, MOV, AVI
+                    {t("upload.supportedFormats")}
                   </p>
                 </div>
               </div>
             )}
-            
+
             <input
               ref={fileInputRef}
               id="video-upload"
@@ -255,13 +283,13 @@ export function UploadVideoForm() {
               onChange={handleFileChange}
               className="hidden"
             />
-            
+
             <Button
               variant="outline"
               onClick={() => fileInputRef.current?.click()}
               className="mt-4"
             >
-              Выбрать файл
+              {t("upload.selectFile")}
             </Button>
           </div>
         </div>
@@ -270,69 +298,84 @@ export function UploadVideoForm() {
         <div className="space-y-4">
           <div>
             <Label htmlFor="title">
-              Название {uploadState.videoType === 'video' ? '*' : '(не используется для Shorts)'}
+              {t("upload.titleLabel", {
+                required:
+                  uploadState.videoType === "video"
+                    ? "*"
+                    : t("upload.shortsNotUsed"),
+              })}
             </Label>
             <Input
               id="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder={
-                uploadState.videoType === 'shorts' 
-                  ? "Для Shorts название не требуется" 
-                  : "Введите название видео"
+                uploadState.videoType === "shorts"
+                  ? t("upload.titleShortsPlaceholder")
+                  : t("upload.titlePlaceholder")
               }
               maxLength={100}
               className="mt-1"
-              disabled={uploadState.videoType === 'shorts'}
+              disabled={uploadState.videoType === "shorts"}
             />
             <p className="text-xs text-muted-foreground mt-1">
-              {uploadState.videoType === 'shorts' 
-                ? 'Shorts загружаются только с видеофайлом'
-                : `${title.length}/100 символов`
-              }
+              {uploadState.videoType === "shorts"
+                ? t("upload.shortsOnlyFile")
+                : t("upload.titleSymbols", { count: title.length })}
             </p>
           </div>
 
           <div>
             <Label htmlFor="description">
-              Описание {uploadState.videoType === 'shorts' ? '(не используется для Shorts)' : ''}
+              {t("upload.descriptionLabel", {
+                shorts:
+                  uploadState.videoType === "shorts"
+                    ? t("upload.shortsNotUsed")
+                    : "",
+              })}
             </Label>
             <Textarea
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder={
-                uploadState.videoType === 'shorts'
-                  ? "Для Shorts описание не требуется"
-                  : "Опишите ваше видео (необязательно)"
+                uploadState.videoType === "shorts"
+                  ? t("upload.descriptionShortsPlaceholder")
+                  : t("upload.descriptionPlaceholder")
               }
               maxLength={5000}
               className="mt-1 min-h-[100px]"
-              disabled={uploadState.videoType === 'shorts'}
+              disabled={uploadState.videoType === "shorts"}
             />
             <p className="text-xs text-muted-foreground mt-1">
-              {uploadState.videoType === 'shorts'
-                ? 'Shorts загружаются только с видеофайлом'
-                : `${description.length}/5000 символов`
-              }
+              {uploadState.videoType === "shorts"
+                ? t("upload.shortsOnlyFile")
+                : t("upload.descriptionSymbols", { count: description.length })}
             </p>
           </div>
 
           <div>
             <Label htmlFor="category">
-              Категория {uploadState.videoType === 'shorts' ? '(не используется для Shorts)' : ''}
+              {t("upload.categoryLabel", {
+                shorts:
+                  uploadState.videoType === "shorts"
+                    ? t("upload.shortsNotUsed")
+                    : "",
+              })}
             </Label>
-            <Select 
-              value={category} 
+            <Select
+              value={category}
               onValueChange={(value: VideoCategory) => setCategory(value)}
-              disabled={uploadState.videoType === 'shorts'}
+              disabled={uploadState.videoType === "shorts"}
             >
               <SelectTrigger className="mt-1">
-                <SelectValue placeholder={
-                  uploadState.videoType === 'shorts'
-                    ? "Для Shorts категория не требуется"
-                    : "Выберите категорию"
-                } />
+                <SelectValue
+                  placeholder={
+                    uploadState.videoType === "shorts"
+                      ? t("upload.categoryShortsPlaceholder")
+                      : t("upload.categoryPlaceholder")
+                  }
+                />
               </SelectTrigger>
               <SelectContent>
                 {VIDEO_CATEGORIES.map((cat) => (
@@ -349,7 +392,7 @@ export function UploadVideoForm() {
         {uploadState.isUploading && (
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <Label>Загрузка видео</Label>
+              <Label>{t("upload.title")}</Label>
               <span className="text-sm text-muted-foreground">
                 {Math.round(uploadState.progress)}%
               </span>
@@ -370,9 +413,7 @@ export function UploadVideoForm() {
         {uploadState.success && (
           <Alert>
             <CheckCircle className="h-4 w-4" />
-            <AlertDescription>
-              Видео успешно загружено! Перенаправление на главную...
-            </AlertDescription>
+            <AlertDescription>{t("upload.success")}</AlertDescription>
           </Alert>
         )}
 
@@ -381,8 +422,8 @@ export function UploadVideoForm() {
           <Button
             onClick={handleUpload}
             disabled={
-              !selectedFile || 
-              (uploadState.videoType === 'video' && !title.trim()) ||
+              !selectedFile ||
+              (uploadState.videoType === "video" && !title.trim()) ||
               uploadState.isUploading
             }
             className="flex-1"
@@ -390,23 +431,23 @@ export function UploadVideoForm() {
             {uploadState.isUploading ? (
               <>
                 <Upload className="mr-2 h-4 w-4 animate-spin" />
-                Загрузка...
+                {t("upload.uploading")}
               </>
             ) : (
               <>
                 <Upload className="mr-2 h-4 w-4" />
-                Загрузить видео
+                {t("upload.uploadBtn")}
               </>
             )}
           </Button>
 
           {(selectedFile || uploadState.success) && (
             <Button variant="outline" onClick={reset}>
-              Очистить
+              {t("upload.clear")}
             </Button>
           )}
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

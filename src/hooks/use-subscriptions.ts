@@ -1,32 +1,32 @@
 // src/hooks/use-subscriptions.ts
 
-import { useState, useEffect, useCallback } from 'react'
-import { ApiClient } from '@/lib/api-client'
-import { useAuth } from '@/modules/auth/hooks/use-auth'
-import type { SubscriptionResponse } from '@/types/api'
+import { useState, useEffect, useCallback } from "react";
+import { ApiClient } from "@/lib/api-client";
+import { useAuth } from "@/modules/auth/hooks/use-auth";
+import type { SubscriptionResponse } from "@/types/api";
 
 interface UseSubscriptionsOptions {
-  immediate?: boolean
+  immediate?: boolean;
 }
 
 interface UseSubscriptionsState {
-  subscriptions: SubscriptionResponse[]
-  isLoading: boolean
-  error: string | null
+  subscriptions: SubscriptionResponse[];
+  isLoading: boolean;
+  error: string | null;
 }
 
 /**
  * Хук для управления подписками на каналы
  */
 export function useSubscriptions(options: UseSubscriptionsOptions = {}) {
-  const { immediate = true } = options
-  const { isLoggedIn } = useAuth()
-  
+  const { immediate = true } = options;
+  const { isLoggedIn } = useAuth();
+
   const [state, setState] = useState<UseSubscriptionsState>({
     subscriptions: [],
     isLoading: false,
     error: null,
-  })
+  });
 
   const loadSubscriptions = useCallback(async () => {
     if (!isLoggedIn) {
@@ -34,41 +34,50 @@ export function useSubscriptions(options: UseSubscriptionsOptions = {}) {
         subscriptions: [],
         isLoading: false,
         error: null,
-      })
-      return
+      });
+      return;
     }
-    
-    setState(prev => ({ ...prev, isLoading: true, error: null }))
-    
+
+    setState((prev) => ({ ...prev, isLoading: true, error: null }));
+
     try {
-      const apiClient = ApiClient.getInstance()
-      const subscriptions = await apiClient.getSubscriptions()
-      
+      const apiClient = ApiClient.getInstance();
+      const apiResult = (await apiClient.getSubscriptions()) as
+        | SubscriptionResponse[]
+        | { data: SubscriptionResponse[] };
+      // Defensive: ensure subscriptions is always an array
+      const subscriptions = Array.isArray(apiResult)
+        ? apiResult
+        : apiResult?.data && Array.isArray(apiResult.data)
+          ? apiResult.data
+          : [];
+
       setState({
         subscriptions,
         isLoading: false,
         error: null,
-      })
+      });
     } catch (error: unknown) {
-      console.error('Failed to load subscriptions:', error)
-      const errorMessage = error instanceof Error ? error.message : 'Failed to load subscriptions'
-      setState(prev => ({
+      console.error("Failed to load subscriptions:", error);
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to load subscriptions";
+      setState((prev) => ({
         ...prev,
         isLoading: false,
         error: errorMessage,
-      }))
+      }));
     }
-  }, [isLoggedIn])
+  }, [isLoggedIn]);
 
   useEffect(() => {
     if (immediate && isLoggedIn) {
-      loadSubscriptions()
+      loadSubscriptions();
     }
-  }, [immediate, isLoggedIn, loadSubscriptions])
+  }, [immediate, isLoggedIn, loadSubscriptions]);
 
   return {
     ...state,
     loadSubscriptions,
     subscribersCount: state.subscriptions.length,
-  }
+  };
 }

@@ -1,47 +1,47 @@
 // src/app/playlist/[id]/page.tsx
 
-"use client"
+"use client";
 
-import { useParams } from "next/navigation"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger 
-} from "@/components/ui/dropdown-menu"
-import { 
-  Play, 
-  MoreVertical, 
-  Share, 
-  Edit, 
-  Trash2, 
-  Lock, 
+import { useParams } from "next/navigation";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Play,
+  MoreVertical,
+  Share,
+  Edit,
+  Trash2,
+  Lock,
   Globe,
   Calendar,
   User,
   ArrowLeft,
-  PlaySquare
-} from "lucide-react"
-import { useAuth } from "@/modules/auth/hooks/use-auth"
-import { usePlaylist } from "@/hooks/use-playlist"
-import { formatDistanceToNow } from "date-fns"
+  PlaySquare,
+} from "lucide-react";
+import { useAuth } from "@/modules/auth/hooks/use-auth";
+import { usePlaylist } from "@/hooks/use-playlist";
+import { formatDistanceToNow } from "date-fns";
 
 export default function PlaylistPage() {
-  const params = useParams()
-  const playlistId = params.id as string
-  const { isLoggedIn, user } = useAuth()
-  
-  const numericPlaylistId = playlistId ? parseInt(playlistId) : null
-  const { 
-    playlist, 
-    playlistVideos, 
-    isLoading, 
+  const params = useParams();
+  const playlistId = params?.id as string | undefined;
+  const { isLoggedIn, user } = useAuth();
+
+  const numericPlaylistId = playlistId ? parseInt(playlistId) : null;
+  const {
+    playlist,
+    playlistVideos,
+    isLoading,
     error,
-    removeVideoFromPlaylist
-  } = usePlaylist(numericPlaylistId)
+    removeVideoFromPlaylist,
+  } = usePlaylist(numericPlaylistId);
 
   if (isLoading) {
     return (
@@ -58,7 +58,7 @@ export default function PlaylistPage() {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   if (error) {
@@ -75,7 +75,7 @@ export default function PlaylistPage() {
           </Link>
         </div>
       </div>
-    )
+    );
   }
 
   if (!playlist) {
@@ -91,22 +91,22 @@ export default function PlaylistPage() {
           </Link>
         </div>
       </div>
-    )
+    );
   }
 
-  const isOwner = isLoggedIn && user?.id === playlist.user_id
-  const canEdit = isOwner
-  const videoCount = playlistVideos.length || playlist.videos_count || 0
+  const isOwner = isLoggedIn && user?.id === playlist.user_id;
+  const canEdit = isOwner;
+  const videoCount = playlistVideos.length || playlist.videos_count || 0;
 
   const handleRemoveVideo = async (playlistVideoId: number) => {
     if (window.confirm("Remove this video from the playlist?")) {
       try {
-        await removeVideoFromPlaylist(playlistVideoId)
+        await removeVideoFromPlaylist(playlistVideoId);
       } catch (error) {
-        console.error('Failed to remove video from playlist:', error)
+        console.error("Failed to remove video from playlist:", error);
       }
     }
-  }
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
@@ -192,7 +192,11 @@ export default function PlaylistPage() {
             </div>
             <div className="flex items-center gap-1">
               <Calendar className="w-4 h-4" />
-              <span>{formatDistanceToNow(new Date(playlist.created_at), { addSuffix: true })}</span>
+              <span>
+                {formatDistanceToNow(new Date(playlist.created_at), {
+                  addSuffix: true,
+                })}
+              </span>
             </div>
           </div>
 
@@ -211,10 +215,8 @@ export default function PlaylistPage() {
 
       {/* Videos List */}
       <div>
-        <h2 className="text-xl font-semibold mb-4">
-          Videos ({videoCount})
-        </h2>
-        
+        <h2 className="text-xl font-semibold mb-4">Videos ({videoCount})</h2>
+
         {videoCount === 0 ? (
           <div className="text-center py-16 bg-gray-50 rounded-lg">
             <div className="text-gray-400 mb-2">No videos in this playlist</div>
@@ -225,15 +227,22 @@ export default function PlaylistPage() {
         ) : (
           <div className="space-y-2">
             {playlistVideos.map((playlistVideo, index) => (
-              <Card key={`playlist-video-${playlistVideo.id}`} className="hover:bg-gray-50 transition-colors">
+              <Card
+                key={`playlist-video-${playlistVideo.id}`}
+                className="hover:bg-gray-50 transition-colors"
+              >
                 <CardContent className="p-4">
                   <div className="flex items-center gap-4">
                     <div className="text-gray-400 font-mono text-sm w-6">
                       {index + 1}
                     </div>
                     <div className="flex-1">
-                      <div className="font-medium">Video #{playlistVideo.video_id}</div>
-                      <div className="text-sm text-gray-500">Added to playlist</div>
+                      <div className="font-medium">
+                        Video #{playlistVideo.video_id}
+                      </div>
+                      <div className="text-sm text-gray-500">
+                        Added to playlist
+                      </div>
                     </div>
                     {canEdit && (
                       <DropdownMenu>
@@ -243,7 +252,7 @@ export default function PlaylistPage() {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem 
+                          <DropdownMenuItem
                             onClick={() => handleRemoveVideo(playlistVideo.id)}
                             className="text-red-600 focus:text-red-600"
                           >
@@ -261,5 +270,5 @@ export default function PlaylistPage() {
         )}
       </div>
     </div>
-  )
+  );
 }

@@ -1,5 +1,6 @@
 "use client"; // обязательно, чтобы можно было использовать useState/useEffect
 
+
 import { VideoCardSkelton } from "./video-card-skelton";
 import { VideoCard } from "./video-card";
 import { VideoFilters } from "./video-filters";
@@ -8,6 +9,7 @@ import { useVideos } from "@/hooks/use-videos";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { RefreshCw } from "lucide-react";
+import { t } from "@/lib/i18n";
 
 
 
@@ -19,7 +21,7 @@ export default function HomeVideos() {
             <div className="w-full max-w-screen-2xl mx-auto px-4 py-6">
                 <Alert className="mb-6">
                     <AlertDescription className="flex items-center justify-between">
-                        <span>Ошибка загрузки видео: {error}</span>
+                        <span>{t('home.errorLoadingVideos')} {error}</span>
                         <Button 
                             variant="outline" 
                             size="sm" 
@@ -27,7 +29,7 @@ export default function HomeVideos() {
                             className="ml-4"
                         >
                             <RefreshCw className="h-4 w-4 mr-2" />
-                            Повторить
+                            {t('home.retry')}
                         </Button>
                     </AlertDescription>
                 </Alert>

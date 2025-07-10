@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { Loader2 } from "lucide-react"
+import { t } from "@/lib/i18n"
 import { useToast } from "@/hooks/use-toast"
 import type { Playlist, PlaylistUpdate } from "@/types/api"
 
@@ -49,8 +50,8 @@ export function EditPlaylistDialog({
     
     if (!formData.name.trim()) {
       toast({
-        title: "Error",
-        description: "Playlist name is required",
+        title: t("playlist.errorTitle"),
+        description: t("playlist.nameRequired"),
         variant: "destructive",
       })
       return
@@ -74,15 +75,15 @@ export function EditPlaylistDialog({
       onPlaylistUpdated?.(updatedPlaylist)
       
       toast({
-        title: "Success",
-        description: "Playlist updated successfully",
+        title: t("playlist.successTitle"),
+        description: t("playlist.updated"),
       })
       
       onOpenChange(false)
     } catch {
       toast({
-        title: "Error",
-        description: "Failed to update playlist",
+        title: t("playlist.errorTitle"),
+        description: t("playlist.updateFailed"),
         variant: "destructive",
       })
     } finally {
@@ -96,14 +97,14 @@ export function EditPlaylistDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Edit Playlist</DialogTitle>
+          <DialogTitle>{t("playlist.editTitle")}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="edit-name">Name</Label>
+            <Label htmlFor="edit-name">{t("playlist.name")}</Label>
             <Input
               id="edit-name"
-              placeholder="Enter playlist name"
+              placeholder={t("playlist.namePlaceholder")}
               value={formData.name}
               onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
               disabled={isLoading}
@@ -111,10 +112,10 @@ export function EditPlaylistDialog({
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="edit-description">Description</Label>
+            <Label htmlFor="edit-description">{t("playlist.description")}</Label>
             <Textarea
               id="edit-description"
-              placeholder="Enter playlist description"
+              placeholder={t("playlist.descriptionPlaceholder")}
               value={formData.description}
               onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
               disabled={isLoading}
@@ -128,7 +129,7 @@ export function EditPlaylistDialog({
               onCheckedChange={(checked) => setFormData(prev => ({ ...prev, is_personal: checked }))}
               disabled={isLoading}
             />
-            <Label htmlFor="edit-personal">Personal playlist (only you can see it)</Label>
+            <Label htmlFor="edit-personal">{t("playlist.personal")}</Label>
           </div>
           <div className="flex justify-end gap-2">
             <Button
@@ -137,11 +138,11 @@ export function EditPlaylistDialog({
               onClick={() => onOpenChange(false)}
               disabled={isLoading}
             >
-              Cancel
+              {t("playlist.cancel")}
             </Button>
             <Button type="submit" disabled={isLoading}>
               {isLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-              Save Changes
+              {t("playlist.saveChanges")}
             </Button>
           </div>
         </form>

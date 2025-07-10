@@ -9,6 +9,7 @@ import { SearchIcon, Upload } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/modules/auth/hooks/use-auth"
 import { useIsClient } from "@/hooks/use-is-client"
+import { t } from "@/lib/i18n"
 
 export const HomeNavbar = () => {
     const isClient = useIsClient();
@@ -33,7 +34,7 @@ export const HomeNavbar = () => {
                                     sizes="(max-width: 768px) 32px, 48px"
                                 />
                             </div>
-                            <p className="hidden sm:block text-lg md:text-xl font-semibold tracking-tight">YouTube</p>
+                            <p className="hidden sm:block text-lg md:text-xl font-semibold tracking-tight">{t('navbar.youtube')}</p>
                         </div>
                     </Link>
                 </div>
@@ -55,7 +56,7 @@ export const HomeNavbar = () => {
                     <Link href="/upload">
                         <Button variant="ghost" size="sm" className="flex items-center gap-2">
                         <Upload className="w-4 h-4" />
-                        <span className="hidden sm:inline">Загрузить</span>
+                        <span className="hidden sm:inline">{t('navbar.upload')}</span>
                         </Button>
                     </Link>
                     )}
