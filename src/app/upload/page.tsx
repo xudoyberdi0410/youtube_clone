@@ -1,6 +1,7 @@
 "use client";
 
-import { UploadVideoForm } from '@/modules/upload/ui/components/upload-video-form'
+import { t } from "@/lib/i18n";
+import { UploadVideoForm } from "@/modules/upload/ui/components/upload-video-form";
 import { useAuth } from "@/modules/auth/hooks/use-auth";
 import { AuthRequiredDialog } from "@/components/auth/AuthRequiredDialog";
 import { Upload } from "lucide-react";
@@ -38,25 +39,25 @@ export default function UploadPage() {
             <div className="text-center py-16">
               <Upload className="w-16 h-16 mx-auto text-gray-400 mb-4" />
               <h2 className="text-xl font-medium text-gray-600 mb-2">
-                Войдите, чтобы загрузить видео
+                {t("upload.authRequiredTitle")}
               </h2>
               <p className="text-gray-500 mb-6">
-                Для загрузки видео необходимо войти в аккаунт
+                {t("upload.authRequiredDesc")}
               </p>
-              <button 
+              <button
                 onClick={() => setShowAuthDialog(true)}
                 className="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
               >
-                Войти
+                {t("upload.authRequiredBtn")}
               </button>
             </div>
           </div>
         </div>
-        <AuthRequiredDialog 
-          open={showAuthDialog} 
+        <AuthRequiredDialog
+          open={showAuthDialog}
           onOpenChange={setShowAuthDialog}
-          title="Войдите, чтобы загрузить видео"
-          description="Для загрузки видео необходимо войти в свой аккаунт."
+          title={t("upload.authRequiredTitle")}
+          description={t("upload.authRequiredDialogDesc")}
         />
       </>
     );
@@ -66,14 +67,14 @@ export default function UploadPage() {
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-2xl">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold">Загрузка видео</h1>
+          <h1 className="text-3xl font-bold">{t("upload.title")}</h1>
           <p className="text-muted-foreground mt-2">
-            Поделитесь своим контентом с миром
+            {t("upload.shareWithWorld")}
           </p>
         </div>
-        
+
         <UploadVideoForm />
       </div>
     </div>
-  )
+  );
 }
