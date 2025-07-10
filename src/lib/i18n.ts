@@ -16,10 +16,18 @@ function getCurrentLanguage(): "en" | "ru" | "uz" {
 }
 
 // Localization function with language switching support
-export function t(key: string): string {
+export function t(key: string, vars?: Record<string, string | number>): string {
   const currentLanguage = getCurrentLanguage();
   const locale = locales[currentLanguage];
-  return locale[key] || key;
+  let str = locale[key] || key;
+  if (vars) {
+    Object.entries(vars).forEach(([k, v]) => {
+      // Поддержка и {{count}} и {count}
+      str = str.replace(new RegExp(`{{\\s*${k}\\s*}}`, "g"), String(v));
+      str = str.replace(new RegExp(`{\\s*${k}\\s*}`, "g"), String(v));
+    });
+  }
+  return str;
 }
 
 // Helper function to set language
