@@ -1,6 +1,7 @@
 // src/components/video/VideoComments.tsx
 
 import { memo, useState } from 'react'
+import { t } from '@/lib/i18n'
 import { Separator } from '@/components/ui/separator'
 import { LoadingSpinner } from '@/components/ui/loading-spinner'
 import { Button } from '@/components/ui/button'
@@ -63,7 +64,7 @@ export const VideoComments = memo(({ videoId, className }: VideoCommentsProps) =
         <div className="p-6">
           <div className="flex items-center justify-center py-8">
             <LoadingSpinner className="h-6 w-6" />
-            <span className="ml-2 text-gray-600">Загрузка комментариев...</span>
+            <span className="ml-2 text-gray-600">{t('comments.loading')}</span>
           </div>
         </div>
       </div>
@@ -75,14 +76,14 @@ export const VideoComments = memo(({ videoId, className }: VideoCommentsProps) =
       <div className={`bg-white ${className || ''}`}>
         <div className="p-6">
           <div className="text-center py-8">
-            <p className="text-gray-600 mb-4">Ошибка загрузки комментариев</p>
+            <p className="text-gray-600 mb-4">{t('comments.loadError')}</p>
             <p className="text-sm text-gray-500 mb-4">{error}</p>
             <Button
               onClick={refreshComments}
               variant="outline"
               size="sm"
             >
-              Повторить попытку
+              {t('comments.retry')}
             </Button>
           </div>
         </div>
@@ -97,8 +98,8 @@ export const VideoComments = memo(({ videoId, className }: VideoCommentsProps) =
         <div className="flex items-center gap-8">
           <h3 className="text-xl font-semibold text-gray-900">
             {commentsCount === 0 
-              ? 'Комментарии' 
-              : `${commentsCount.toLocaleString()} комментариев`
+              ? t('comments.title')
+              : `${commentsCount.toLocaleString()} ${t('comments.count')}`
             }
           </h3>
           {/* TODO: Add sort options */}
@@ -117,7 +118,7 @@ export const VideoComments = memo(({ videoId, className }: VideoCommentsProps) =
             
             <div className="flex-1">
               <Textarea
-                placeholder="Добавьте комментарий..."
+                placeholder={t('comments.addPlaceholder')}
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
                 className="min-h-[40px] resize-none border-0 border-b-2 border-gray-200 rounded-none p-0 pb-2 focus:border-blue-500 focus:ring-0 bg-transparent"
@@ -139,7 +140,7 @@ export const VideoComments = memo(({ videoId, className }: VideoCommentsProps) =
                     onClick={handleCancel}
                     disabled={isPosting}
                   >
-                    Отмена
+                    {t('comments.cancel')}
                   </Button>
                   <Button
                     size="sm"
@@ -147,7 +148,7 @@ export const VideoComments = memo(({ videoId, className }: VideoCommentsProps) =
                     disabled={!newComment.trim() || isPosting}
                     className="bg-blue-600 hover:bg-blue-700 text-white"
                   >
-                    {isPosting ? 'Отправка...' : 'Комментировать'}
+                    {isPosting ? t('comments.sending') : t('comments.submit')}
                   </Button>
                 </div>
               )}
@@ -164,10 +165,10 @@ export const VideoComments = memo(({ videoId, className }: VideoCommentsProps) =
           <div className="text-center py-12">
             <div className="text-gray-400 text-4xl mb-4">💬</div>
             <p className="text-gray-600 text-lg mb-2">
-              Комментариев пока нет
+              {t('comments.empty')}
             </p>
             <p className="text-gray-500 text-sm">
-              Станьте первым, кто оставит комментарий!
+              {t('comments.beFirst')}
             </p>
           </div>
         ) : (

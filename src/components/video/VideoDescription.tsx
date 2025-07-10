@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState, useMemo, useCallback } from 'react'
+import { t } from '@/lib/i18n'
 import { Button } from '@/components/ui/button'
 import { ChevronDown, ChevronUp } from 'lucide-react'
 
@@ -141,7 +142,7 @@ export function VideoDescription({
       {/* Статистика */}
       {(viewCount || publishDate) && (
         <div className="flex items-center text-sm font-medium space-x-2 mb-2">
-          {viewCount && <span>{viewCount} views</span>}
+          {viewCount && <span>{viewCount} {t('video.views')}</span>}
           {viewCount && publishDate && <span>•</span>}
           {publishDate && <span>{publishDate}</span>}
         </div>
@@ -166,9 +167,9 @@ export function VideoDescription({
             className="p-0 font-medium text-sm"
           >
             {isExpanded ? (
-              <>Скрыть <ChevronUp className="w-4 h-4 ml-1" /></>
+              <>{t('video.hide')} <ChevronUp className="w-4 h-4 ml-1" /></>
             ) : (
-              <>Показать больше <ChevronDown className="w-4 h-4 ml-1" /></>
+              <>{t('video.showMore')} <ChevronDown className="w-4 h-4 ml-1" /></>
             )}
           </Button>
         </div>

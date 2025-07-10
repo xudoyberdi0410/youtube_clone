@@ -5,20 +5,22 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import type { VideoCategory } from "@/types/api";
 
+import { t } from "@/lib/i18n";
+
 const filterCategories: Array<{ key: string; label: string; category?: VideoCategory }> = [
-  { key: "all", label: "All" },
-  { key: "musiqa", label: "Музыка", category: "Musiqa" },
-  { key: "talim", label: "Образование", category: "Ta'lim" },
-  { key: "texnologiya", label: "Технологии", category: "Texnologiya" },
-  { key: "oyinlar", label: "Игры", category: "O'yinlar" },
-  { key: "yangiliklar", label: "Новости", category: "Yangiliklar" },
-  { key: "kongilochar", label: "Развлечения", category: "Ko'ngilochar" },
-  { key: "sport", label: "Спорт", category: "Sport" },
-  { key: "ilm-fan", label: "Наука", category: "Ilm-fan va Tabiat" },
-  { key: "sayohat", label: "Путешествия", category: "Sayohat" },
-  { key: "oshxona", label: "Кулинария", category: "Oshxona va Pazandachilik" },
-  { key: "moda", label: "Красота", category: "Moda va Go'zallik" },
-  { key: "biznes", label: "Бизнес", category: "Biznes" },
+  { key: "all", label: t("category.all") },
+  { key: "musiqa", label: t("category.music"), category: "Musiqa" },
+  { key: "talim", label: t("category.education"), category: "Ta'lim" },
+  { key: "texnologiya", label: t("category.technology"), category: "Texnologiya" },
+  { key: "oyinlar", label: t("category.games"), category: "O'yinlar" },
+  { key: "yangiliklar", label: t("category.news"), category: "Yangiliklar" },
+  { key: "kongilochar", label: t("category.entertainment"), category: "Ko'ngilochar" },
+  { key: "sport", label: t("category.sport"), category: "Sport" },
+  { key: "ilm-fan", label: t("category.science"), category: "Ilm-fan va Tabiat" },
+  { key: "sayohat", label: t("category.travel"), category: "Sayohat" },
+  { key: "oshxona", label: t("category.cooking"), category: "Oshxona va Pazandachilik" },
+  { key: "moda", label: t("category.beauty"), category: "Moda va Go'zallik" },
+  { key: "biznes", label: t("category.business"), category: "Biznes" },
 ];
 
 interface VideoFiltersProps {

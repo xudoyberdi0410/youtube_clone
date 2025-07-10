@@ -1,12 +1,14 @@
-import Link from "next/link"
-import Image from "next/image"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { buildImageUrl } from "@/lib/api-config"
-import type { Video } from "@/types/api"
+import Link from "next/link";
+import Image from "next/image";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { buildImageUrl } from "@/lib/api-config";
+import type { Video } from "@/types/api";
+import { t } from "@/lib/i18n";
+import { formatVideoDuration } from "@/lib/utils/format";
 
 interface VideoRowListProps {
-  videos: Video[]
-  skeletonCount?: number
+  videos: Video[];
+  skeletonCount?: number;
 }
 
 export function VideoRowList({ videos, skeletonCount = 8 }: VideoRowListProps) {
@@ -27,32 +29,38 @@ export function VideoRowList({ videos, skeletonCount = 8 }: VideoRowListProps) {
           </div>
         ))}
       </div>
-    )
+    );
   }
 
   // Отображение списка видео
   return (
     <div className="flex gap-4 overflow-x-auto pb-2">
-      {videos.map(video => (
-        <Link key={video.id} href={`/watch?v=${video.id}`} className="block w-72 flex-shrink-0 group">
+      {videos.map((video) => (
+        <Link
+          key={video.id}
+          href={`/watch?v=${video.id}`}
+          className="block w-72 flex-shrink-0 group"
+        >
           {/* Блок с превью видео */}
           <div className="relative aspect-video">
             {video.thumbnail_path ? (
               <Image
                 src={buildImageUrl(video.thumbnail_path)}
-                alt={video.video_title || video.title || "Видео"}
+                alt={video.video_title || video.title || t("video.untitled")}
                 fill
                 className="object-cover rounded-xl group-hover:shadow-lg transition-shadow"
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-gray-200 rounded-xl">
-                <span className="text-muted-foreground text-sm">Нет превью</span>
+                <span className="text-muted-foreground text-sm">
+                  {t("video.noPreview")}
+                </span>
               </div>
             )}
             {/* Длительность видео */}
-            {video.duration_video && (
+            {(video.duration || video.duration_video) && (
               <div className="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-1.5 py-0.5 rounded-md font-medium">
-                {video.duration_video}
+                {formatVideoDuration(video.duration ?? video.duration_video)}
               </div>
             )}
           </div>
@@ -62,7 +70,9 @@ export function VideoRowList({ videos, skeletonCount = 8 }: VideoRowListProps) {
             {/* Аватар канала */}
             <Avatar className="w-9 h-9 mt-0.5">
               <AvatarImage src={video.profile_image || ""} />
-              <AvatarFallback>{(video.channel_name || video.name || "C").charAt(0)}</AvatarFallback>
+              <AvatarFallback>
+                {(video.channel_name || video.name || "C").charAt(0)}
+              </AvatarFallback>
             </Avatar>
 
             {/* Текстовая информация */}
@@ -74,7 +84,9 @@ export function VideoRowList({ videos, skeletonCount = 8 }: VideoRowListProps) {
                 {video.channel_name || video.name}
               </span>
               <div className="text-sm text-muted-foreground flex items-center gap-1.5">
-                <span>{video.video_views || 0} просмотров</span>
+                <span>
+                  {video.video_views || 0} {t("video.views")}
+                </span>
                 <span>•</span>
                 <span>{video.created_at?.slice(0, 10)}</span>
               </div>
@@ -83,5 +95,5 @@ export function VideoRowList({ videos, skeletonCount = 8 }: VideoRowListProps) {
         </Link>
       ))}
     </div>
-  )
+  );
 }

@@ -10,6 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Upload, Trash2 } from "lucide-react"
 import { useSettings } from '@/modules/settings/hooks/use-settings'
 import { getAvatarUrl } from "@/modules/auth/lib/auth-utils"
+import { t } from '@/lib/i18n'
 
 export const AccountTab = () => {
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -46,8 +47,8 @@ export const AccountTab = () => {
       {/* Аватар */}
       <Card>
         <CardHeader>
-          <CardTitle>Profile Picture</CardTitle>
-          <CardDescription>Click to upload a new profile picture</CardDescription>
+          <CardTitle>{t('settings.profilePicture')}</CardTitle>
+          <CardDescription>{t('settings.profilePictureDesc')}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-4">
@@ -64,9 +65,9 @@ export const AccountTab = () => {
                 onClick={() => fileInputRef.current?.click()}
               >
                 <Upload className="mr-2 h-4 w-4" />
-                Upload new picture
+                {t('settings.uploadNewPicture')}
               </Button>
-              <p className="text-sm text-gray-500">JPG, PNG or GIF. Max size 5MB.</p>
+              <p className="text-sm text-gray-500">{t('settings.avatarHint')}</p>
             </div>
           </div>
           <input
@@ -82,8 +83,8 @@ export const AccountTab = () => {
       {/* Основные настройки */}
       <Card>
         <CardHeader>
-          <CardTitle>Account Information</CardTitle>
-          <CardDescription>Update your account details</CardDescription>
+          <CardTitle>{t('settings.accountInfo')}</CardTitle>
+          <CardDescription>{t('settings.accountInfoDesc')}</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -92,15 +93,13 @@ export const AccountTab = () => {
                 {error}
               </div>
             )}
-            
             {success && (
               <div className="bg-green-50 border border-green-200 text-green-600 px-4 py-3 rounded-md text-sm">
                 {success}
               </div>
             )}
-            
             <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="username">{t('settings.username')}</Label>
               <Input
                 id="username"
                 value={formData.username}
@@ -108,9 +107,8 @@ export const AccountTab = () => {
                 required
               />
             </div>
-            
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t('settings.email')}</Label>
               <Input
                 id="email"
                 type="email"
@@ -119,23 +117,20 @@ export const AccountTab = () => {
                 required
               />
             </div>
-            
             <Separator />
-            
             <div className="space-y-2">
-              <Label htmlFor="password">New Password (optional)</Label>
+              <Label htmlFor="password">{t('settings.newPassword')}</Label>
               <Input
                 id="password"
                 type="password"
                 value={formData.password}
                 onChange={(e) => updateFormData({ password: e.target.value })}
-                placeholder="Leave empty to keep current password"
+                placeholder={t('settings.newPasswordPlaceholder')}
               />
             </div>
-            
             {formData.password && (
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm New Password</Label>
+                <Label htmlFor="confirmPassword">{t('settings.confirmNewPassword')}</Label>
                 <Input
                   id="confirmPassword"
                   type="password"
@@ -145,9 +140,8 @@ export const AccountTab = () => {
                 />
               </div>
             )}
-            
             <Button type="submit" disabled={saving}>
-              {saving ? 'Saving...' : 'Save Changes'}
+              {saving ? t('settings.saving') : t('settings.saveChanges')}
             </Button>
           </form>
         </CardContent>
@@ -156,8 +150,8 @@ export const AccountTab = () => {
       {/* Опасная зона */}
       <Card className="border-red-200">
         <CardHeader>
-          <CardTitle className="text-red-600">Danger Zone</CardTitle>
-          <CardDescription>Irreversible and destructive actions</CardDescription>
+          <CardTitle className="text-red-600">{t('settings.dangerZone')}</CardTitle>
+          <CardDescription>{t('settings.dangerZoneDesc')}</CardDescription>
         </CardHeader>
         <CardContent>
           <Button 
@@ -166,10 +160,10 @@ export const AccountTab = () => {
             className="w-full"
           >
             <Trash2 className="mr-2 h-4 w-4" />
-            Delete Account
+            {t('settings.deleteAccountBtn')}
           </Button>
           <p className="text-sm text-gray-500 mt-2">
-            This will permanently delete your account and all associated data. This action cannot be undone.
+            {t('settings.deleteAccountWarning')}
           </p>
         </CardContent>
       </Card>

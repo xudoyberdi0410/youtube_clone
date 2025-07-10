@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { Plus, Loader2 } from "lucide-react"
+import { t } from "@/lib/i18n"
 import { useToast } from "@/hooks/use-toast"
 import type { PlaylistCreate } from "@/types/api"
 
@@ -33,8 +34,8 @@ export function CreatePlaylistDialog({ onPlaylistCreated, trigger }: CreatePlayl
     
     if (!formData.name.trim()) {
       toast({
-        title: "Error",
-        description: "Playlist name is required",
+        title: t("playlist.errorTitle"),
+        description: t("playlist.nameRequired"),
         variant: "destructive",
       })
       return
@@ -47,16 +48,16 @@ export function CreatePlaylistDialog({ onPlaylistCreated, trigger }: CreatePlayl
       await onPlaylistCreated?.(formData)
       
       toast({
-        title: "Success",
-        description: "Playlist created successfully",
+        title: t("playlist.successTitle"),
+        description: t("playlist.created"),
       })
       
       setOpen(false)
       setFormData({ name: "", description: "", is_personal: false })
     } catch {
       toast({
-        title: "Error",
-        description: "Failed to create playlist",
+        title: t("playlist.errorTitle"),
+        description: t("playlist.createFailed"),
         variant: "destructive",
       })
     } finally {
@@ -67,7 +68,7 @@ export function CreatePlaylistDialog({ onPlaylistCreated, trigger }: CreatePlayl
   const defaultTrigger = (
     <Button className="gap-2">
       <Plus className="w-4 h-4" />
-      Create Playlist
+      {t("playlist.create")}
     </Button>
   )
 
@@ -78,14 +79,14 @@ export function CreatePlaylistDialog({ onPlaylistCreated, trigger }: CreatePlayl
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Create New Playlist</DialogTitle>
+          <DialogTitle>{t("playlist.createTitle")}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Name</Label>
+            <Label htmlFor="name">{t("playlist.name")}</Label>
             <Input
               id="name"
-              placeholder="Enter playlist name"
+              placeholder={t("playlist.namePlaceholder")}
               value={formData.name}
               onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
               disabled={isLoading}
@@ -93,10 +94,10 @@ export function CreatePlaylistDialog({ onPlaylistCreated, trigger }: CreatePlayl
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="description">Description (optional)</Label>
+            <Label htmlFor="description">{t("playlist.descriptionOptional")}</Label>
             <Textarea
               id="description"
-              placeholder="Enter playlist description"
+              placeholder={t("playlist.descriptionPlaceholder")}
               value={formData.description}
               onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
               disabled={isLoading}
@@ -110,7 +111,7 @@ export function CreatePlaylistDialog({ onPlaylistCreated, trigger }: CreatePlayl
               onCheckedChange={(checked) => setFormData(prev => ({ ...prev, is_personal: checked }))}
               disabled={isLoading}
             />
-            <Label htmlFor="is_personal">Personal playlist (only you can see it)</Label>
+            <Label htmlFor="is_personal">{t("playlist.personal")}</Label>
           </div>
           <div className="flex justify-end gap-2">
             <Button
@@ -119,11 +120,11 @@ export function CreatePlaylistDialog({ onPlaylistCreated, trigger }: CreatePlayl
               onClick={() => setOpen(false)}
               disabled={isLoading}
             >
-              Cancel
+              {t("playlist.cancel")}
             </Button>
             <Button type="submit" disabled={isLoading}>
               {isLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-              Create
+              {t("playlist.create")}
             </Button>
           </div>
         </form>

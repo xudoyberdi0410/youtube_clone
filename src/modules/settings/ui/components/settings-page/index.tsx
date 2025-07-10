@@ -7,6 +7,7 @@ import { AccountTab } from '@/modules/settings/ui/components/account-tab'
 import { ChannelsTab } from '@/modules/settings/ui/components/channels-tab'
 import { User, Video } from "lucide-react"
 import { LoadingSpinner } from '@/components/ui/loading-spinner'
+import { t } from '@/lib/i18n'
 
 export const SettingsPage = () => {
   const { user, loading } = useSettings()
@@ -28,20 +29,20 @@ export const SettingsPage = () => {
     <div className="max-w-4xl mx-auto">
       <div className="mb-8">
         <div className="flex items-center justify-between mb-4">
-          <h1 className="text-3xl font-bold">Settings</h1>
+          <h1 className="text-3xl font-bold">{t('settings.title')}</h1>
         </div>
-        <p className="text-gray-600">Manage your account settings and preferences</p>
+        <p className="text-gray-600">{t('settings.description')}</p>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="account" className="flex items-center gap-2">
             <User className="h-4 w-4" />
-            Account
+            {t('settings.accountTab')}
           </TabsTrigger>
           <TabsTrigger value="channels" className="flex items-center gap-2">
             <Video className="h-4 w-4" />
-            Channels
+            {t('settings.channelsTab')}
           </TabsTrigger>
         </TabsList>
 

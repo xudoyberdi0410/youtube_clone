@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState, useRef, useEffect, useCallback } from 'react'
+import { t } from '@/lib/i18n'
 import { Button } from '@/components/ui/button'
 import { Slider } from '@/components/ui/slider'
 import { 
@@ -282,7 +283,7 @@ export function VideoPlayer({
         <div className="absolute inset-0 flex items-center justify-center bg-black">
           <div className="text-white text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
-            <p>Loading video...</p>
+            <p>{t('video.loading')}</p>
           </div>
         </div>
       )}
@@ -293,12 +294,12 @@ export function VideoPlayer({
             <div className="mb-4">
               <Play className="w-16 h-16 mx-auto mb-4 opacity-50" />
             </div>
-            <p className="text-lg mb-2">Unable to load video</p>
+            <p className="text-lg mb-2">{t('video.unableToLoad')}</p>
             <p className="text-sm text-gray-400 mb-4">
-              Add a video file named <code className="bg-gray-800 px-2 py-1 rounded">sample-video.mp4</code> to the public folder
+              {t('video.addSampleFile')} <code className="bg-gray-800 px-2 py-1 rounded">sample-video.mp4</code> {t('video.toPublicFolder')}
             </p>
             <p className="text-xs text-gray-500">
-              Or the video might be temporarily unavailable
+              {t('video.temporarilyUnavailable')}
             </p>
           </div>
         </div>
@@ -435,7 +436,7 @@ export function VideoPlayer({
                 </span>
                 {playbackRate !== 1 && (
                   <span className="text-xs bg-white/20 px-2 py-1 rounded backdrop-blur-sm">
-                    {playbackRate === 1 ? 'Normal' : `${playbackRate}x`}
+                {playbackRate === 1 ? t('video.speedNormal') : `${playbackRate}x`}
                   </span>
                 )}
               </div>
@@ -455,22 +456,22 @@ export function VideoPlayer({
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="bg-black text-white border-gray-700">
                   <DropdownMenuItem onClick={() => changePlaybackRate(0.5)}>
-                    Speed: 0.5x
+                    {t('video.speed')}: 0.5x
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => changePlaybackRate(0.75)}>
-                    Speed: 0.75x
+                    {t('video.speed')}: 0.75x
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => changePlaybackRate(1)}>
-                    Speed: Normal
+                    {t('video.speed')}: {t('video.speedNormal')}
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => changePlaybackRate(1.25)}>
-                    Speed: 1.25x
+                    {t('video.speed')}: 1.25x
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => changePlaybackRate(1.5)}>
-                    Speed: 1.5x
+                    {t('video.speed')}: 1.5x
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => changePlaybackRate(2)}>
-                    Speed: 2x
+                    {t('video.speed')}: 2x
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

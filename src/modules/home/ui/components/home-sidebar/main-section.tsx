@@ -5,19 +5,21 @@ import { HomeIcon, ShortsIcon, SubscriptionsIcon } from "@/components/youtube-ic
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { t } from "@/lib/i18n";
+
 const items = [
     {
-        title: "Home",
+        title: t("sidebar.home"),
         url: "/",
         icon: HomeIcon
     },
     {
-        title: "Shorts",
+        title: t("sidebar.shorts"),
         url: "/shorts",
         icon: ShortsIcon
     },
     {
-        title: "Subscriptions",
+        title: t("sidebar.subscriptions"),
         url: "/feed/subscriptions",
         icon: SubscriptionsIcon,
         auth: true, // Only show if user is authenticated
