@@ -6,6 +6,7 @@ import { LikedVideoCard } from "@/components/video/LikedVideoCard";
 import { useLikedVideos } from "@/hooks/use-liked-videos";
 import { ThumbsUp, AlertCircle } from "lucide-react";
 import { useState } from "react";
+import { t } from "@/lib/i18n";
 
 export default function LikedVideosPage() {
     const { isLoggedIn, loading: authLoading } = useAuth();
@@ -38,23 +39,23 @@ export default function LikedVideosPage() {
                 <div className="text-center py-16">
                     <ThumbsUp className="w-16 h-16 mx-auto text-gray-400 dark:text-gray-500 mb-4" />
                     <h2 className="text-xl font-medium text-gray-600 dark:text-gray-300 mb-2">
-                        Войдите, чтобы просмотреть понравившиеся видео
+                        {t('auth.signInToViewLikedVideos')}
                     </h2>
                     <p className="text-gray-500 dark:text-gray-400 mb-6">
-                        Ставьте лайки видео, чтобы сохранить их в этот плейлист
+                        {t('auth.likeVideosToSave')}
                     </p>
                     <button 
                         onClick={() => setShowAuthDialog(true)}
                         className="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
                     >
-                        Войти
+                        {t('auth.signIn')}
                     </button>
                 </div>
                 <AuthRequiredDialog 
                     open={showAuthDialog} 
                     onOpenChange={setShowAuthDialog}
-                    title="Войдите для просмотра понравившихся видео"
-                    description="Чтобы просматривать видео, которые вам понравились, необходимо войти в аккаунт."
+                    title={t('auth.signInToViewLikedVideos')}
+                    description={"To view videos you have liked, you need to sign in to your account."}
                 />
             </>
         );
@@ -66,13 +67,12 @@ export default function LikedVideosPage() {
             <div className="space-y-6">
                 <div className="flex items-center gap-4">
                     <ThumbsUp className="w-8 h-8 text-gray-700 dark:text-gray-300" />
-                    <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Понравившиеся видео</h1>
+                    <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{t('likedVideos.title')}</h1>
                 </div>
-                
                 <div className="text-center py-16">
                     <AlertCircle className="w-16 h-16 mx-auto text-red-400 mb-4" />
                     <h2 className="text-xl font-medium text-gray-600 dark:text-gray-300 mb-2">
-                        Ошибка загрузки
+                        {t('likedVideos.errorLoading')}
                     </h2>
                     <p className="text-gray-500 dark:text-gray-400 mb-4">
                         {error}
@@ -81,7 +81,7 @@ export default function LikedVideosPage() {
                         onClick={() => window.location.reload()}
                         className="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
                     >
-                        Попробовать снова
+                        {t('likedVideos.tryAgain')}
                     </button>
                 </div>
             </div>
@@ -92,17 +92,16 @@ export default function LikedVideosPage() {
         <div className="space-y-6">
             <div className="flex items-center gap-4">
                 <ThumbsUp className="w-8 h-8 text-gray-700 dark:text-gray-300" />
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Понравившиеся видео</h1>
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{t('likedVideos.title')}</h1>
             </div>
-            
             {likedVideos.length === 0 ? (
                 <div className="text-center py-16">
                     <ThumbsUp className="w-16 h-16 mx-auto text-gray-400 dark:text-gray-500 mb-4" />
                     <h2 className="text-xl font-medium text-gray-600 dark:text-gray-300 mb-2">
-                        У вас пока нет понравившихся видео
+                        {t('likedVideos.noLikedVideos')}
                     </h2>
                     <p className="text-gray-500 dark:text-gray-400">
-                        Ставьте лайки видео, чтобы добавить их в этот плейлист
+                        {t('auth.likeVideosToSave')}
                     </p>
                 </div>
             ) : (

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { apiClient } from "@/lib/api-client";
 import { Shorts } from "@/types/api";
 import { ShortVideo } from "../types";
@@ -15,7 +15,7 @@ const getErrorMessage = (err: unknown): string => {
 
   if (typeof err === "object" && err !== null) {
     // Try to extract message from various error formats
-    const errorObj = err as any;
+    const errorObj = err as Record<string, unknown>;
 
     if (errorObj.message && typeof errorObj.message === "string") {
       return errorObj.message;
@@ -40,7 +40,7 @@ const getErrorMessage = (err: unknown): string => {
 };
 
 // Safe stringify with circular reference handling
-const safeStringify = (obj: any): string => {
+const safeStringify = (obj: unknown): string => {
   try {
     return JSON.stringify(obj, (key, value) => {
       if (typeof value === "object" && value !== null) {
@@ -53,7 +53,10 @@ const safeStringify = (obj: any): string => {
       return value;
     });
   } catch {
-    return obj?.toString?.() || "Failed to serialize error";
+    return (
+      (obj as { toString?: () => string })?.toString?.() ||
+      "Failed to serialize error"
+    );
   }
 };
 
@@ -86,7 +89,7 @@ export const useShorts = () => {
   };
 
   // Fetch shorts from API
-  const fetchShorts = async () => {
+  const fetchShorts = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -101,7 +104,7 @@ export const useShorts = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   // Refresh shorts
   const refreshShorts = () => {
@@ -111,7 +114,7 @@ export const useShorts = () => {
   // Load on mount
   useEffect(() => {
     fetchShorts();
-  }, []);
+  }, [fetchShorts]);
 
   return {
     shorts,

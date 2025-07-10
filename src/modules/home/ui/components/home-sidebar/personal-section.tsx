@@ -10,39 +10,41 @@ import { usePathname } from "next/navigation";
 import { memo } from "react";
 import { useIsClient } from "@/hooks/use-is-client";
 
+import { t } from "@/lib/i18n";
+
 const items = [
     {
-        title: "You",
+        title: t("sidebar.you"),
         url: "/feed/you",
         icon: UserCircleIcon,
         auth: true
     },
     {
-        title: "History",
+        title: t("sidebar.history"),
         url: "/feed/history",
         icon: HistoryIcon,
         auth: true
     },
     {
-        title: "Playlists",
+        title: t("sidebar.playlists"),
         url: "/feed/playlists",
         icon: List,
         auth: true
     },
     {
-        title: "Your videos",
+        title: t("sidebar.yourVideos"),
         url: "/feed/your-videos",
         icon: Play,
         auth: true
     },
     {
-        title: "Watch later",
+        title: t("sidebar.watchLater"),
         url: "/feed/watch-later",
         icon: Clock,
         auth: true
     },
     {
-        title: "Liked videos",
+        title: t("sidebar.likedVideos"),
         url: "/feed/liked-videos",
         icon: ThumbsUp,
         auth: true

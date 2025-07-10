@@ -1,29 +1,50 @@
-'use client'
+"use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Button } from '@/components/ui/button'
-import { buildImageUrl } from '@/lib/api-config'
-import { useAuth } from '@/hooks/use-auth'
-import { useState } from 'react'
-import type { Channel } from '@/types/api'
-import Image from 'next/image'
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { buildImageUrl } from "@/lib/api-config";
+import { useAuth } from "@/hooks/use-auth";
+import { useState, useMemo } from "react";
+import type { Channel } from "@/types/api";
+import Image from "next/image";
+import { t } from "@/lib/i18n";
+import { ApiClient } from "@/lib/api-client";
+import { useSubscriptions } from "@/hooks/use-subscriptions";
 
 interface ChannelHeaderProps {
-  channel: Channel
+  channel: Channel;
 }
 
 export function ChannelHeader({ channel }: ChannelHeaderProps) {
-  const { user } = useAuth()
-  const [subscribersCount] = useState(channel.subscribers_count || 0)
+  const { user } = useAuth();
+  const [subscribersCount, setSubscribersCount] = useState(
+    channel.subscribers_count || 0,
+  );
+  const [loading, setLoading] = useState(false);
 
-  const isOwnChannel = user?.id === channel.user_id
+  const isOwnChannel = user?.id === channel.user_id;
+
+  // Используем хук подписок для получения списка подписок пользователя
+  const { subscriptions, loadSubscriptions } = useSubscriptions();
+
+  // Проверяем, подписан ли пользователь на этот канал
+  const subscription = useMemo(
+    () =>
+      subscriptions.find(
+        (sub) =>
+          String(sub.channel_name) === String(channel.channel_name) ||
+          Number(sub.id) === Number(channel.id),
+      ),
+    [subscriptions, channel],
+  );
+  const isSubscribed = !!subscription;
 
   if (!channel || !channel.channel_name) {
     return (
       <div className="flex items-center justify-center h-40 text-muted-foreground">
-        Канал не найден или данные отсутствуют.
+        {t("channel.notFound")}
       </div>
-    )
+    );
   }
 
   return (
@@ -48,8 +69,8 @@ export function ChannelHeader({ channel }: ChannelHeaderProps) {
           {/* Аватар канала */}
           <div className="flex-shrink-0">
             <Avatar className="w-20 h-20 md:w-32 md:h-32">
-              <AvatarImage 
-                src={buildImageUrl(channel.profile_image_url || '')} 
+              <AvatarImage
+                src={buildImageUrl(channel.profile_image_url || "")}
                 alt={channel.channel_name}
               />
               <AvatarFallback className="text-2xl md:text-4xl">
@@ -68,7 +89,9 @@ export function ChannelHeader({ channel }: ChannelHeaderProps) {
                 <div className="flex flex-wrap items-center gap-2 mt-2 text-sm text-muted-foreground">
                   <span>@{channel.channel_name}</span>
                   <span>•</span>
-                  <span>{subscribersCount} подписчиков</span>
+                  <span>
+                    {subscribersCount} {t("channel.subscribers")}
+                  </span>
                 </div>
                 {channel.description && (
                   <p className="mt-2 text-sm text-muted-foreground line-clamp-2">
@@ -79,10 +102,40 @@ export function ChannelHeader({ channel }: ChannelHeaderProps) {
 
               {/* Кнопки действий */}
               <div className="flex gap-2">
-                {isOwnChannel && (
+                {isOwnChannel ? (
                   <Button variant="outline" className="min-w-[120px]">
-                    Изменить канал
+                    {t("channel.editChannel")}
                   </Button>
+                ) : (
+                  user && (
+                    <Button
+                      variant={isSubscribed ? "secondary" : "default"}
+                      className="min-w-[120px]"
+                      disabled={loading}
+                      onClick={async () => {
+                        setLoading(true);
+                        try {
+                          const apiClient = ApiClient.getInstance();
+                          if (isSubscribed && subscription) {
+                            await apiClient.unsubscribe(subscription.id);
+                            setSubscribersCount((prev) => prev - 1);
+                          } else {
+                            await apiClient.subscribe({
+                              channel_id: Number(channel.id),
+                            });
+                            setSubscribersCount((prev) => prev + 1);
+                          }
+                          await loadSubscriptions();
+                        } finally {
+                          setLoading(false);
+                        }
+                      }}
+                    >
+                      {isSubscribed
+                        ? t("channel.unsubscribe")
+                        : t("channel.subscribe")}
+                    </Button>
+                  )
                 )}
               </div>
             </div>
@@ -90,5 +143,5 @@ export function ChannelHeader({ channel }: ChannelHeaderProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }

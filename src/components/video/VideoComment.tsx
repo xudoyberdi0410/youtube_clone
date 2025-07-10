@@ -4,7 +4,8 @@ import { memo } from 'react'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import type { VideoComment } from '@/types/common'
 import { formatDistanceToNow } from 'date-fns'
-import { ru } from 'date-fns/locale'
+import { enUS } from 'date-fns/locale'
+import { t } from '@/lib/i18n'
 
 interface VideoCommentProps {
   comment: VideoComment
@@ -16,10 +17,10 @@ export const VideoCommentComponent = memo(({ comment }: VideoCommentProps) => {
       const date = new Date(dateString)
       return formatDistanceToNow(date, { 
         addSuffix: true, 
-        locale: ru 
+        locale: enUS 
       })
     } catch {
-      return 'недавно'
+      return t('comments.recent')
     }
   }
 

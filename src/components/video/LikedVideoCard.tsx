@@ -1,41 +1,50 @@
 // src/components/video/LikedVideoCard.tsx
-'use client'
+"use client";
 
-import Link from 'next/link'
-import Image from 'next/image'
-import { Button } from '@/components/ui/button'
-import { Trash2 } from 'lucide-react'
-import { buildImageUrl } from '@/lib/api-config'
-import { formatApiDateLocal } from '@/lib/utils/format'
-import type { Video as ApiVideo } from '@/types/api'
+import Link from "next/link";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
+import { buildImageUrl } from "@/lib/api-config";
+import { formatApiDateLocal, formatVideoDuration } from "@/lib/utils/format";
+import type { Video as ApiVideo } from "@/types/api";
+import { t } from "@/lib/i18n";
 
 interface LikedVideoCardProps {
-  video: ApiVideo
-  likeId: number
-  onRemoveLike: (likeId: number) => Promise<boolean>
+  video: ApiVideo;
+  likeId: number;
+  onRemoveLike: (likeId: number) => Promise<boolean>;
 }
 
-export function LikedVideoCard({ video, likeId, onRemoveLike }: LikedVideoCardProps) {
+export function LikedVideoCard({
+  video,
+  likeId,
+  onRemoveLike,
+}: LikedVideoCardProps) {
   // YouTube-style card layout, using only available fields from API
-  const channelName = video.channel_name || video.name || 'Канал'
-  const videoTitle = video.video_title || video.title || 'Без названия'
-  const thumbnail = video.thumbnail_path
-  const views = video.video_views || video.views || 0
-  const createdAt = video.created_at
-  const videoId = video.id
+  const channelName =
+    video.channel_name || video.name || t("video.unknownChannel");
+  const videoTitle = video.video_title || video.title || t("video.untitled");
+  const thumbnail = video.thumbnail_path;
+  const views = video.video_views || video.views || 0;
+  const createdAt = video.created_at;
+  const videoId = video.id;
 
   // Корректно строим URL превью через buildImageUrl
-  const thumbnailUrl = thumbnail ? buildImageUrl(thumbnail) : ''
+  const thumbnailUrl = thumbnail ? buildImageUrl(thumbnail) : "";
 
   const handleRemoveLike = async (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    await onRemoveLike(likeId)
-  }
+    e.preventDefault();
+    e.stopPropagation();
+    await onRemoveLike(likeId);
+  };
 
   return (
     <div className="w-full max-w-full flex flex-col cursor-pointer group">
-      <Link href={`/watch?v=${videoId}`} className="block w-full aspect-video bg-gray-200 dark:bg-gray-700 relative overflow-hidden rounded-xl">
+      <Link
+        href={`/watch?v=${videoId}`}
+        className="block w-full aspect-video bg-gray-200 dark:bg-gray-700 relative overflow-hidden rounded-xl"
+      >
         {thumbnailUrl ? (
           <Image
             src={thumbnailUrl}
@@ -46,7 +55,14 @@ export function LikedVideoCard({ video, likeId, onRemoveLike }: LikedVideoCardPr
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-gray-300 dark:bg-gray-600">
-            <span className="text-gray-400 dark:text-gray-300 text-sm">Нет превью</span>
+            <span className="text-gray-400 dark:text-gray-300 text-sm">
+              {t("video.noPreview")}
+            </span>
+          </div>
+        )}
+        {(video.duration || video.duration_video) && (
+          <div className="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-1.5 py-0.5 rounded-md font-medium z-10">
+            {formatVideoDuration(video.duration ?? video.duration_video)}
           </div>
         )}
       </Link>
@@ -61,7 +77,10 @@ export function LikedVideoCard({ video, likeId, onRemoveLike }: LikedVideoCardPr
             </h3>
           </Link>
           <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">
-            <Link href={`/channel?name=${encodeURIComponent(channelName)}`} className="hover:underline">
+            <Link
+              href={`/channel?name=${encodeURIComponent(channelName)}`}
+              className="hover:underline"
+            >
               {channelName}
             </Link>
           </div>
@@ -82,5 +101,5 @@ export function LikedVideoCard({ video, likeId, onRemoveLike }: LikedVideoCardPr
         </Button>
       </div>
     </div>
-  )
+  );
 }

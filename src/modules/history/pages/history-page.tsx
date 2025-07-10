@@ -12,6 +12,7 @@ import Link from "next/link";
 import { Trash2 } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import { ru } from "date-fns/locale";
+import { t } from "@/lib/i18n";
 
 function formatApiDateLocal(dateString: string): string {
   try {
@@ -31,7 +32,7 @@ export default function HistoryPage() {
   useEffect(() => {
     apiClient.getHistory()
       .then(setHistory)
-      .catch(() => setError("Не удалось загрузить историю просмотров"))
+      .catch(() => setError(t("history.failedToLoad")))
       .finally(() => setLoading(false));
   }, []);
 
@@ -40,11 +41,11 @@ export default function HistoryPage() {
       await apiClient.deleteFromHistory(historyId);
       setHistory((prev) => prev.filter((h) => h.id !== historyId));
     } catch {
-      setError("Не удалось удалить видео из истории");
+      setError(t("history.failedToDelete"));
     }
   };
 
-  if (loading) return <div className="p-8">Загрузка...</div>;
+  if (loading) return <div className="p-8">{t('history.loading')}</div>;
   if (error) return (
     <div className="p-8">
       <Alert variant="destructive">
@@ -58,17 +59,17 @@ export default function HistoryPage() {
       <span className="mb-6 text-gray-400">
         <HistoryIcon className="w-24 h-24" />
       </span>
-      <h2 className="text-xl font-semibold mb-2">В вашей истории пока нет видео</h2>
-      <p className="text-muted-foreground mb-4">Здесь будут отображаться видео, которые вы смотрели.</p>
+      <h2 className="text-xl font-semibold mb-2">{t('history.emptyTitle')}</h2>
+      <p className="text-muted-foreground mb-4">{t('history.emptyDescription')}</p>
       <Button asChild variant="outline">
-        <Link href="/">Перейти на главную</Link>
+        <Link href="/">{t('history.goHome')}</Link>
       </Button>
     </div>
   );
 
   return (
     <>
-      <h1 className="text-2xl font-bold mb-6">История просмотров</h1>
+      <h1 className="text-2xl font-bold mb-6">{t('history.title')}</h1>
       <div className="space-y-4">
         {history.map((item) => (
           <div key={item.id} className="flex gap-4 p-4 bg-white border rounded-lg hover:shadow-md transition-shadow group">

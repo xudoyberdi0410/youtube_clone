@@ -1,4 +1,6 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
+import Image from "next/image";
+import { t } from "../../lib/i18n";
 import { useShorts } from "./hooks/useShorts";
 import { ShortVideo } from "./types";
 import {
@@ -16,7 +18,7 @@ export const ShortsFeed: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Handle scroll to update current video
-  const handleScroll = () => {
+  const handleScroll = useCallback(() => {
     if (!containerRef.current) return;
 
     const container = containerRef.current;
@@ -31,7 +33,7 @@ export const ShortsFeed: React.FC = () => {
     ) {
       setCurrentIndex(newIndex);
     }
-  };
+  }, [currentIndex, shorts.length]);
 
   // Debounced scroll handler
   useEffect(() => {
@@ -50,7 +52,7 @@ export const ShortsFeed: React.FC = () => {
         clearTimeout(timeoutId);
       };
     }
-  }, [currentIndex, shorts.length]);
+  }, [currentIndex, shorts.length, handleScroll]);
 
   // Handle first user interaction
   const handleFirstInteraction = () => {
@@ -87,7 +89,7 @@ export const ShortsFeed: React.FC = () => {
       <div className="shorts-container">
         <div className="loading">
           <div className="spinner"></div>
-          <div>Loading shorts...</div>
+          <div>{t("shorts.loading")}</div>
         </div>
       </div>
     );
@@ -97,10 +99,10 @@ export const ShortsFeed: React.FC = () => {
     return (
       <div className="shorts-container">
         <div className="error">
-          <div className="error-title">Something went wrong</div>
+          <div className="error-title">{t("shorts.somethingWentWrong")}</div>
           <div className="error-message">{error}</div>
           <button className="error-button" onClick={refreshShorts}>
-            Try Again
+            {t("shorts.tryAgain")}
           </button>
         </div>
       </div>
@@ -111,10 +113,10 @@ export const ShortsFeed: React.FC = () => {
     return (
       <div className="shorts-container">
         <div className="error">
-          <div className="error-title">No shorts found</div>
-          <div className="error-message">Check back later for new content</div>
+          <div className="error-title">{t("shorts.noShortsFound")}</div>
+          <div className="error-message">{t("shorts.checkBackLater")}</div>
           <button className="error-button" onClick={refreshShorts}>
-            Refresh
+            {t("shorts.refresh")}
           </button>
         </div>
       </div>
@@ -246,10 +248,13 @@ const VideoItem: React.FC<VideoItemProps> = ({
         <div className="channel-info">
           <div className="channel-details">
             {video.channel?.profile_image_url && (
-              <img
+              <Image
                 src={video.channel.profile_image_url}
                 alt={video.channel.channel_name}
                 className="channel-avatar"
+                width={40}
+                height={40}
+                unoptimized
               />
             )}
             <div>

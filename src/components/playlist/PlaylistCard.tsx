@@ -3,6 +3,7 @@
 "use client"
 
 import { useState } from "react"
+import { t } from "@/lib/i18n"
 import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -26,7 +27,7 @@ export function PlaylistCard({ playlist, onEdit, onDelete }: PlaylistCardProps) 
   const [isLoading, setIsLoading] = useState(false)
 
   const handleDelete = async () => {
-    if (window.confirm("Are you sure you want to delete this playlist?")) {
+    if (window.confirm(t("playlist.deleteConfirm"))) {
       setIsLoading(true)
       try {
         await onDelete?.(playlist.id)
@@ -57,7 +58,7 @@ export function PlaylistCard({ playlist, onEdit, onDelete }: PlaylistCardProps) 
               </div>
               {/* Video count badge */}
               <div className="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-2 py-1 rounded">
-                {videoCount} videos
+                {videoCount} {t("playlist.videos")}
               </div>
             </div>
           </Link>
@@ -77,7 +78,7 @@ export function PlaylistCard({ playlist, onEdit, onDelete }: PlaylistCardProps) 
               <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={() => onEdit?.(playlist)}>
                   <Edit className="w-4 h-4 mr-2" />
-                  Edit
+                  {t("playlist.edit")}
                 </DropdownMenuItem>
                 <DropdownMenuItem 
                   onClick={handleDelete}
@@ -85,7 +86,7 @@ export function PlaylistCard({ playlist, onEdit, onDelete }: PlaylistCardProps) 
                   disabled={isLoading}
                 >
                   <Trash2 className="w-4 h-4 mr-2" />
-                  Delete
+                  {t("playlist.delete")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -107,12 +108,12 @@ export function PlaylistCard({ playlist, onEdit, onDelete }: PlaylistCardProps) 
           )}
           
           <div className="flex items-center gap-2 text-xs text-gray-500">
-            <span>{videoCount} video{videoCount !== 1 ? 's' : ''}</span>
+            <span>{videoCount} {t(videoCount === 1 ? "playlist.video" : "playlist.videos")}</span>
             {(playlist.is_personal || !playlist.is_public) && (
               <>
                 <span>•</span>
                 <Lock className="w-3 h-3" />
-                <span>Private</span>
+                <span>{t("playlist.private")}</span>
               </>
             )}
             {playlist.created_at && (

@@ -16,11 +16,11 @@ export const BaseLayout = ({
 }: BaseLayoutProps) => {
   const pathname = usePathname();
   const withContainer =
-    propWithContainer ?? (pathname !== "/" && !pathname.startsWith("/shorts"));
+    propWithContainer ?? (pathname !== "/" && !pathname?.startsWith("/shorts"));
 
   // Исключаем определенные маршруты, которые имеют свой собственный layout
   const shouldRenderLayout =
-    !pathname.startsWith("/watch") && !pathname.startsWith("/auth");
+    !pathname?.startsWith("/watch") && !pathname?.startsWith("/auth");
 
   // Если это исключенный маршрут, просто рендерим children
   if (!shouldRenderLayout) {

@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Button } from '@/components/ui/button'
 import { UserCircle, LogIn } from 'lucide-react'
 import Link from 'next/link'
+import { t } from '@/lib/i18n'
 
 interface AuthRequiredDialogProps {
   open: boolean
@@ -15,8 +16,8 @@ interface AuthRequiredDialogProps {
 export function AuthRequiredDialog({
   open,
   onOpenChange,
-  title = "Sign in required",
-  description = "You need to be signed in to perform this action."
+  title = t("authRequired.title"),
+  description = t("authRequired.description")
 }: AuthRequiredDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -36,12 +37,12 @@ export function AuthRequiredDialog({
           <Button asChild className="w-full">
             <Link href="/auth/signin">
               <LogIn className="w-4 h-4 mr-2" />
-              Sign in
+              {t("auth.signIn")}
             </Link>
           </Button>
           <Button variant="outline" asChild className="w-full">
             <Link href="/auth/signup">
-              Create account
+              {t("auth.createAccount")}
             </Link>
           </Button>
           <Button 
@@ -49,7 +50,7 @@ export function AuthRequiredDialog({
             onClick={() => onOpenChange(false)}
             className="w-full"
           >
-            Cancel
+            {t("playlist.cancel")}
           </Button>
         </div>
       </DialogContent>

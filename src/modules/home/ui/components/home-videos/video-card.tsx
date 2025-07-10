@@ -11,34 +11,39 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { VerifiedIcon } from '@/components/youtube-icons'
-import { formatApiDateLocal, formatShortNumber } from '@/lib/utils/format'
+import { VerifiedIcon } from "@/components/youtube-icons";
+import {
+  formatApiDateLocal,
+  formatShortNumber,
+  formatVideoDuration,
+} from "@/lib/utils/format";
+import { t } from "@/lib/i18n";
 
 export function VideoCard({
-  id, 
-  title, 
-  preview, 
-  views, 
-  channel, 
-  duration, 
+  id,
+  title,
+  preview,
+  views,
+  channel,
+  duration,
   uploadedAt,
-  isLive
+  isLive,
 }: Video) {
   // Определяем, является ли это первое видео (LCP)
   const isFirstVideo = id === "1";
-  
+
   const handleMoreOptionsClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
   };
-  
+
   const handleChannelClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     // Здесь можно добавить навигацию на страницу канала
     // window.location.href = `/channel/${channel.id}`;
   };
-  
+
   return (
     <div className="group cursor-pointer animate-in fade-in-0 duration-700">
       {/* Thumbnail and Title link to video */}
@@ -46,27 +51,27 @@ export function VideoCard({
         {/* Thumbnail Container */}
         <div className="relative w-full aspect-video mb-3">
           <div className="relative w-full h-full bg-gray-100 rounded-xl overflow-hidden shadow-sm md:hover:shadow-md transition-shadow duration-300">
-            <Image 
-              src={preview || "/api/placeholder/320/180"} 
-              alt={title} 
-              fill 
+            <Image
+              src={preview || "/api/placeholder/320/180"}
+              alt={title}
+              fill
               className="object-cover transition-transform duration-300 md:group-hover:scale-105"
               priority={isFirstVideo}
               sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
             />
             {/* Duration Badge */}
             {duration && !isLive && (
-              <Badge 
-                variant="secondary" 
+              <Badge
+                variant="secondary"
                 className="absolute bottom-2 right-2 bg-black/80 text-white hover:bg-black/80 text-xs font-medium px-1.5 py-0.5 backdrop-blur-sm"
               >
-                {duration}
+                {formatVideoDuration(duration)}
               </Badge>
             )}
             {/* Live Badge */}
             {isLive && (
-              <Badge 
-                variant="destructive" 
+              <Badge
+                variant="destructive"
                 className="absolute bottom-2 right-2 bg-red-600 text-white hover:bg-red-600 text-xs font-medium px-1.5 py-0.5 animate-pulse"
               >
                 🔴 LIVE
@@ -85,12 +90,12 @@ export function VideoCard({
       {/* Video Info */}
       <div className="flex gap-3">
         {/* Channel Avatar */}
-        <Avatar 
+        <Avatar
           className="w-8 h-8 md:w-9 md:h-9 flex-shrink-0 mt-0.5 ring-2 ring-transparent md:hover:ring-gray-200 transition-all duration-200 cursor-pointer"
           onClick={handleChannelClick}
         >
-          <AvatarImage 
-            src={channel.avatarUrl} 
+          <AvatarImage
+            src={channel.avatarUrl}
             alt={channel.name}
             className="object-cover"
           />
@@ -106,7 +111,7 @@ export function VideoCard({
             <Link
               href={`/channel?name=${encodeURIComponent(channel.name)}`}
               className="text-xs md:text-sm text-gray-600 hover:text-gray-900 cursor-pointer transition-colors truncate"
-              onClick={e => e.stopPropagation()}
+              onClick={(e) => e.stopPropagation()}
             >
               {channel.name}
             </Link>
@@ -116,7 +121,9 @@ export function VideoCard({
           </div>
           {/* Views and Upload Time */}
           <div className="flex items-center gap-1 text-xs md:text-sm text-gray-600">
-            <span>{formatShortNumber(views)} views</span>
+            <span>
+              {formatShortNumber(views)} {t("video.views")}
+            </span>
             <span>•</span>
             <span>{formatApiDateLocal(uploadedAt)}</span>
           </div>
@@ -126,23 +133,27 @@ export function VideoCard({
         <div className="hidden md:block" onClick={handleMoreOptionsClick}>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button 
-                variant="ghost" 
-                size="sm" 
+              <Button
+                variant="ghost"
+                size="sm"
                 className="w-8 h-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-gray-100 flex-shrink-0"
               >
                 <MoreVertical className="w-4 h-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuItem>Add to queue</DropdownMenuItem>
-              <DropdownMenuItem>Save to Watch later</DropdownMenuItem>
-              <DropdownMenuItem>Save to playlist</DropdownMenuItem>
-              <DropdownMenuItem>Download</DropdownMenuItem>
-              <DropdownMenuItem>Share</DropdownMenuItem>
-              <DropdownMenuItem className="text-red-600">Not interested</DropdownMenuItem>
-              <DropdownMenuItem className="text-red-600">Don&apos;t recommend channel</DropdownMenuItem>
-              <DropdownMenuItem>Report</DropdownMenuItem>
+              <DropdownMenuItem>{t("video.addToQueue")}</DropdownMenuItem>
+              <DropdownMenuItem>{t("video.saveToWatchLater")}</DropdownMenuItem>
+              <DropdownMenuItem>{t("video.saveToPlaylist")}</DropdownMenuItem>
+              <DropdownMenuItem>{t("video.download")}</DropdownMenuItem>
+              <DropdownMenuItem>{t("video.share")}</DropdownMenuItem>
+              <DropdownMenuItem className="text-red-600">
+                {t("video.notInterested")}
+              </DropdownMenuItem>
+              <DropdownMenuItem className="text-red-600">
+                {t("video.dontRecommendChannel")}
+              </DropdownMenuItem>
+              <DropdownMenuItem>{t("video.report")}</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
