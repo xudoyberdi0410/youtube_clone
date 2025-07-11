@@ -173,6 +173,12 @@
   "sidebar.news": "Новости",
   "sidebar.sports": "Спорт",
   "sidebar.learning": "Обучение",
+  "sidebar.websiteSettings": "Настройки сайта",
+  "sidebar.language": "Язык",
+  "sidebar.theme": "Тема",
+  "sidebar.themeLight": "Светлая",
+  "sidebar.themeDark": "Тёмная",
+  "sidebar.themeSystem": "Системная",
   "history.loading": "Загрузка...",
   "history.failedToLoad": "Не удалось загрузить историю просмотров",
   "history.failedToDelete": "Не удалось удалить видео из истории",
@@ -315,5 +321,6 @@
   "feedYou.historyTitle": "История",
   "feedYou.likedTitle": "Понравившиеся",
   "feedYou.playlistsTitle": "Плейлисты",
-  "feedYou.seeAll": "Смотреть всё"
+  "feedYou.seeAll": "Смотреть всё",
+  "search.resultsFor": "Результаты поиска по запросу: {{query}}"
 }

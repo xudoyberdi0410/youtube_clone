@@ -1,13 +1,24 @@
 "use client";
 
-import { Sidebar, SidebarContent, useSidebar } from "@/components/ui/sidebar";
+import { Sidebar, SidebarContent, useSidebar, SidebarFooter } from "@/components/ui/sidebar";
 import { MainSection } from "./main-section";
 import { Separator } from "@/components/ui/separator";
 import { PersonalSection } from "./personal-section";
 import { useEffect, useState } from "react";
+import { Settings, Languages, Sun, Moon, Monitor } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator
+} from "@/components/ui/dropdown-menu";
+import { useTheme } from "next-themes";
+import { t } from "@/lib/i18n";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
 export const HomeSidebar = () => {
-    const { setOpen, open } = useSidebar();
+    const { setOpen, open, state } = useSidebar();
     const [isManuallyToggled, setIsManuallyToggled] = useState(false);
 
     useEffect(() => {
@@ -36,7 +47,10 @@ export const HomeSidebar = () => {
             
             return () => clearTimeout(timer);
         }
-    }, [open]);return (
+    }, [open]);
+
+    // FIX: Add return statement for JSX
+    return (
         <Sidebar 
             className="pt-16 z-40 border-r border-gray-200 hidden lg:flex" 
             collapsible="icon" 
@@ -47,6 +61,101 @@ export const HomeSidebar = () => {
                 <Separator className="my-3 bg-gray-200" />
                 <PersonalSection />
             </SidebarContent>
+            {/* Settings dropdown at the bottom */}
+            <SidebarFooter className="bg-white border-t border-gray-200 flex justify-center">
+                <DropdownMenu>
+                  <Tooltip delayDuration={0}>
+                    <TooltipTrigger asChild>
+                      <DropdownMenuTrigger asChild>
+                        <button className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                          <Settings className="w-5 h-5" />
+                          {state !== "collapsed" && (
+                            <span className="text-sm font-normal">{t("sidebar.websiteSettings")}</span>
+                          )}
+                        </button>
+                      </DropdownMenuTrigger>
+                    </TooltipTrigger>
+                    {state === "collapsed" && (
+                      <TooltipContent side="right" align="center">
+                        {t("sidebar.websiteSettings")}
+                      </TooltipContent>
+                    )}
+                  </Tooltip>
+                  <DropdownMenuContent align="end" className="w-56">
+                    {/* Language Switcher */}
+                    <DropdownMenuItem asChild>
+                      <div className="flex flex-col w-full">
+                        <span className="text-xs font-semibold mb-1 flex items-center gap-2"><Languages className="w-4 h-4" /> {t("sidebar.language")}</span>
+                        <SidebarLanguageSwitcher />
+                      </div>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    {/* Theme Switcher */}
+                    <DropdownMenuItem asChild>
+                      <div className="flex flex-col w-full">
+                        <span className="text-xs font-semibold mb-1 flex items-center gap-2"><Sun className="w-4 h-4" /> {t("sidebar.theme")}</span>
+                        <SidebarThemeSwitcher />
+                      </div>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+            </SidebarFooter>
         </Sidebar>
     );
+}
+
+// SidebarLanguageSwitcher component
+function SidebarLanguageSwitcher() {
+  const [currentLanguage, setCurrentLanguage] = useState("en");
+  useEffect(() => {
+    const storedLanguage = localStorage.getItem("language") || "en";
+    setCurrentLanguage(storedLanguage);
+  }, []);
+  const languages = [
+    { code: "en", name: t("language.english"), flag: "🇺🇸" },
+    { code: "ru", name: t("language.russian"), flag: "🇷🇺" },
+    { code: "uz", name: t("language.uzbek"), flag: "🇺🇿" },
+  ];
+  const handleLanguageChange = (code: string) => {
+    setCurrentLanguage(code);
+    localStorage.setItem("language", code);
+    document.documentElement.lang = code;
+    window.location.reload();
+  };
+  return (
+    <div className="flex gap-2">
+      {languages.map((lang) => (
+        <button
+          key={lang.code}
+          className={`px-2 py-1 rounded text-xs border ${currentLanguage === lang.code ? 'bg-blue-100 border-blue-400 font-bold' : 'bg-gray-50 border-gray-200'}`}
+          onClick={() => handleLanguageChange(lang.code)}
+        >
+          <span className="mr-1">{lang.flag}</span>{lang.name}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+// SidebarThemeSwitcher component
+function SidebarThemeSwitcher() {
+  const { theme, setTheme } = useTheme();
+  const options = [
+    { value: "light", label: t("sidebar.themeLight"), icon: Sun },
+    { value: "dark", label: t("sidebar.themeDark"), icon: Moon },
+    { value: "system", label: t("sidebar.themeSystem"), icon: Monitor },
+  ];
+  return (
+    <div className="flex gap-2">
+      {options.map((opt) => (
+        <button
+          key={opt.value}
+          className={`px-2 py-1 rounded text-xs border flex items-center gap-1 ${theme === opt.value ? 'bg-blue-100 border-blue-400 font-bold' : 'bg-gray-50 border-gray-200'}`}
+          onClick={() => setTheme(opt.value)}
+        >
+          <opt.icon className="w-4 h-4" /> {opt.label}
+        </button>
+      ))}
+    </div>
+  );
 }

@@ -163,6 +163,12 @@
   "sidebar.news": "News",
   "sidebar.sports": "Sports",
   "sidebar.learning": "Learning",
+  "sidebar.websiteSettings": "Website settings",
+  "sidebar.language": "Language",
+  "sidebar.theme": "Theme",
+  "sidebar.themeLight": "Light",
+  "sidebar.themeDark": "Dark",
+  "sidebar.themeSystem": "System",
   "history.loading": "Loading...",
   "history.failedToLoad": "Failed to load watch history",
   "history.failedToDelete": "Failed to delete video from history",
@@ -305,5 +311,6 @@
   "feedYou.historyTitle": "History",
   "feedYou.likedTitle": "Liked",
   "feedYou.playlistsTitle": "Playlists",
-  "feedYou.seeAll": "See all"
+  "feedYou.seeAll": "See all",
+  "search.resultsFor": "Search Results for: {{query}}"
 }

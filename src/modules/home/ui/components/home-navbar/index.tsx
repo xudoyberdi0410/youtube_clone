@@ -11,10 +11,13 @@ import { useAuth } from "@/modules/auth/hooks/use-auth"
 import { useIsClient } from "@/hooks/use-is-client"
 import { t } from "@/lib/i18n"
 import { ThemeSwitcher } from "@/components/ui/theme-switcher";
+import { useSearchParams } from "next/navigation"
 
 export const HomeNavbar = () => {
     const isClient = useIsClient();
     const { isLoggedIn, loading } = useAuth();
+    const searchParams = useSearchParams();
+    const searchQuery = searchParams?.get("q") || "";
 
     if (!isClient || loading) return null;
 
@@ -42,7 +45,7 @@ export const HomeNavbar = () => {
 
                 {/* Search bar - hidden on mobile, shown on tablet+ */}
                 <div className="hidden md:flex flex-1 justify-center max-w-[720px] mx-auto">
-                    <SearchInput />
+                    <SearchInput initialValue={searchQuery} />
                 </div>
 
                 {/* Right side - Upload button, Auth button and mobile search */}
