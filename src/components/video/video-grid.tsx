@@ -118,9 +118,9 @@ function VideoCard({ video, isOwner }: VideoCardProps) {
               <Button
                 variant="ghost"
                 size="icon"
-                className="w-10 h-10 p-0 bg-white/80 hover:bg-white"
+                className="w-10 h-10 p-0 bg-background/80 hover:bg-background"
               >
-                <MoreVertical className="w-6 h-6 text-black" />
+                <MoreVertical className="w-6 h-6 text-foreground" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -133,7 +133,7 @@ function VideoCard({ video, isOwner }: VideoCardProps) {
       )}
       <Link href={`/watch?v=${video.id}`}>
         <CardContent className="p-0">
-          <div className="relative aspect-video bg-gray-100">
+          <div className="relative aspect-video bg-muted">
             {video.thumbnail_path ? (
               <Image
                 src={buildImageUrl(video.thumbnail_path)}
@@ -144,14 +144,14 @@ function VideoCard({ video, isOwner }: VideoCardProps) {
                 priority={true}
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center bg-gray-200">
-                <span className="text-gray-400 text-sm">
+              <div className="w-full h-full flex items-center justify-center bg-muted">
+                <span className="text-muted-foreground text-sm">
                   {t("video.noPreview")}
                 </span>
               </div>
             )}
             {videoDuration && (
-              <div className="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-1.5 py-0.5 rounded">
+              <div className="absolute bottom-2 right-2 bg-foreground/80 text-background text-xs px-1.5 py-0.5 rounded">
                 {formatVideoDuration(video.duration ?? video.duration_video)}
               </div>
             )}
