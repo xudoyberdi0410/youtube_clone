@@ -16,7 +16,6 @@ import {
 import { MoreVertical, Play, Edit, Trash2, Lock, PlaySquare } from "lucide-react"
 import { formatDistanceToNow } from "date-fns"
 import type { Playlist } from "@/types/api"
-import { cn } from '@/lib/utils';
 
 interface PlaylistCardProps {
   playlist: Playlist

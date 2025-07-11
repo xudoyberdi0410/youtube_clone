@@ -1,15 +1,6 @@
 "use client";
-import { SearchResultCard } from "./SearchResultCard";
-import { VideoRowList } from '@/components/video/VideoRowList';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import Link from 'next/link';
-import Image from 'next/image';
-import { t } from '@/lib/i18n';
-import { formatVideoDuration, formatRelativeTimeIntl } from '@/lib/utils/format';
-import { getCurrentLanguage } from '@/lib/i18n';
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
-import { MoreVertical } from 'lucide-react';
 import { UniversalVideoCard } from '@/components/video/UniversalVideoCard';
+import { t } from '@/lib/i18n';
 
 interface Channel {
   id: string;

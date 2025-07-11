@@ -13,7 +13,6 @@ import { t } from '@/lib/i18n';
 import { formatRelativeTimeIntl } from '@/lib/utils/format';
 import { getCurrentLanguage } from '@/lib/i18n';
 import { VideoFilters } from '../home-videos/video-filters';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import React, { useRef, useState, useEffect } from 'react';
 
 interface WatchVideoProps {
@@ -88,7 +87,7 @@ export const WatchVideo = ({ videoId }: WatchVideoProps) => {
     const { videos: recommendedVideos, isLoading: loadingRecommended } = useVideos();
     
     // Предзагружаем статистику для лучшего UX
-    const { isLoading: isLoadingStats } = useVideoStats({ 
+    useVideoStats({ 
       videoId, 
       channelId: video?.channel?.id 
     });

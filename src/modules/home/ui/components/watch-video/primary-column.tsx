@@ -13,15 +13,13 @@ import { AuthRequiredDialog } from '@/components/auth/AuthRequiredDialog'
 import { 
   ThumbsUp, 
   ThumbsDown, 
-  Share, 
   MoreHorizontal,
   Bookmark,
   Bell,
   Copy,
   Share2
 } from 'lucide-react'
-import { VerifiedIcon } from '@/components/youtube-icons'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { t } from '@/lib/i18n';
 import { useToast } from '@/hooks/use-toast';
 import { Telegram, X, Instagram, Whatsapp } from '@/components/youtube-icons'
@@ -97,23 +95,6 @@ export function PrimaryColumn({
     // TODO: Implement video seeking functionality
     console.log(`Seeking to ${seconds} seconds`)
   }
-
-  // SVG-иконки соцсетей (официальные)
-  const TelegramIcon = () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9.036 15.956l-.396 4.012c.568 0 .814-.244 1.112-.537l2.664-2.522 5.522 4.033c1.012.557 1.736.264 1.99-.94l3.606-16.84c.33-1.527-.553-2.127-1.54-1.792L1.36 9.49c-1.49.522-1.472 1.27-.254 1.61l4.372 1.366 10.164-6.41c.48-.312.92-.138.56.174" fill="#229ED9"/></svg>
-  );
-  const XIcon = () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M17.53 6.47a.75.75 0 0 0-1.06 0L12 10.94 7.53 6.47a.75.75 0 0 0-1.06 1.06L10.94 12l-4.47 4.47a.75.75 0 1 0 1.06 1.06L12 13.06l4.47 4.47a.75.75 0 0 0 1.06-1.06L13.06 12l4.47-4.47a.75.75 0 0 0 0-1.06z" fill="#000"/></svg>
-  );
-  const InstagramIcon = () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><radialGradient id="ig" cx="50%" cy="50%" r="80%"><stop offset="0%" stopColor="#f9ce34"/><stop offset="30%" stopColor="#ee2a7b"/><stop offset="60%" stopColor="#6228d7"/></radialGradient><rect width="24" height="24" rx="5" fill="url(#ig)"/><path d="M12 7.2A4.8 4.8 0 1 0 12 16.8A4.8 4.8 0 1 0 12 7.2Z" stroke="#fff" strokeWidth="1.5"/><circle cx="17.5" cy="6.5" r="1.2" fill="#fff"/></svg>
-  );
-  const WhatsappIcon = () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.198.297-.767.966-.94 1.164-.173.198-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.372-.025-.521-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.372-.01-.571-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.099 3.2 5.077 4.363.711.306 1.263.489 1.694.626.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.288.173-1.413-.074-.124-.272-.198-.57-.347z" fill="#25D366"/></svg>
-  );
-  const EmailIcon = () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="4" fill="#ececec"/><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 2v.01L12 13 4 6.01V6h16zm0 12H4V8.99l8 6.99 8-6.99V18z" fill="#888"/></svg>
-  );
 
   return (
     <div id="primary" className="w-full">

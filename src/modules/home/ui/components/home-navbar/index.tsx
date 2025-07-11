@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button"
 import { useAuth } from "@/modules/auth/hooks/use-auth"
 import { useIsClient } from "@/hooks/use-is-client"
 import { t } from "@/lib/i18n"
-import { ThemeSwitcher } from "@/components/ui/theme-switcher";
 import { useSearchParams } from "next/navigation"
 
 export const HomeNavbar = () => {

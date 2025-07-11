@@ -7,25 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { HistoryIcon } from "@/components/youtube-icons";
 import { buildImageUrl } from "@/lib/api-config";
-import Image from "next/image";
 import Link from "next/link";
-import { Trash2 } from "lucide-react";
-import { format, parseISO } from "date-fns";
-import { ru } from "date-fns/locale";
 import { t } from "@/lib/i18n";
-import { formatRelativeTimeIntl } from '@/lib/utils/format';
-import { getCurrentLanguage } from '@/lib/i18n';
 import { UniversalVideoCard } from '@/components/video/UniversalVideoCard';
-
-function formatApiDateLocal(dateString: string): string {
-  try {
-    const date = parseISO(dateString);
-    return format(date, "dd.MM.yyyy HH:mm", { locale: ru });
-  } catch (error) {
-    console.warn("Failed to parse date:", dateString, error);
-    return dateString;
-  }
-}
 
 export default function HistoryPage() {
   const [history, setHistory] = useState<History[]>([]);
@@ -77,7 +61,7 @@ export default function HistoryPage() {
         {history.map((item) => (
           <UniversalVideoCard
             key={item.id}
-            id={item.video_id}
+            id={item.id}
             title={item.title}
             description={t('history.noDescription')}
             views={item.views}

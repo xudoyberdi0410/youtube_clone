@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { buildImageUrl } from "@/lib/api-config";
-import { formatApiDate, formatVideoDuration, formatRelativeTimeIntl } from "@/lib/utils/format";
+import { formatVideoDuration, formatRelativeTimeIntl } from "@/lib/utils/format";
 import type { Video, VideoCategory } from "@/types/api";
 import Image from "next/image";
 import { useEffect, useState } from "react";

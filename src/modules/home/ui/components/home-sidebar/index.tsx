@@ -4,18 +4,10 @@ import { Sidebar, SidebarContent, useSidebar, SidebarFooter } from "@/components
 import { MainSection } from "./main-section";
 import { Separator } from "@/components/ui/separator";
 import { PersonalSection } from "./personal-section";
-import { useRef, useState, useEffect } from "react";
-import { Settings, Languages, Sun, Moon, Monitor } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator
-} from "@/components/ui/dropdown-menu";
+import { useEffect, useState } from "react";
+import { Settings, Sun, Moon, Monitor } from "lucide-react";
 import { useTheme } from "next-themes";
 import { t } from "@/lib/i18n";
-import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { AnimatePresence, motion } from "framer-motion";
 
 export const HomeSidebar = () => {

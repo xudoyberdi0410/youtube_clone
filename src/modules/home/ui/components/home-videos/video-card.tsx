@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { VerifiedIcon } from "@/components/youtube-icons";
 import {
-  formatApiDateLocal,
   formatRelativeTimeIntl,
   formatShortNumber,
   formatVideoDuration,

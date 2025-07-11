@@ -3,7 +3,7 @@
 import { format, parseISO, formatDistanceToNow, parse } from 'date-fns'
 import { ru } from 'date-fns/locale'
 import { enUS } from 'date-fns/locale'
-import uz from 'date-fns/locale/uz'
+import { uz } from 'date-fns/locale/uz'
 
 /**
  * Format number of views in YouTube style
