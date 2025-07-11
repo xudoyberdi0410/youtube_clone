@@ -17,13 +17,13 @@ export default function UploadPage() {
         <div className="container mx-auto px-4 py-8 max-w-2xl">
           <div className="animate-pulse space-y-6">
             <div className="text-center mb-8">
-              <div className="h-8 bg-gray-200 rounded w-64 mx-auto mb-4"></div>
-              <div className="h-4 bg-gray-200 rounded w-48 mx-auto"></div>
+              <div className="h-8 bg-muted rounded w-64 mx-auto mb-4"></div>
+              <div className="h-4 bg-muted rounded w-48 mx-auto"></div>
             </div>
             <div className="space-y-4">
-              <div className="h-32 bg-gray-200 rounded"></div>
-              <div className="h-10 bg-gray-200 rounded"></div>
-              <div className="h-20 bg-gray-200 rounded"></div>
+              <div className="h-32 bg-muted rounded"></div>
+              <div className="h-10 bg-muted rounded"></div>
+              <div className="h-20 bg-muted rounded"></div>
             </div>
           </div>
         </div>
@@ -37,11 +37,11 @@ export default function UploadPage() {
         <div className="min-h-screen bg-background">
           <div className="container mx-auto px-4 py-8 max-w-2xl">
             <div className="text-center py-16">
-              <Upload className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-              <h2 className="text-xl font-medium text-gray-600 mb-2">
+              <Upload className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
+              <h2 className="text-xl font-medium text-muted-foreground mb-2">
                 {t("upload.authRequiredTitle")}
               </h2>
-              <p className="text-gray-500 mb-6">
+              <p className="text-muted-foreground mb-6">
                 {t("upload.authRequiredDesc")}
               </p>
               <button

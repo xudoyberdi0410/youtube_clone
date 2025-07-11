@@ -62,12 +62,12 @@ export const PersonalSection = memo(() => {
             <SidebarGroup className="py-0">
                 <SidebarGroupContent>
                     <div className="animate-pulse space-y-2">
-                        <div className="h-10 bg-gray-200 rounded-lg"></div>
-                        <div className="h-10 bg-gray-200 rounded-lg"></div>
-                        <div className="h-10 bg-gray-200 rounded-lg"></div>
-                        <div className="h-10 bg-gray-200 rounded-lg"></div>
-                        <div className="h-10 bg-gray-200 rounded-lg"></div>
-                        <div className="h-10 bg-gray-200 rounded-lg"></div>
+                        <div className="h-10 bg-muted rounded-lg"></div>
+                        <div className="h-10 bg-muted rounded-lg"></div>
+                        <div className="h-10 bg-muted rounded-lg"></div>
+                        <div className="h-10 bg-muted rounded-lg"></div>
+                        <div className="h-10 bg-muted rounded-lg"></div>
+                        <div className="h-10 bg-muted rounded-lg"></div>
                     </div>
                 </SidebarGroupContent>
             </SidebarGroup>
@@ -107,7 +107,7 @@ export const PersonalSection = memo(() => {
                                 tooltip={item.title}
                                 asChild
                                 isActive={pathname === item.url}
-                                className="h-10 px-2 rounded-lg hover:bg-gray-100 data-[active=true]:bg-gray-100 group-data-[state=collapsed]:px-2 group-data-[state=collapsed]:justify-center"
+                                className="h-10 px-2 rounded-lg hover:bg-muted data-[active=true]:bg-muted group-data-[state=collapsed]:px-2 group-data-[state=collapsed]:justify-center"
                             >
                                 <Link href={item.url} className="flex items-center gap-6 group-data-[state=collapsed]:gap-0">
                                     <item.icon className="w-6 h-6 flex-shrink-0"/>

@@ -36,7 +36,7 @@ export const BaseLayout = ({
         </Suspense>
         <div className="flex min-h-screen">
           <HomeSidebar />
-          <main className="flex-1 overflow-y-auto bg-white pt-16">
+          <main className="flex-1 overflow-y-auto bg-background pt-16">
             {withContainer ? (
               <div className="container mx-auto px-4 py-8">{children}</div>
             ) : (

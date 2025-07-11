@@ -22,7 +22,7 @@ export const HomeNavbar = () => {
     if (!isClient || loading) return null;
 
     return (
-        <nav className="fixed top-0 left-0 right-0 h-16 bg-white flex items-center px-2 md:px-4 z-50 border-b border-gray-200">
+        <nav className="fixed top-0 left-0 right-0 h-16 bg-background flex items-center px-2 md:px-4 z-50 border-b border-border">
             <div className="flex items-center justify-between w-full">
                 {/* Menu and logo */}
                 <div className="flex items-center flex-shrink-0">
@@ -51,7 +51,7 @@ export const HomeNavbar = () => {
                 {/* Right side - Upload button, Auth button and mobile search */}
                 <div className="flex items-center gap-2 md:gap-4 flex-shrink-0">
                     {/* Mobile search button */}
-                    <button className="md:hidden p-2 hover:bg-gray-100 rounded-full">
+                    <button className="md:hidden p-2 hover:bg-muted rounded-full">
                         <SearchIcon className="w-5 h-5" />
                     </button>
                     

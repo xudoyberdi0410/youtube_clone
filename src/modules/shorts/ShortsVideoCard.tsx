@@ -35,16 +35,16 @@ export const ShortsVideoCard: React.FC<ShortsVideoCardProps> = ({
           ref={videoRef}
           data-id={short.id}
           src={short.video_url}
-          className="h-full max-h-screen aspect-[9/16] max-w-[calc(100vh*9/16)] object-cover rounded-xl shadow-2xl border border-zinc-800 bg-zinc-900"
+          className="h-full max-h-screen aspect-[9/16] max-w-[calc(100vh*9/16)] object-cover rounded-xl shadow-2xl border border-border bg-card"
           loop
           muted
           playsInline
-          style={{ background: "#222" }}
+          style={{ background: "hsl(var(--background))" }}
           autoPlay={autoPlay}
         />
         {/* Overlay controls */}
         <div className="absolute bottom-20 left-1/2 -translate-x-1/2 w-[90%] max-w-[calc(100vh*9/16)] flex justify-between items-end pointer-events-none">
-          <div className="space-y-2 bg-black/40 rounded-lg p-3 pointer-events-auto max-w-full truncate">
+          <div className="space-y-2 bg-background/80 rounded-lg p-3 pointer-events-auto max-w-full truncate">
             <h2 className="text-xl font-bold drop-shadow-lg truncate max-w-full break-words whitespace-pre-line">
               {short.title}
             </h2>
@@ -57,7 +57,7 @@ export const ShortsVideoCard: React.FC<ShortsVideoCardProps> = ({
         <Button
           variant="ghost"
           size="icon"
-          className="absolute inset-0 m-auto w-16 h-16 text-white opacity-90 hover:opacity-100 pointer-events-auto"
+          className="absolute inset-0 m-auto w-16 h-16 text-foreground opacity-90 hover:opacity-100 pointer-events-auto"
           onClick={togglePlay}
           aria-label={isPlaying ? "Пауза" : "Воспроизвести"}
         >
