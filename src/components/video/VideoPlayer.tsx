@@ -260,7 +260,7 @@ export function VideoPlayer({
   return (
     <div 
       ref={containerRef}
-      className={`relative aspect-video bg-black rounded-lg overflow-hidden group ${className}`}
+      className={`relative aspect-video bg-background rounded-lg overflow-hidden group ${className}`}
       onMouseMove={resetHideControlsTimer}
       onMouseLeave={() => setShowControls(false)}
     >
@@ -280,9 +280,9 @@ export function VideoPlayer({
       />
       
       {isLoading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black">
-          <div className="text-white text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+        <div className="absolute inset-0 flex items-center justify-center bg-background/90">
+          <div className="text-foreground text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
             <p>{t('video.loading')}</p>
           </div>
         </div>
@@ -313,7 +313,7 @@ export function VideoPlayer({
 
       {/* Speed indicator */}
       {playbackRate !== 1 && (
-        <div className="absolute top-4 right-4 bg-black/70 text-white px-3 py-1 rounded-md text-sm font-medium backdrop-blur-sm border border-white/20">
+        <div className="absolute top-4 right-4 bg-background/80 text-foreground px-3 py-1 rounded-md text-sm font-medium backdrop-blur-sm border border-border/20">
           {playbackRate}x
         </div>
       )}
@@ -332,7 +332,7 @@ export function VideoPlayer({
                 e.stopPropagation();
                 togglePlay();
               }}
-              className="text-white hover:bg-white/20 p-4 rounded-full pointer-events-auto"
+              className="text-foreground hover:bg-primary/20 p-4 rounded-full pointer-events-auto"
             >
               <Play className="w-12 h-12" />
             </Button>
@@ -435,7 +435,7 @@ export function VideoPlayer({
                   {formatTime(currentTime)} / {formatTime(duration)}
                 </span>
                 {playbackRate !== 1 && (
-                  <span className="text-xs bg-white/20 px-2 py-1 rounded backdrop-blur-sm">
+                  <span className="text-xs bg-primary/20 px-2 py-1 rounded backdrop-blur-sm">
                 {playbackRate === 1 ? t('video.speedNormal') : `${playbackRate}x`}
                   </span>
                 )}

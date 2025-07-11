@@ -2,10 +2,10 @@ import React from 'react';
 
 export default function ShortsCard() {
   return (
-    <div className="relative w-full max-w-xs mx-auto aspect-[9/16] bg-zinc-900 rounded-xl overflow-hidden flex items-center justify-center shadow-lg">
+    <div className="relative w-full max-w-xs mx-auto aspect-[9/16] bg-card rounded-xl overflow-hidden flex items-center justify-center shadow-lg">
       {/* Видео-превью или видео */}
       <div className="absolute inset-0 flex items-center justify-center">
-        <span className="text-zinc-400">Видео-превью</span>
+        <span className="text-muted-foreground">Видео-превью</span>
       </div>
       {/* Элементы управления сбоку */}
       <div className="absolute right-2 top-1/4 flex flex-col gap-4 items-center z-10">
