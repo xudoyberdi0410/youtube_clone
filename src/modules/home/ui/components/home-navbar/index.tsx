@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button"
 import { useAuth } from "@/modules/auth/hooks/use-auth"
 import { useIsClient } from "@/hooks/use-is-client"
 import { t } from "@/lib/i18n"
+import { ThemeSwitcher } from "@/components/ui/theme-switcher";
 
 export const HomeNavbar = () => {
     const isClient = useIsClient();
@@ -60,7 +61,7 @@ export const HomeNavbar = () => {
                         </Button>
                     </Link>
                     )}
-                    
+                    <ThemeSwitcher />
                     <AuthButton />
                 </div>
             </div>
