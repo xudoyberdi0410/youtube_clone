@@ -14,10 +14,12 @@ import {
 import { VerifiedIcon } from "@/components/youtube-icons";
 import {
   formatApiDateLocal,
+  formatRelativeTimeIntl,
   formatShortNumber,
   formatVideoDuration,
 } from "@/lib/utils/format";
 import { t } from "@/lib/i18n";
+import { getCurrentLanguage } from "@/lib/i18n";
 
 export function VideoCard({
   id,
@@ -82,7 +84,7 @@ export function VideoCard({
           </div>
         </div>
         {/* Video Title */}
-        <h3 className="font-medium text-sm md:text-sm leading-5 text-gray-900 mb-1 line-clamp-2 md:group-hover:text-gray-700 transition-colors">
+        <h3 className="font-medium text-base md:text-lg leading-5 text-foreground mb-1 line-clamp-2 md:group-hover:text-primary transition-colors">
           {title}
         </h3>
       </Link>
@@ -91,7 +93,7 @@ export function VideoCard({
       <div className="flex gap-3">
         {/* Channel Avatar */}
         <Avatar
-          className="w-8 h-8 md:w-9 md:h-9 flex-shrink-0 mt-0.5 ring-2 ring-transparent md:hover:ring-gray-200 transition-all duration-200 cursor-pointer"
+          className="w-10 h-10 md:w-12 md:h-12 flex-shrink-0 mt-0.5 ring-2 ring-transparent md:hover:ring-gray-200 transition-all duration-200 cursor-pointer"
           onClick={handleChannelClick}
         >
           <AvatarImage
@@ -110,7 +112,7 @@ export function VideoCard({
           <div className="flex items-center gap-1 mb-1">
             <Link
               href={`/channel?name=${encodeURIComponent(channel.name)}`}
-              className="text-xs md:text-sm text-gray-600 hover:text-gray-900 cursor-pointer transition-colors truncate"
+              className="text-sm md:text-base text-muted-foreground hover:text-foreground cursor-pointer transition-colors truncate"
               onClick={(e) => e.stopPropagation()}
             >
               {channel.name}
@@ -120,12 +122,12 @@ export function VideoCard({
             )}
           </div>
           {/* Views and Upload Time */}
-          <div className="flex items-center gap-1 text-xs md:text-sm text-gray-600">
+          <div className="flex items-center gap-1 text-xs md:text-sm text-muted-foreground">
             <span>
               {formatShortNumber(views)} {t("video.views")}
             </span>
             <span>•</span>
-            <span>{formatApiDateLocal(uploadedAt)}</span>
+            <span>{formatRelativeTimeIntl(uploadedAt, getCurrentLanguage())}</span>
           </div>
         </div>
 
@@ -136,7 +138,7 @@ export function VideoCard({
               <Button
                 variant="ghost"
                 size="sm"
-                className="w-8 h-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-gray-100 flex-shrink-0"
+                className="w-8 h-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-muted flex-shrink-0"
               >
                 <MoreVertical className="w-4 h-4" />
               </Button>

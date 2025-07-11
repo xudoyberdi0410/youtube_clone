@@ -4,7 +4,7 @@ import { Sidebar, SidebarContent, useSidebar, SidebarFooter } from "@/components
 import { MainSection } from "./main-section";
 import { Separator } from "@/components/ui/separator";
 import { PersonalSection } from "./personal-section";
-import { useEffect, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Settings, Languages, Sun, Moon, Monitor } from "lucide-react";
 import {
   DropdownMenu,
@@ -16,40 +16,31 @@ import {
 import { useTheme } from "next-themes";
 import { t } from "@/lib/i18n";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
+import { AnimatePresence, motion } from "framer-motion";
 
 export const HomeSidebar = () => {
-    const { setOpen, open, state } = useSidebar();
-    const [isManuallyToggled, setIsManuallyToggled] = useState(false);
+    const { state } = useSidebar();
+    const [showSettings, setShowSettings] = useState(false);
 
+    // Закрытие панели при клике вне её
     useEffect(() => {
-        const handleResize = () => {
-            // Если пользователь вручную не переключал, автоматически управляем состоянием
-            if (!isManuallyToggled) {
-                const shouldOpen = window.innerWidth >= 1200;
-                setOpen(shouldOpen);
+        if (!showSettings) return;
+        const handleClick = (e: MouseEvent) => {
+            const settingsPanel = document.getElementById("sidebar-settings-panel");
+            const settingsBtn = document.getElementById("sidebar-settings-btn");
+            if (
+                settingsPanel &&
+                !settingsPanel.contains(e.target as Node) &&
+                settingsBtn &&
+                !settingsBtn.contains(e.target as Node)
+            ) {
+                setShowSettings(false);
             }
         };
+        document.addEventListener("mousedown", handleClick);
+        return () => document.removeEventListener("mousedown", handleClick);
+    }, [showSettings]);
 
-        handleResize();
-        window.addEventListener('resize', handleResize);
-        
-        return () => window.removeEventListener('resize', handleResize);
-    }, [setOpen, isManuallyToggled]);
-
-    // Слушаем изменения состояния сайдбара (от кнопки бургера)
-    useEffect(() => {
-        if (open !== undefined) {
-            setIsManuallyToggled(true);
-            // Сбрасываем флаг через некоторое время, чтобы снова работал авто-режим
-            const timer = setTimeout(() => {
-                setIsManuallyToggled(false);
-            }, 5000); // 5 секунд
-            
-            return () => clearTimeout(timer);
-        }
-    }, [open]);
-
-    // FIX: Add return statement for JSX
     return (
         <Sidebar 
             className="pt-16 z-40 border-r border-border hidden lg:flex" 
@@ -61,60 +52,56 @@ export const HomeSidebar = () => {
                 <Separator className="my-3 bg-gray-200" />
                 <PersonalSection />
             </SidebarContent>
-            {/* Settings dropdown at the bottom */}
-            <SidebarFooter className="bg-background border-t border-border flex justify-center">
-                <DropdownMenu>
-                  <Tooltip delayDuration={0}>
-                    <TooltipTrigger asChild>
-                      <DropdownMenuTrigger asChild>
-                        <button className="flex items-center gap-2 p-2 rounded-lg hover:bg-muted transition-colors">
-                          <Settings className="w-5 h-5" />
-                          {state !== "collapsed" && (
-                            <span className="text-sm font-normal">{t("sidebar.websiteSettings")}</span>
-                          )}
-                        </button>
-                      </DropdownMenuTrigger>
-                    </TooltipTrigger>
-                    {state === "collapsed" && (
-                      <TooltipContent side="right" align="center">
-                        {t("sidebar.websiteSettings")}
-                      </TooltipContent>
-                    )}
-                  </Tooltip>
-                  <DropdownMenuContent align="end" className="w-56">
-                    {/* Language Switcher */}
-                    <DropdownMenuItem asChild>
-                      <div className="flex flex-col w-full">
-                        <span className="text-xs font-semibold mb-1 flex items-center gap-2"><Languages className="w-4 h-4" /> {t("sidebar.language")}</span>
-                        <SidebarLanguageSwitcher />
+            <SidebarFooter className="bg-background border-t border-border flex flex-col items-center relative">
+                <AnimatePresence>
+                  {showSettings && (
+                    <motion.div
+                      id="sidebar-settings-panel"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 20 }}
+                      transition={{ duration: 0.2 }}
+                      className={
+                        "absolute bottom-14 z-10 pb-2 " +
+                        (state === "collapsed"
+                          ? "left-12 w-64"
+                          : "left-0 w-full px-4")
+                      }
+                    >
+                      <div className="rounded-xl shadow-xl border border-border bg-popover p-4 flex flex-col gap-4 justify-center items-center">
+                        <SidebarLanguageSwitcherButton />
+                        <SidebarThemeSwitcherButton />
                       </div>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    {/* Theme Switcher */}
-                    <DropdownMenuItem asChild>
-                      <div className="flex flex-col w-full">
-                        <span className="text-xs font-semibold mb-1 flex items-center gap-2"><Sun className="w-4 h-4" /> {t("sidebar.theme")}</span>
-                        <SidebarThemeSwitcher />
-                      </div>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+                <button
+                  id="sidebar-settings-btn"
+                  className="flex items-center gap-2 p-2 rounded-lg hover:bg-muted transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring mt-2"
+                  onClick={() => setShowSettings(v => !v)}
+                  aria-label={t("sidebar.websiteSettings")}
+                >
+                  <Settings className="w-5 h-5" />
+                  {state !== "collapsed" && (
+                    <span className="text-sm font-normal">{t("sidebar.websiteSettings")}</span>
+                  )}
+                </button>
             </SidebarFooter>
         </Sidebar>
     );
 }
 
 // SidebarLanguageSwitcher component
-function SidebarLanguageSwitcher() {
+function SidebarLanguageSwitcherButton() {
   const [currentLanguage, setCurrentLanguage] = useState("en");
   useEffect(() => {
     const storedLanguage = localStorage.getItem("language") || "en";
     setCurrentLanguage(storedLanguage);
   }, []);
   const languages = [
-    { code: "en", name: t("language.english"), flag: "🇺🇸" },
-    { code: "ru", name: t("language.russian"), flag: "🇷🇺" },
-    { code: "uz", name: t("language.uzbek"), flag: "🇺🇿" },
+    { code: "en", icon: "🇺🇸" },
+    { code: "ru", icon: "🇷🇺" },
+    { code: "uz", icon: "🇺🇿" },
   ];
   const handleLanguageChange = (code: string) => {
     setCurrentLanguage(code);
@@ -127,10 +114,12 @@ function SidebarLanguageSwitcher() {
       {languages.map((lang) => (
         <button
           key={lang.code}
-          className={`px-2 py-1 rounded text-xs border ${currentLanguage === lang.code ? 'bg-primary/10 border-primary font-bold' : 'bg-muted border-border'}`}
+          className={`flex items-center justify-center w-10 h-10 rounded-full border text-xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring
+            ${currentLanguage === lang.code ? 'bg-primary text-primary-foreground border-primary shadow' : 'bg-muted text-muted-foreground border-border hover:bg-accent hover:text-accent-foreground'}`}
           onClick={() => handleLanguageChange(lang.code)}
+          aria-label={lang.code}
         >
-          <span className="mr-1">{lang.flag}</span>{lang.name}
+          <span>{lang.icon}</span>
         </button>
       ))}
     </div>
@@ -138,22 +127,24 @@ function SidebarLanguageSwitcher() {
 }
 
 // SidebarThemeSwitcher component
-function SidebarThemeSwitcher() {
+function SidebarThemeSwitcherButton() {
   const { theme, setTheme } = useTheme();
   const options = [
-    { value: "light", label: t("sidebar.themeLight"), icon: Sun },
-    { value: "dark", label: t("sidebar.themeDark"), icon: Moon },
-    { value: "system", label: t("sidebar.themeSystem"), icon: Monitor },
+    { value: "light", icon: <Sun className="w-5 h-5" />, label: "" },
+    { value: "dark", icon: <Moon className="w-5 h-5" />, label: "" },
+    { value: "system", icon: <Monitor className="w-5 h-5" />, label: "" },
   ];
   return (
     <div className="flex gap-2">
       {options.map((opt) => (
         <button
           key={opt.value}
-          className={`px-2 py-1 rounded text-xs border flex items-center gap-1 ${theme === opt.value ? 'bg-primary/10 border-primary font-bold' : 'bg-muted border-border'}`}
+          className={`flex items-center justify-center w-10 h-10 rounded-full border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring
+            ${theme === opt.value ? 'bg-primary text-primary-foreground border-primary shadow' : 'bg-muted text-muted-foreground border-border hover:bg-accent hover:text-accent-foreground'}`}
           onClick={() => setTheme(opt.value)}
+          aria-label={opt.value}
         >
-          <opt.icon className="w-4 h-4" /> {opt.label}
+          {opt.icon}
         </button>
       ))}
     </div>

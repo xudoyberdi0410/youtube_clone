@@ -64,7 +64,7 @@ export const HomeNavbar = () => {
                         </Button>
                     </Link>
                     )}
-                    <ThemeSwitcher />
+                    {/* <ThemeSwitcher /> Удалено по просьбе пользователя */}
                     <AuthButton />
                 </div>
             </div>

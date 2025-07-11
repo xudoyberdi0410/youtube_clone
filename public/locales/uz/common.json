@@ -54,6 +54,13 @@
   "auth.signupLink": "Ro'yxatdan o'tish",
   "auth.profile.editTitle": "Profilni tahrirlash",
   "auth.profile.editDesc": "Profilingizni shu yerda o'zgartiring. Tugatgandan so'ng saqlash tugmasini bosing.",
+  "auth.signUpTitle": "Hisob yaratish",
+  "auth.signUpDescription": "Yangi hisob yaratish uchun quyida elektron pochtangizni kiriting",
+  "auth.signUpBtn": "Ro'yxatdan o'tish",
+  "auth.username": "Foydalanuvchi nomi",
+  "auth.confirmPassword": "Parolni tasdiqlang",
+  "auth.alreadyHaveAccount": "Hisobingiz bormi?",
+  "auth.loginLink": "Kirish",
 
   "settings.username": "Foydalanuvchi nomi",
   "settings.email": "Elektron pochta",
@@ -253,6 +260,7 @@
   "video.saveToPlaylist": "Pleylistga saqlash",
   "video.download": "Yuklab olish",
   "video.share": "Ulashish",
+  "video.save": "Saqlash",
   "video.notInterested": "Qiziq emas",
   "video.dontRecommendChannel": "Bu kanaldan tavsiya bermang",
   "video.report": "Shikoyat qilish",
@@ -324,5 +332,25 @@
   "feedYou.likedTitle": "Yoqqanlar",
   "feedYou.playlistsTitle": "Pleylistlar",
   "feedYou.seeAll": "Hammasini ko‘rish",
-  "search.resultsFor": "Qidiruv natijalari: {{query}}"
+  "search.resultsFor": "Qidiruv natijalari: {{query}}",
+  "relativeTime.justNow": "Hozirgina",
+  "relativeTime.secondsAgo": "{{count}} soniya oldin",
+  "relativeTime.minutesAgo": "{{count}} daqiqa oldin",
+  "relativeTime.hoursAgo": "{{count}} soat oldin",
+  "relativeTime.daysAgo": "{{count}} kun oldin",
+  "relativeTime.weeksAgo": "{{count}} hafta oldin",
+  "relativeTime.monthsAgo": "{{count}} oy oldin",
+  "relativeTime.yearsAgo": "{{count}} yil oldin",
+  "video.notFoundTitle": "Video topilmadi",
+  "video.notFound": "ID {{id}} bo'lgan video mavjud emas."
+  ,"video.shareToSystem": "Yana"
+  ,"subscriptions.title": "Obunalar"
+  ,"subscriptions.empty": "Hali obunalar yo'q"
+  ,"subscriptions.emptyHint": "Kanallarga obuna bo'ling va ularning videolari shu yerda ko'rsatiladi."
+  ,"subscriptions.browseChannels": "Kanallarni ko'rish"
+  ,"subscriptions.confirmUnsubscribe": "Obunani bekor qilishni xohlaysizmi?"
+  ,"subscriptions.unsubscribeError": "Obunani bekor qilib bo'lmadi. Iltimos, qayta urinib ko'ring."
+  ,"subscriptions.loadError": "Obunalarni yuklab bo'lmadi. Iltimos, qayta urinib ko'ring."
+  ,"subscriptions.unknown": "Noma'lum"
+  ,"subscriptions.unsubscribe": "Obunani bekor qilish"
 }

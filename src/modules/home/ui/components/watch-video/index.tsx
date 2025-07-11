@@ -9,9 +9,77 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { useVideoStats } from '@/hooks/use-video-stats'
 import { RefreshCw } from "lucide-react"
+import { t } from '@/lib/i18n';
+import { formatRelativeTimeIntl } from '@/lib/utils/format';
+import { getCurrentLanguage } from '@/lib/i18n';
+import { VideoFilters } from '../home-videos/video-filters';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import React, { useRef, useState, useEffect } from 'react';
 
 interface WatchVideoProps {
   videoId: string;
+}
+
+// Компонент с фильтрами и стрелками для горизонтального скролла
+function SidebarVideoFiltersWithArrows() {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
+  const updateScrollButtons = () => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 0);
+    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 1);
+  };
+
+  useEffect(() => {
+    updateScrollButtons();
+    const el = scrollRef.current;
+    if (!el) return;
+    el.addEventListener('scroll', updateScrollButtons);
+    window.addEventListener('resize', updateScrollButtons);
+    return () => {
+      el.removeEventListener('scroll', updateScrollButtons);
+      window.removeEventListener('resize', updateScrollButtons);
+    };
+  }, []);
+
+  const scrollBy = (delta: number) => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollBy({ left: delta, behavior: 'smooth' });
+  };
+
+  return (
+    <div className="relative w-full">
+      {canScrollLeft && (
+        <button
+          className="absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-background/80 hover:bg-muted rounded-full p-1 shadow transition pointer-events-auto"
+          style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}
+          onClick={() => scrollBy(-120)}
+          aria-label="Scroll left"
+        >
+          <svg width="24" height="24" fill="none" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+        </button>
+      )}
+      <div ref={scrollRef} className="overflow-x-auto scrollbar-none w-full">
+        <div className="flex gap-2 min-w-max">
+          <VideoFilters />
+        </div>
+      </div>
+      {canScrollRight && (
+        <button
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-background/80 hover:bg-muted rounded-full p-1 shadow transition pointer-events-auto"
+          style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}
+          onClick={() => scrollBy(120)}
+          aria-label="Scroll right"
+        >
+          <svg width="24" height="24" fill="none" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+        </button>
+      )}
+    </div>
+  );
 }
 
 export const WatchVideo = ({ videoId }: WatchVideoProps) => {
@@ -51,20 +119,27 @@ export const WatchVideo = ({ videoId }: WatchVideoProps) => {
         );
     }
 
+    // Показываем skeleton, пока идёт загрузка
     if (isLoading) {
         return (
             <div className="flex justify-center items-center min-h-[400px]">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                <div className="w-80 max-w-full">
+                  <div className="aspect-video bg-muted rounded-lg animate-pulse mb-4" />
+                  <div className="h-6 bg-muted rounded w-3/4 mb-2 animate-pulse" />
+                  <div className="h-4 bg-muted rounded w-1/2 mb-2 animate-pulse" />
+                  <div className="h-4 bg-muted rounded w-1/3 animate-pulse" />
+                </div>
             </div>
         );
     }
 
+    // После загрузки, если видео не найдено
     if (!video) {
         return (
             <div className="flex justify-center items-center min-h-[400px]">
                 <div className="text-center">
-                    <h2 className="text-xl font-semibold mb-2">Видео не найдено</h2>
-                    <p className="text-muted-foreground">Видео с ID {videoId} не существует</p>
+                    <h2 className="text-xl font-semibold mb-2">{t('video.notFoundTitle')}</h2>
+                    <p className="text-muted-foreground">{t('video.notFound', { id: videoId })}</p>
                 </div>
             </div>
         );
@@ -74,15 +149,6 @@ export const WatchVideo = ({ videoId }: WatchVideoProps) => {
         <div className="flex gap-6 max-w-[1920px] mx-auto p-4">
             {/* Primary Column - Video and Comments */}
             <div className="flex-1 max-w-5xl">
-                {/* Loading indicator for stats */}
-                {isLoadingStats && (
-                    <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
-                        <div className="flex items-center text-blue-700 text-sm">
-                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-2"></div>
-                            Loading video statistics...
-                        </div>
-                    </div>
-                )}
                 
                 <PrimaryColumn 
                     videoId={video.id}
@@ -104,7 +170,10 @@ export const WatchVideo = ({ videoId }: WatchVideoProps) => {
             {/* Secondary Column - Recommendations */}
             <div className="w-80 xl:w-96">
                 <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-foreground">Up next</h3>
+                    {/* Video Filters */}
+                    <div className="sticky top-0 z-10 bg-background pt-2 pb-1">
+                      <SidebarVideoFiltersWithArrows />
+                    </div>
                     {/* Recommended videos list */}
                     <div className="space-y-3">
                         {loadingRecommended ? (
@@ -143,7 +212,7 @@ export const WatchVideo = ({ videoId }: WatchVideoProps) => {
                                             {recommendedVideo.channel.name}
                                         </div>
                                         <div className="text-xs text-muted-foreground">
-                                            {recommendedVideo.views.toLocaleString()} views • {recommendedVideo.uploadedAt}
+                                            {recommendedVideo.views.toLocaleString()} {t('video.views')} • {formatRelativeTimeIntl(recommendedVideo.uploadedAt, getCurrentLanguage())}
                                         </div>
                                     </div>
                                 </div>

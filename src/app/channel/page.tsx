@@ -9,6 +9,8 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { t } from "@/lib/i18n";
 import { useChannelPageData } from "@/modules/channel/hooks/use-channel-page-data";
+import { formatFullDateIntl } from '@/lib/utils/format';
+import { getCurrentLanguage } from '@/lib/i18n';
 
 export default function ChannelPageWrapper() {
   return (
@@ -94,7 +96,7 @@ function ChannelPage() {
             <h2>{t("channel.about")}</h2>
             <p>{channel.description || t("channel.noDescription")}</p>
             <p>
-              {t("channel.created")}: {channel.created_at}
+              {t("channel.created")}: {formatFullDateIntl(channel.created_at, getCurrentLanguage())}
             </p>
           </div>
         )}

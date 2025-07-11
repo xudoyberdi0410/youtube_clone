@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { buildImageUrl } from "@/lib/api-config";
-import { formatApiDate, formatVideoDuration } from "@/lib/utils/format";
+import { formatApiDate, formatVideoDuration, formatRelativeTimeIntl } from "@/lib/utils/format";
 import type { Video, VideoCategory } from "@/types/api";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -24,6 +24,7 @@ import {
 import { VideoEditForm } from "@/modules/upload/ui/components/video-edit-form";
 import { apiClient } from "@/lib/api-client";
 import { t } from "@/lib/i18n";
+import { getCurrentLanguage } from "@/lib/i18n";
 
 interface VideoGridProps {
   videos: Video[];
@@ -165,7 +166,7 @@ function VideoCard({ video, isOwner }: VideoCardProps) {
                 {videoViews} {t("video.views")}
               </span>
               <span>•</span>
-              <span>{formatApiDate(video.created_at)}</span>
+              <span>{formatRelativeTimeIntl(video.created_at, getCurrentLanguage())}</span>
             </div>
           </div>
         </CardContent>

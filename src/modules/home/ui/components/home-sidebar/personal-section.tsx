@@ -79,15 +79,15 @@ export const PersonalSection = memo(() => {
         return (
             <SidebarGroup className="py-0">
                 <SidebarGroupContent>
-                    <div className="px-2 py-2">
+                    <div className="px-2 py-2 group-data-[state=collapsed]:px-0">
                         <Button
                             variant={"outline"}
-                            className="w-full justify-start h-10 px-2 text-sm font-medium text-blue-600 hover:text-blue-500 border-blue-500/20 rounded-lg shadow-none hover:bg-blue-100"
+                            className="w-full h-10 px-2 text-sm font-medium rounded-full shadow-none flex items-center border border-primary/40 text-primary hover:bg-primary hover:text-primary-foreground hover:shadow transition-colors duration-150 group-data-[state=collapsed]:w-10 group-data-[state=collapsed]:h-10 group-data-[state=collapsed]:justify-center group-data-[state=collapsed]:px-0 group-data-[state=collapsed]:border-0"
                             asChild
                         >
-                            <Link href="/auth/signin" className="flex items-center gap-6 group-data-[state=collapsed]:gap-0 group-data-[state=collapsed]:justify-center">
+                            <Link href="/auth/signin" className="flex items-center gap-3 group-data-[state=collapsed]:gap-0 group-data-[state=collapsed]:justify-center w-full h-full">
                                 <UserCircleIcon className="w-6 h-6 flex-shrink-0"/>
-                                <span className="group-data-[state=collapsed]:hidden">Sign in</span>
+                                <span className="group-data-[state=collapsed]:hidden">{t("auth.signIn")}</span>
                             </Link>
                         </Button>
                     </div>

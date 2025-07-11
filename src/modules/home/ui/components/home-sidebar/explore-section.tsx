@@ -54,7 +54,7 @@ export const ExploreSection = () => {
                             <SidebarMenuButton
                                 tooltip={item.title}
                                 asChild
-                                isActive={false} // TODO: Change to look at current pathname
+                                isActive={false}
                                 className="h-10 px-2 rounded-lg hover:bg-muted group-data-[state=collapsed]:px-2 group-data-[state=collapsed]:justify-center"
                             >
                                 <Link href={item.url} className="flex items-center gap-6 group-data-[state=collapsed]:gap-0">

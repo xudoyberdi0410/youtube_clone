@@ -35,9 +35,9 @@ export function SearchResultCard(props: SearchResultCardProps) {
   return (
     <a
       href={`/watch?v=${props.id}`}
-      className="flex flex-row gap-4 group hover:bg-gray-50 rounded-xl px-2 py-2 transition min-h-[110px]"
+      className="flex flex-row gap-4 group hover:bg-accent rounded-xl px-3 py-3 transition min-h-[110px] bg-card shadow-sm"
     >
-      <div className="relative w-48 h-28 sm:w-60 sm:h-36 flex-shrink-0 rounded-xl overflow-hidden bg-gray-200">
+      <div className="relative w-44 h-28 sm:w-60 sm:h-36 flex-shrink-0 rounded-xl overflow-hidden bg-muted">
         <Image
           src={props.preview}
           alt={props.title}
@@ -45,13 +45,13 @@ export function SearchResultCard(props: SearchResultCardProps) {
           className="object-cover group-hover:scale-105 transition-transform duration-200"
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 25vw"
         />
-        <span className="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-1.5 py-0.5 rounded-md font-medium">
+        <span className="absolute bottom-2 right-2 bg-foreground/80 text-background text-xs px-1.5 py-0.5 rounded-md font-medium">
           {props.duration}
         </span>
       </div>
       <div className="flex-1 min-w-0 flex flex-col gap-1 justify-center pr-2">
-        <h2 className="text-base font-semibold leading-tight group-hover:text-blue-600 line-clamp-2">{props.title}</h2>
-        <div className="flex items-center gap-2 text-xs text-gray-600">
+        <h2 className="text-base font-semibold leading-tight group-hover:text-primary line-clamp-2 text-foreground">{props.title}</h2>
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
           <span>{t('video.views', { count: formatViews(props.views) })}</span>
           <span>•</span>
           <span>{formatDate(props.uploadedAt)}</span>
@@ -64,12 +64,12 @@ export function SearchResultCard(props: SearchResultCardProps) {
             height={24}
             className="rounded-full object-cover"
           />
-          <span className="font-medium text-gray-800 text-xs">{props.channel.name}</span>
+          <span className="font-medium text-xs text-foreground">{props.channel.name}</span>
           {props.channel.isVerified && (
             <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2l4-4m5 2a9 9 0 11-18 0a9 9 0 0118 0z" /></svg>
           )}
         </div>
-        <p className="text-gray-700 text-xs mt-2 line-clamp-2 max-w-full">{props.description}</p>
+        <p className="text-xs mt-2 line-clamp-2 max-w-full text-muted-foreground">{props.description}</p>
       </div>
     </a>
   );
