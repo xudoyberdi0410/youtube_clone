@@ -4,6 +4,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { HomeNavbar } from "@/modules/home/ui/components/home-navbar";
 import { HomeSidebar } from "@/modules/home/ui/components/home-sidebar";
 import { usePathname } from "next/navigation";
+import { Suspense } from "react";
 
 interface BaseLayoutProps {
   children: React.ReactNode;
@@ -30,7 +31,9 @@ export const BaseLayout = ({
   return (
     <SidebarProvider>
       <div className="w-full">
-        <HomeNavbar />
+        <Suspense fallback={<div>Loading...</div>}>
+          <HomeNavbar />
+        </Suspense>
         <div className="flex min-h-screen">
           <HomeSidebar />
           <main className="flex-1 overflow-y-auto bg-white pt-16">
