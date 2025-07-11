@@ -2,11 +2,19 @@ import * as React from "react"
 import { SearchIcon } from "lucide-react"
 import { t } from "@/lib/i18n"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
-export const SearchInput = () => {
+interface SearchInputProps {
+    initialValue?: string;
+}
+
+export const SearchInput = ({ initialValue = "" }: SearchInputProps) => {
     const router = useRouter();
-    const [value, setValue] = useState("");
+    const [value, setValue] = useState(initialValue);
+
+    useEffect(() => {
+        setValue(initialValue);
+    }, [initialValue]);
     
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();

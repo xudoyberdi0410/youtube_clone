@@ -175,6 +175,12 @@
   "sidebar.news": "Yangiliklar",
   "sidebar.sports": "Sport",
   "sidebar.learning": "Ta'lim",
+  "sidebar.websiteSettings": "Sayt sozlamalari",
+  "sidebar.language": "Til",
+  "sidebar.theme": "Mavzu",
+  "sidebar.themeLight": "Yorug'",
+  "sidebar.themeDark": "Qorong'u",
+  "sidebar.themeSystem": "Tizimga mos",
   "history.loading": "Yuklanmoqda...",
   "history.failedToLoad": "Ko‘rish tarixini yuklab bo‘lmadi",
   "history.failedToDelete": "Videoni tarixdan o‘chirishda xatolik yuz berdi",
@@ -317,5 +323,6 @@
   "feedYou.historyTitle": "Tarix",
   "feedYou.likedTitle": "Yoqqanlar",
   "feedYou.playlistsTitle": "Pleylistlar",
-  "feedYou.seeAll": "Hammasini ko‘rish"
+  "feedYou.seeAll": "Hammasini ko‘rish",
+  "search.resultsFor": "Qidiruv natijalari: {{query}}"
 }

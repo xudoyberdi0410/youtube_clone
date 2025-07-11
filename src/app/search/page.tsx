@@ -1,27 +1,67 @@
+"use client";
 import * as React from "react";
 import { useSearchParams } from "next/navigation";
+import { SearchPageContent } from "@/modules/home/ui/components/search/SearchPageContent";
+import { Suspense } from "react";
 
 const mockResults = [
-  { id: 1, title: "Mock Video 1", description: "This is a mock video result." },
-  { id: 2, title: "Mock Video 2", description: "Another mock video result." },
-  { id: 3, title: "Mock Video 3", description: "Yet another mock video result." },
+  {
+    id: "1",
+    title: "Mock Video 1",
+    description: "This is a mock video result.",
+    views: 12345,
+    channel: {
+      id: "c1",
+      name: "Mock Channel 1",
+      avatarUrl: "/api/placeholder/48/48",
+      isVerified: true,
+    },
+    preview: "/api/placeholder/320/180",
+    duration: "12:34",
+    uploadedAt: new Date().toISOString(),
+  },
+  {
+    id: "2",
+    title: "Mock Video 2",
+    description: "Another mock video result.",
+    views: 67890,
+    channel: {
+      id: "c2",
+      name: "Mock Channel 2",
+      avatarUrl: "/api/placeholder/48/48",
+      isVerified: false,
+    },
+    preview: "/api/placeholder/320/180",
+    duration: "8:20",
+    uploadedAt: new Date(Date.now() - 86400000).toISOString(),
+  },
+  {
+    id: "3",
+    title: "Mock Video 3",
+    description: "Yet another mock video result.",
+    views: 54321,
+    channel: {
+      id: "c3",
+      name: "Mock Channel 3",
+      avatarUrl: "/api/placeholder/48/48",
+      isVerified: true,
+    },
+    preview: "/api/placeholder/320/180",
+    duration: "5:10",
+    uploadedAt: new Date(Date.now() - 2 * 86400000).toISOString(),
+  },
 ];
 
 export default function SearchPage() {
-  const searchParams = useSearchParams();
-  const query = searchParams.get("q") || "";
-
   return (
-    <div className="max-w-3xl mx-auto py-8 px-4">
-      <h1 className="text-2xl font-bold mb-4">Search Results for: <span className="text-blue-600">{query}</span></h1>
-      <div className="space-y-4">
-        {mockResults.map(result => (
-          <div key={result.id} className="p-4 border rounded-lg shadow-sm bg-white">
-            <h2 className="text-lg font-semibold">{result.title}</h2>
-            <p className="text-gray-600">{result.description}</p>
-          </div>
-        ))}
-      </div>
-    </div>
+    <Suspense fallback={<div>Loading...</div>}>
+      <SearchPageContentWrapper />
+    </Suspense>
   );
+}
+
+function SearchPageContentWrapper() {
+  const searchParams = useSearchParams();
+  const query = searchParams?.get("q") || "";
+  return <SearchPageContent query={query} videos={mockResults} />;
 }
