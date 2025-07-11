@@ -52,22 +52,22 @@ export const HomeSidebar = () => {
     // FIX: Add return statement for JSX
     return (
         <Sidebar 
-            className="pt-16 z-40 border-r border-gray-200 hidden lg:flex" 
+            className="pt-16 z-40 border-r border-border hidden lg:flex" 
             collapsible="icon" 
             variant="sidebar"
         >
-            <SidebarContent className="bg-white px-1 py-2 overflow-y-auto data-[state=collapsed]:px-2">
+            <SidebarContent className="bg-background px-1 py-2 overflow-y-auto data-[state=collapsed]:px-2">
                 <MainSection />
                 <Separator className="my-3 bg-gray-200" />
                 <PersonalSection />
             </SidebarContent>
             {/* Settings dropdown at the bottom */}
-            <SidebarFooter className="bg-white border-t border-gray-200 flex justify-center">
+            <SidebarFooter className="bg-background border-t border-border flex justify-center">
                 <DropdownMenu>
                   <Tooltip delayDuration={0}>
                     <TooltipTrigger asChild>
                       <DropdownMenuTrigger asChild>
-                        <button className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                        <button className="flex items-center gap-2 p-2 rounded-lg hover:bg-muted transition-colors">
                           <Settings className="w-5 h-5" />
                           {state !== "collapsed" && (
                             <span className="text-sm font-normal">{t("sidebar.websiteSettings")}</span>
@@ -127,7 +127,7 @@ function SidebarLanguageSwitcher() {
       {languages.map((lang) => (
         <button
           key={lang.code}
-          className={`px-2 py-1 rounded text-xs border ${currentLanguage === lang.code ? 'bg-blue-100 border-blue-400 font-bold' : 'bg-gray-50 border-gray-200'}`}
+          className={`px-2 py-1 rounded text-xs border ${currentLanguage === lang.code ? 'bg-primary/10 border-primary font-bold' : 'bg-muted border-border'}`}
           onClick={() => handleLanguageChange(lang.code)}
         >
           <span className="mr-1">{lang.flag}</span>{lang.name}
@@ -150,7 +150,7 @@ function SidebarThemeSwitcher() {
       {options.map((opt) => (
         <button
           key={opt.value}
-          className={`px-2 py-1 rounded text-xs border flex items-center gap-1 ${theme === opt.value ? 'bg-blue-100 border-blue-400 font-bold' : 'bg-gray-50 border-gray-200'}`}
+          className={`px-2 py-1 rounded text-xs border flex items-center gap-1 ${theme === opt.value ? 'bg-primary/10 border-primary font-bold' : 'bg-muted border-border'}`}
           onClick={() => setTheme(opt.value)}
         >
           <opt.icon className="w-4 h-4" /> {opt.label}

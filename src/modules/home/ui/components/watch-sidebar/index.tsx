@@ -8,13 +8,13 @@ import { PersonalSection } from "../home-sidebar/personal-section";
 export const WatchSidebar = () => {
     return (
         <Sidebar 
-            className="pt-16 z-40 border-r border-gray-200" 
+            className="pt-16 z-40 border-r border-border" 
             collapsible="offcanvas" 
             variant="sidebar"
         >
-            <SidebarContent className="bg-white px-1 py-2 overflow-y-auto data-[state=collapsed]:px-2">
+            <SidebarContent className="bg-background px-1 py-2 overflow-y-auto data-[state=collapsed]:px-2">
                 <MainSection />
-                <Separator className="my-3 bg-gray-200" />
+                <Separator className="my-3 bg-muted" />
                 <PersonalSection />
             </SidebarContent>
         </Sidebar>
