@@ -43,7 +43,7 @@ export function LikedVideoCard({
     <div className="w-full max-w-full flex flex-col cursor-pointer group">
       <Link
         href={`/watch?v=${videoId}`}
-        className="block w-full aspect-video bg-gray-200 dark:bg-gray-700 relative overflow-hidden rounded-xl"
+        className="block w-full aspect-video bg-muted relative overflow-hidden rounded-xl"
       >
         {thumbnailUrl ? (
           <Image
@@ -54,29 +54,29 @@ export function LikedVideoCard({
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 25vw"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gray-300 dark:bg-gray-600">
-            <span className="text-gray-400 dark:text-gray-300 text-sm">
+          <div className="w-full h-full flex items-center justify-center bg-muted">
+            <span className="text-muted-foreground text-sm">
               {t("video.noPreview")}
             </span>
           </div>
         )}
         {(video.duration || video.duration_video) && (
-          <div className="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-1.5 py-0.5 rounded-md font-medium z-10">
+          <div className="absolute bottom-2 right-2 bg-foreground/80 text-background text-xs px-1.5 py-0.5 rounded-md font-medium z-10">
             {formatVideoDuration(video.duration ?? video.duration_video)}
           </div>
         )}
       </Link>
       <div className="flex flex-row gap-3 pt-3">
-        <div className="flex-shrink-0 w-9 h-9 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center text-lg font-bold text-gray-600 dark:text-gray-300">
+        <div className="flex-shrink-0 w-9 h-9 rounded-full bg-muted flex items-center justify-center text-lg font-bold text-muted-foreground">
           {channelName.charAt(0).toUpperCase()}
         </div>
         <div className="flex-1 min-w-0">
           <Link href={`/watch?v=${videoId}`}>
-            <h3 className="font-semibold text-base leading-5 text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-blue-600 transition-colors mb-1">
+            <h3 className="font-semibold text-base leading-5 text-foreground line-clamp-2 group-hover:text-primary transition-colors mb-1">
               {videoTitle}
             </h3>
           </Link>
-          <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">
+          <div className="text-xs text-muted-foreground mb-1">
             <Link
               href={`/channel?name=${encodeURIComponent(channelName)}`}
               className="hover:underline"
@@ -84,7 +84,7 @@ export function LikedVideoCard({
               {channelName}
             </Link>
           </div>
-          <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+          <div className="flex items-center gap-1 text-xs text-muted-foreground">
             <span>{views} просмотров</span>
             <span>•</span>
             <span>{formatApiDateLocal(createdAt)}</span>
@@ -94,7 +94,7 @@ export function LikedVideoCard({
           variant="ghost"
           size="icon"
           onClick={handleRemoveLike}
-          className="ml-2 text-gray-400 hover:text-red-600 dark:hover:text-red-400"
+          className="ml-2 text-muted-foreground hover:text-destructive"
           title="Удалить лайк"
         >
           <Trash2 className="w-5 h-5" />
