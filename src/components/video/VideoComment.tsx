@@ -25,6 +25,7 @@ export const VideoCommentComponent = memo(({ comment }: VideoCommentProps) => {
   }
 
   const getInitials = (name: string) => {
+    if (!name) return 'U'
     return name
       .split(' ')
       .map(word => word[0])
@@ -38,8 +39,8 @@ export const VideoCommentComponent = memo(({ comment }: VideoCommentProps) => {
       <div className="flex gap-4">
         {/* Аватар автора */}
         <Avatar className="h-10 w-10 flex-shrink-0">
-          <AvatarFallback className="bg-gray-300 text-gray-700 text-sm font-medium">
-            {getInitials(comment.channel_name)}
+          <AvatarFallback className="bg-muted text-muted-foreground text-sm font-medium">
+            {getInitials(comment.channel_name || 'Unknown')}
           </AvatarFallback>
         </Avatar>
         
@@ -47,17 +48,17 @@ export const VideoCommentComponent = memo(({ comment }: VideoCommentProps) => {
         <div className="flex-1 min-w-0">
           {/* Имя автора и время */}
           <div className="flex items-center gap-2 mb-2">
-            <span className="font-medium text-sm text-gray-900">
-              {comment.channel_name}
+            <span className="font-medium text-sm text-foreground">
+              {comment.channel_name || 'Unknown User'}
             </span>
-            <span className="text-xs text-gray-500">
+            <span className="text-xs text-muted-foreground">
               {formatDate(comment.created_at)}
             </span>
           </div>
           
           {/* Текст комментария */}
-          <p className="text-sm text-gray-800 leading-relaxed break-words whitespace-pre-wrap">
-            {comment.comment}
+          <p className="text-sm text-foreground leading-relaxed break-words whitespace-pre-wrap">
+            {comment.comment || 'No comment text'}
           </p>
         </div>
       </div>

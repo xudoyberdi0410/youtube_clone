@@ -51,7 +51,7 @@ export function VideoRowList({ videos, skeletonCount = 8 }: VideoRowListProps) {
                 className="object-cover rounded-xl group-hover:shadow-lg transition-shadow"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center bg-gray-200 rounded-xl">
+              <div className="w-full h-full flex items-center justify-center bg-muted rounded-xl">
                 <span className="text-muted-foreground text-sm">
                   {t("video.noPreview")}
                 </span>
@@ -59,7 +59,7 @@ export function VideoRowList({ videos, skeletonCount = 8 }: VideoRowListProps) {
             )}
             {/* Длительность видео */}
             {(video.duration || video.duration_video) && (
-              <div className="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-1.5 py-0.5 rounded-md font-medium">
+              <div className="absolute bottom-2 right-2 bg-foreground/80 text-background text-xs px-1.5 py-0.5 rounded-md font-medium">
                 {formatVideoDuration(video.duration ?? video.duration_video)}
               </div>
             )}

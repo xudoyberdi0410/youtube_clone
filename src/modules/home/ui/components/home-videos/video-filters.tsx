@@ -35,7 +35,7 @@ export function VideoFilters({ onCategoryChange }: VideoFiltersProps) {
     onCategoryChange?.(category);
   };
   return (
-    <div className="w-full  bg-white sticky z-10">
+    <div className="w-full bg-background sticky z-10">
       <div className="max-w-screen-2xl mx-auto px-4 py-2">
         <ScrollArea className="w-full whitespace-nowrap">
           <div className="flex gap-2 md:gap-3">
@@ -48,8 +48,8 @@ export function VideoFilters({ onCategoryChange }: VideoFiltersProps) {
                 className={`
                   flex-shrink-0 rounded-lg px-3 md:px-4 py-1.5 text-xs md:text-sm font-medium transition-all duration-200
                   ${activeFilter === filter.key 
-                    ? "bg-gray-900 text-white hover:bg-gray-800 shadow-sm" 
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200 hover:shadow-sm"
+                    ? "bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm" 
+                    : "bg-secondary text-secondary-foreground hover:bg-secondary/80 hover:shadow-sm"
                   }
                 `}
               >

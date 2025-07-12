@@ -10,15 +10,18 @@ import { Button } from "@/components/ui/button"
 import { useAuth } from "@/modules/auth/hooks/use-auth"
 import { useIsClient } from "@/hooks/use-is-client"
 import { t } from "@/lib/i18n"
+import { useSearchParams } from "next/navigation"
 
 export const HomeNavbar = () => {
     const isClient = useIsClient();
     const { isLoggedIn, loading } = useAuth();
+    const searchParams = useSearchParams();
+    const searchQuery = searchParams?.get("q") || "";
 
     if (!isClient || loading) return null;
 
     return (
-        <nav className="fixed top-0 left-0 right-0 h-16 bg-white flex items-center px-2 md:px-4 z-50 border-b border-gray-200">
+        <nav className="fixed top-0 left-0 right-0 h-16 bg-background flex items-center px-2 md:px-4 z-50 border-b border-border">
             <div className="flex items-center justify-between w-full">
                 {/* Menu and logo */}
                 <div className="flex items-center flex-shrink-0">
@@ -41,26 +44,26 @@ export const HomeNavbar = () => {
 
                 {/* Search bar - hidden on mobile, shown on tablet+ */}
                 <div className="hidden md:flex flex-1 justify-center max-w-[720px] mx-auto">
-                    <SearchInput />
+                    <SearchInput initialValue={searchQuery} />
                 </div>
 
                 {/* Right side - Upload button, Auth button and mobile search */}
                 <div className="flex items-center gap-2 md:gap-4 flex-shrink-0">
                     {/* Mobile search button */}
-                    <button className="md:hidden p-2 hover:bg-gray-100 rounded-full">
+                    <button className="md:hidden p-2 hover:bg-muted rounded-full">
                         <SearchIcon className="w-5 h-5" />
                     </button>
                     
                     {/* Upload button - only show for authenticated users */}
                     {loading ? null : isLoggedIn && (
-                    <Link href="/upload">
+                    <Link href="/studio/upload">
                         <Button variant="ghost" size="sm" className="flex items-center gap-2">
                         <Upload className="w-4 h-4" />
                         <span className="hidden sm:inline">{t('navbar.upload')}</span>
                         </Button>
                     </Link>
                     )}
-                    
+                    {/* <ThemeSwitcher /> Удалено по просьбе пользователя */}
                     <AuthButton />
                 </div>
             </div>

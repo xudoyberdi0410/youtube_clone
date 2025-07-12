@@ -14,6 +14,10 @@ import SubscriptionsIconSvg from "./SubscriptionsIcon.svg"
 import ThreeDotsIconSvg from "./ThreeDotsIcon.svg"
 import UserCircleIconSvg from "./UserCircleIcon.svg"
 import VerifiedIconSvg from "./VerifiedIcon.svg"
+import { TelegramIcon } from "./TelegramIcon"
+import { XIcon } from "./XIcon"
+import { InstagramIcon } from "./InstagramIcon"
+import { WhatsappIcon } from "./WhatsappIcon"
 
 // Export the SVG components directly
 export const TrendingIcon = TrendingIconSvg
@@ -32,3 +36,7 @@ export const SubscriptionsIcon = SubscriptionsIconSvg
 export const ThreeDotsIcon = ThreeDotsIconSvg
 export const UserCircleIcon = UserCircleIconSvg
 export const VerifiedIcon = VerifiedIconSvg
+export const Telegram = TelegramIcon
+export const X = XIcon
+export const Instagram = InstagramIcon
+export const Whatsapp = WhatsappIcon

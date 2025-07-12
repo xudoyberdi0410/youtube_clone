@@ -4,6 +4,7 @@ import "./globals.css";
 import { APP_CONFIG } from "@/lib/constants";
 import { AuthProvider } from "@/modules/auth/context/auth-context";
 import { BaseLayout } from "@/components/layouts/BaseLayout";
+import { ThemeProvider } from "next-themes";
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -49,13 +50,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`${roboto.variable} ${robotoMono.variable} font-sans`}>
-        <AuthProvider>
-          <BaseLayout>
-            {children}
-          </BaseLayout>
-        </AuthProvider>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <AuthProvider>
+            <BaseLayout>
+              {children}
+            </BaseLayout>
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -16,10 +16,11 @@ export const ShortsFeed: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [userInteracted, setUserInteracted] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const isMountedRef = useRef(true);
 
   // Handle scroll to update current video
   const handleScroll = useCallback(() => {
-    if (!containerRef.current) return;
+    if (!containerRef.current || !isMountedRef.current) return;
 
     const container = containerRef.current;
     const scrollTop = container.scrollTop;
@@ -56,13 +57,15 @@ export const ShortsFeed: React.FC = () => {
 
   // Handle first user interaction
   const handleFirstInteraction = () => {
-    setUserInteracted(true);
+    if (isMountedRef.current) {
+      setUserInteracted(true);
+    }
   };
 
   // Listen for user interaction
   useEffect(() => {
     const handleInteraction = () => {
-      if (!userInteracted) {
+      if (!userInteracted && isMountedRef.current) {
         setUserInteracted(true);
       }
     };
@@ -80,18 +83,19 @@ export const ShortsFeed: React.FC = () => {
   useEffect(() => {
     document.body.classList.add("shorts-active");
     return () => {
+      isMountedRef.current = false;
       document.body.classList.remove("shorts-active");
     };
   }, []);
 
   if (loading) {
     return (
-      <div className="shorts-container">
-        <div className="loading">
-          <div className="spinner"></div>
-          <div>{t("shorts.loading")}</div>
-        </div>
+          <div className="shorts-container">
+      <div className="loading">
+        <div data-testid="spinner" className="spinner"></div>
+        <div>{t("shorts.loading")}</div>
       </div>
+    </div>
     );
   }
 
@@ -226,6 +230,7 @@ const VideoItem: React.FC<VideoItemProps> = ({
     <div className="short-item">
       <video
         ref={videoRef}
+        data-testid="shorts-video"
         className="short-video"
         src={video.video_url}
         loop

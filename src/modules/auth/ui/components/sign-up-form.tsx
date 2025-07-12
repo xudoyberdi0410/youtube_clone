@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { registerUser, loginUser } from "../../lib/auth-utils";
 import { t } from "@/lib/i18n";
@@ -30,6 +30,16 @@ function SignUpForm({ className, ...props }: SignUpFormProps) {
   const emailRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
+  // Сохраняем returnTo при монтировании
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const prev = document.referrer;
+      if (prev && !prev.includes('/auth/')) {
+        sessionStorage.setItem('returnTo', prev);
+      }
+    }
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
@@ -45,7 +55,8 @@ function SignUpForm({ className, ...props }: SignUpFormProps) {
       await registerUser({ email, username, password });
       // Optionally, log in the user automatically after registration
       await loginUser({ username, password });
-      router.push("/");
+      const returnTo = typeof window !== 'undefined' ? sessionStorage.getItem('returnTo') : null;
+      router.replace(returnTo || "/");
     } catch (err: unknown) {
       if (
         typeof err === "object" &&

@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { VideoCommentComponent } from './VideoComment'
 import { useVideoComments } from '@/hooks/use-video-comments'
-import { useAuth } from '@/hooks/use-auth'
+import { useAuth } from '@/modules/auth/hooks/use-auth'
 
 interface VideoCommentsProps {
   videoId: string
@@ -60,11 +60,11 @@ export const VideoComments = memo(({ videoId, className }: VideoCommentsProps) =
 
   if (isLoading) {
     return (
-      <div className={`bg-white ${className || ''}`}>
+      <div className={`bg-background ${className || ''}`}>
         <div className="p-6">
           <div className="flex items-center justify-center py-8">
-            <LoadingSpinner className="h-6 w-6" />
-            <span className="ml-2 text-gray-600">{t('comments.loading')}</span>
+            <LoadingSpinner className="h-6 w-6 text-primary" />
+            <span className="ml-2 text-muted-foreground">{t('comments.loading')}</span>
           </div>
         </div>
       </div>
@@ -73,11 +73,11 @@ export const VideoComments = memo(({ videoId, className }: VideoCommentsProps) =
 
   if (error) {
     return (
-      <div className={`bg-white ${className || ''}`}>
+      <div className={`bg-background ${className || ''}`}>
         <div className="p-6">
           <div className="text-center py-8">
-            <p className="text-gray-600 mb-4">{t('comments.loadError')}</p>
-            <p className="text-sm text-gray-500 mb-4">{error}</p>
+            <p className="text-muted-foreground mb-4">{t('comments.loadError')}</p>
+            <p className="text-sm text-muted-foreground mb-4">{error}</p>
             <Button
               onClick={refreshComments}
               variant="outline"
@@ -92,11 +92,11 @@ export const VideoComments = memo(({ videoId, className }: VideoCommentsProps) =
   }
 
   return (
-    <div className={`bg-white ${className || ''}`}>
+    <div className={`bg-background ${className || ''}`}>
       {/* Header */}
       <div className="px-6 py-4">
         <div className="flex items-center gap-8">
-          <h3 className="text-xl font-semibold text-gray-900">
+          <h3 className="text-xl font-semibold text-foreground">
             {commentsCount === 0 
               ? t('comments.title')
               : `${commentsCount.toLocaleString()} ${t('comments.count')}`
@@ -111,7 +111,7 @@ export const VideoComments = memo(({ videoId, className }: VideoCommentsProps) =
         <div className="px-6 pb-6">
           <div className="flex gap-4">
             <Avatar className="h-10 w-10 flex-shrink-0">
-              <AvatarFallback className="bg-gray-200 text-gray-600">
+              <AvatarFallback className="bg-muted text-muted-foreground">
                 👤
               </AvatarFallback>
             </Avatar>
@@ -121,7 +121,7 @@ export const VideoComments = memo(({ videoId, className }: VideoCommentsProps) =
                 placeholder={t('comments.addPlaceholder')}
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
-                className="min-h-[40px] resize-none border-0 border-b-2 border-gray-200 rounded-none p-0 pb-2 focus:border-blue-500 focus:ring-0 bg-transparent"
+                className="min-h-[40px] resize-none border-0 border-b-2 border-muted rounded-none p-0 pb-2 focus:border-primary focus:ring-0 bg-transparent text-foreground placeholder:text-muted-foreground"
                 onFocus={(e) => {
                   e.target.style.minHeight = '80px'
                 }}
@@ -157,17 +157,17 @@ export const VideoComments = memo(({ videoId, className }: VideoCommentsProps) =
         </div>
       )}
       
-      <Separator className="bg-gray-200" />
+      <Separator className="bg-muted" />
       
       {/* Comments List */}
       <div className="px-6 py-4">
         {comments.length === 0 ? (
           <div className="text-center py-12">
-            <div className="text-gray-400 text-4xl mb-4">💬</div>
-            <p className="text-gray-600 text-lg mb-2">
+            <div className="text-muted-foreground text-4xl mb-4">💬</div>
+            <p className="text-muted-foreground text-lg mb-2">
               {t('comments.empty')}
             </p>
-            <p className="text-gray-500 text-sm">
+            <p className="text-muted-foreground text-sm">
               {t('comments.beFirst')}
             </p>
           </div>
@@ -175,7 +175,7 @@ export const VideoComments = memo(({ videoId, className }: VideoCommentsProps) =
           <div className="space-y-4">
             {comments.map((comment) => (
               <VideoCommentComponent 
-                key={comment.comment_id} 
+                key={comment.comment_id || comment.id} 
                 comment={comment} 
               />
             ))}

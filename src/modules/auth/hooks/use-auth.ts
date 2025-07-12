@@ -42,7 +42,16 @@ export function useAuth() {
     return !cachedAuth && !!initialToken
   })
   const [refreshKey, setRefreshKey] = useState(0)
+  const [showAuthDialog, setShowAuthDialog] = useState(false)
   const tokenCheckInterval = useRef<NodeJS.Timeout | null>(null)
+
+  const requireAuth = (action: () => void) => {
+    if (!isLoggedIn) {
+      setShowAuthDialog(true)
+      return
+    }
+    action()
+  }
 
   useEffect(() => {
     // Проверяем статус авторизации при загрузке
@@ -110,6 +119,7 @@ export function useAuth() {
     // Устанавливаем интервал для периодической проверки токена
     if (tokenCheckInterval.current) {
       clearInterval(tokenCheckInterval.current)
+      tokenCheckInterval.current = null
     }
     
     tokenCheckInterval.current = setInterval(async () => {
@@ -137,11 +147,21 @@ export function useAuth() {
     return () => {
       if (tokenCheckInterval.current) {
         clearInterval(tokenCheckInterval.current)
+        tokenCheckInterval.current = null
       }
       window.removeEventListener('storage', handleStorageChange)
       window.removeEventListener('authStateChanged', handleStorageChange)
     }
   }, [refreshKey]) // Убираем loading из зависимостей чтобы избежать бесконечного цикла
 
-  return { isLoggedIn, user, loading }
+  return { 
+    isLoggedIn, 
+    user, 
+    loading,
+    isAuthenticated: isLoggedIn,
+    isLoading: loading,
+    requireAuth,
+    showAuthDialog,
+    setShowAuthDialog
+  }
 }

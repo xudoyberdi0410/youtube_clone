@@ -1,3 +1,2 @@
-// src/app/feed/subscriptions/page.tsx
-
-export { default } from '@/modules/feed/subscriptions/page'
+import SubscriptionsPage from '@/modules/feed/subscriptions/page';
+export default SubscriptionsPage;

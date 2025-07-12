@@ -1,7 +1,9 @@
 // src/lib/utils/format.ts
 
-import { format, parseISO } from 'date-fns'
+import { format, parseISO, formatDistanceToNow, parse } from 'date-fns'
 import { ru } from 'date-fns/locale'
+import { enUS } from 'date-fns/locale'
+import { uz } from 'date-fns/locale/uz'
 
 /**
  * Format number of views in YouTube style
@@ -175,4 +177,77 @@ export const formatVideoDuration = (duration: number | string | undefined): stri
   }
   
   return '0:00'
+}
+
+/**
+ * Форматирует дату в стиле "x минут назад" с поддержкой локалей (en, ru, uz)
+ * @param date - Дата (строка или объект)
+ * @param localeCode - 'en' | 'ru' | 'uz'
+ * @returns Строка типа "5 минут назад"
+ */
+export const formatRelativeTimeIntl = (date: string | Date, localeCode: 'en' | 'ru' | 'uz' = 'en'): string => {
+  let targetDate: Date;
+  if (typeof date === 'string') {
+    // Пробуем ISO
+    targetDate = parseISO(date);
+    if (isNaN(targetDate.getTime())) {
+      // Пробуем dd.MM.yyyy HH:mm
+      targetDate = parse(date, 'dd.MM.yyyy HH:mm', new Date());
+    }
+    if (isNaN(targetDate.getTime())) {
+      // Пробуем dd.MM.yyyy
+      targetDate = parse(date, 'dd.MM.yyyy', new Date());
+    }
+  } else {
+    targetDate = date;
+  }
+  let locale = enUS;
+  if (localeCode === 'ru') locale = ru;
+  if (localeCode === 'uz') locale = uz;
+  try {
+    return formatDistanceToNow(targetDate, { addSuffix: true, locale });
+  } catch (err) {
+    console.error('formatRelativeTimeIntl error:', err, { date, localeCode, targetDate, locale });
+    return '';
+  }
+}
+
+/**
+ * Форматирует дату в стиле "10 июня 2025 года" с поддержкой локалей (en, ru, uz)
+ * @param date - Дата (строка или объект)
+ * @param localeCode - 'en' | 'ru' | 'uz'
+ * @returns Строка типа "10 июня 2025 года"
+ */
+export const formatFullDateIntl = (date: string | Date, localeCode: 'en' | 'ru' | 'uz' = 'en'): string => {
+  let targetDate: Date;
+  if (typeof date === 'string') {
+    // Пробуем ISO
+    targetDate = parseISO(date);
+    if (isNaN(targetDate.getTime())) {
+      // Пробуем dd.MM.yyyy HH:mm
+      targetDate = parse(date, 'dd.MM.yyyy HH:mm', new Date());
+    }
+    if (isNaN(targetDate.getTime())) {
+      // Пробуем dd.MM.yyyy
+      targetDate = parse(date, 'dd.MM.yyyy', new Date());
+    }
+  } else {
+    targetDate = date;
+  }
+  let locale = enUS;
+  if (localeCode === 'ru') locale = ru;
+  if (localeCode === 'uz') locale = uz;
+  try {
+    // Форматируем в длинный формат
+    if (localeCode === 'ru') {
+      return format(targetDate, "d MMMM yyyy 'года'", { locale });
+    }
+    if (localeCode === 'uz') {
+      return format(targetDate, "d MMMM yyyy 'yil'", { locale });
+    }
+    return format(targetDate, 'MMMM d, yyyy', { locale });
+  } catch (err) {
+    console.error('formatFullDateIntl error:', err, { date, localeCode, targetDate, locale });
+    return '';
+  }
 }

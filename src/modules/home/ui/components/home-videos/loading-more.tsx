@@ -1,13 +1,15 @@
-import { Loader2 } from "lucide-react";
-import { t } from "@/lib/i18n";
+import { VideoCardSkelton } from "./video-card-skelton"
 
-export function LoadingMore() {
+interface LoadingMoreProps {
+  count?: number
+}
+
+export function LoadingMore({ count = 6 }: LoadingMoreProps) {
   return (
-    <div className="flex justify-center items-center py-8">
-      <div className="flex items-center gap-2 text-gray-600">
-        <Loader2 className="w-5 h-5 animate-spin" />
-        <span className="text-sm">{t('home.loadingMore')}</span>
-      </div>
+    <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 md:gap-6">
+      {Array.from({ length: count }).map((_, i) => (
+        <VideoCardSkelton key={`loading-more-${i}`} />
+      ))}
     </div>
-  );
+  )
 }

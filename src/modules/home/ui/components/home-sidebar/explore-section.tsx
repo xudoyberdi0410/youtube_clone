@@ -47,15 +47,15 @@ const items = [
 export const ExploreSection = () => {
     return (        <SidebarGroup className="py-0">
             <SidebarGroupContent>
-                <SidebarGroupLabel className="px-3 py-2 text-sm font-medium text-gray-900 group-data-[state=collapsed]:hidden">{t('sidebar.explore')}</SidebarGroupLabel>
+                <SidebarGroupLabel className="px-3 py-2 text-sm font-medium text-foreground group-data-[state=collapsed]:hidden">{t('sidebar.explore')}</SidebarGroupLabel>
                 <SidebarMenu className="space-y-0">
                     {items.map((item) => (
                         <SidebarMenuItem key={item.title}>
                             <SidebarMenuButton
                                 tooltip={item.title}
                                 asChild
-                                isActive={false} // TODO: Change to look at current pathname
-                                className="h-10 px-2 rounded-lg hover:bg-gray-100 group-data-[state=collapsed]:px-2 group-data-[state=collapsed]:justify-center"
+                                isActive={false}
+                                className="h-10 px-2 rounded-lg hover:bg-muted group-data-[state=collapsed]:px-2 group-data-[state=collapsed]:justify-center"
                             >
                                 <Link href={item.url} className="flex items-center gap-6 group-data-[state=collapsed]:gap-0">
                                     <item.icon className="w-6 h-6 flex-shrink-0"/>

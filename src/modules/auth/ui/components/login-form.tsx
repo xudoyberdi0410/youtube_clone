@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { loginUser } from "../../lib/auth-utils";
 import { t } from "@/lib/i18n";
@@ -21,6 +21,16 @@ export function LoginForm({
   ...props
 }: React.ComponentProps<"div">) {
   const router = useRouter();
+
+  // Сохраняем returnTo при монтировании
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const prev = document.referrer;
+      if (prev && !prev.includes('/auth/')) {
+        sessionStorage.setItem('returnTo', prev);
+      }
+    }
+  }, []);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -33,7 +43,8 @@ export function LoginForm({
 
     try {
       await loginUser({ username: email, password });
-      router.push("/");
+      const returnTo = typeof window !== 'undefined' ? sessionStorage.getItem('returnTo') : null;
+      router.replace(returnTo || "/");
     } catch (err: unknown) {
       setError((err as Error).message || t("auth.error.login"));
     } finally {

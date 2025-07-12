@@ -10,7 +10,7 @@ const locales = {
 };
 
 // Get current language from localStorage or default to 'en'
-function getCurrentLanguage(): "en" | "ru" | "uz" {
+export function getCurrentLanguage(): "en" | "ru" | "uz" {
   if (typeof window === "undefined") return "en";
   return (localStorage.getItem("language") as "en" | "ru" | "uz") || "en";
 }

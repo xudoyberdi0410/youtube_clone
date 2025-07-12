@@ -199,6 +199,11 @@ export class ApiClient {
         throw error
       }
       
+      // Проверяем, является ли ошибка AbortError
+      if (error instanceof Error && error.name === 'AbortError') {
+        throw error
+      }
+      
       console.error('API Request failed:', error)
       throw new ApiError(
         error instanceof Error ? error.message : 'Network error'
@@ -207,7 +212,7 @@ export class ApiClient {
   }
 
   // GET запрос
-  async get<T>(endpoint: string, params?: Record<string, string | number>): Promise<T> {
+  async get<T>(endpoint: string, params?: Record<string, string | number>, signal?: AbortSignal): Promise<T> {
     let url = endpoint
     if (params) {
       const searchParams = new URLSearchParams()
@@ -216,7 +221,7 @@ export class ApiClient {
       })
       url += `?${searchParams.toString()}`
     }
-    return this.request<T>(url, { method: 'GET' })
+    return this.request<T>(url, { method: 'GET', signal })
   }
 
   // POST запрос
@@ -576,6 +581,8 @@ export class ApiClient {
     if (category) params.category = category
     return this.get<Video[]>('/video/get_video', Object.keys(params).length > 0 ? params : undefined)
   }
+
+
 
   // Обновление видео
   async updateVideo(videoData: VideoUpdate): Promise<Video> {

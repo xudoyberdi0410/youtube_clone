@@ -108,13 +108,13 @@ export function VideoEditForm({
         </Select>
       </div>
       {error && (
-        <Alert variant="destructive">
+        <Alert variant="destructive" data-testid="video-edit-error-alert">
           <AlertTriangle className="h-4 w-4" />
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
       {success && (
-        <Alert>
+        <Alert data-testid="video-edit-success-alert">
           <CheckCircle className="h-4 w-4" />
           <AlertDescription>{t("upload.successEdit")}</AlertDescription>
         </Alert>

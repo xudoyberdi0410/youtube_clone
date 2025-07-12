@@ -24,11 +24,11 @@ export const AuthButton = () => {
   return (
     <Button
       variant={"outline"}
-      className="px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-500 border-blue-500/20 rounded-full shadow-none hover:bg-blue-100"
+      className="px-4 py-2 text-sm font-medium rounded-full shadow-none flex items-center gap-2 border border-primary/40 text-primary hover:bg-primary hover:text-primary-foreground hover:shadow transition-colors duration-150"
       asChild
     >
       <Link href="/auth/signin">
-        <UserCircleIcon />
+        <UserCircleIcon className="w-5 h-5" />
         {t("auth.signIn")}
       </Link>
     </Button>

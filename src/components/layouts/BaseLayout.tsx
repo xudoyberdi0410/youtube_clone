@@ -4,6 +4,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { HomeNavbar } from "@/modules/home/ui/components/home-navbar";
 import { HomeSidebar } from "@/modules/home/ui/components/home-sidebar";
 import { usePathname } from "next/navigation";
+import { Suspense } from "react";
 
 interface BaseLayoutProps {
   children: React.ReactNode;
@@ -20,7 +21,9 @@ export const BaseLayout = ({
 
   // Исключаем определенные маршруты, которые имеют свой собственный layout
   const shouldRenderLayout =
-    !pathname?.startsWith("/watch") && !pathname?.startsWith("/auth");
+    !pathname?.startsWith("/watch") && 
+    !pathname?.startsWith("/auth") && 
+    !pathname?.startsWith("/studio");
 
   // Если это исключенный маршрут, просто рендерим children
   if (!shouldRenderLayout) {
@@ -30,10 +33,12 @@ export const BaseLayout = ({
   return (
     <SidebarProvider>
       <div className="w-full">
-        <HomeNavbar />
+        <Suspense fallback={<div>Loading...</div>}>
+          <HomeNavbar />
+        </Suspense>
         <div className="flex min-h-screen">
           <HomeSidebar />
-          <main className="flex-1 overflow-y-auto bg-white pt-16">
+          <main className="flex-1 overflow-y-auto bg-background pt-16">
             {withContainer ? (
               <div className="container mx-auto px-4 py-8">{children}</div>
             ) : (

@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { ApiClient } from '@/lib/api-client'
 import { getCurrentUserId } from '@/lib/auth-utils'
-import { useAuth } from '@/hooks/use-auth'
+import { useAuth } from '@/modules/auth/hooks/use-auth'
 import type { Like, LikeCreate } from '@/types/api'
 
 interface UseLikesOptions {
