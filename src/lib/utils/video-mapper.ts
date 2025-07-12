@@ -25,7 +25,7 @@ export function mapApiVideoToVideo(apiVideo: ApiVideo): Video {
       name: apiVideo.channel_name || apiVideo.name || 'Unknown Channel',
       avatarUrl: apiVideo.profile_image 
         ? `${baseUrl}/images/${apiVideo.profile_image}`
-        : '/avatars/g53bfu5y.png',
+        : undefined,
       isVerified: false,
       subscriberCount: '0', // Нет в API
       description: '',

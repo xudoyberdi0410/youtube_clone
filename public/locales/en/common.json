@@ -226,6 +226,7 @@
   "home.noVideosCategory": "There are no videos in this category yet. Try selecting another category or refresh the page.",
   "home.refresh": "Refresh",
   "home.loadingMore": "Loading more videos...",
+  "home.noMoreVideos": "No more videos to load",
   "category.music": "Music",
   "category.education": "Education",
   "category.technology": "Technology",

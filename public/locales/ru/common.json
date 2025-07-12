@@ -456,5 +456,7 @@
   "subscriptions.unsubscribeError": "Не удалось отписаться. Пожалуйста, попробуйте ещё раз.",
   "subscriptions.loadError": "Не удалось загрузить подписки. Пожалуйста, попробуйте ещё раз.",
   "subscriptions.unknown": "Неизвестно",
-  "subscriptions.unsubscribe": "Отписаться"
+  "subscriptions.unsubscribe": "Отписаться",
+  "home.loadingMore": "Загрузка дополнительных видео...",
+  "home.noMoreVideos": "Больше видео для загрузки нет"
 }

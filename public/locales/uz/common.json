@@ -458,5 +458,7 @@
   "studio.channel.describeChannel": "Kanalingizni tasvirlab bering",
   "studio.channel.uploadBannerImage": "Banner rasm yuklash",
   "studio.channel.recommendedSize": "Tavsiya etilgan o'lcham: 2560 x 1440 piksel. JPG, PNG yoki GIF. Maksimal hajm 5MB.",
-  "studio.channel.fileFormatInfo": "JPG, PNG yoki GIF. Maksimal hajm 5MB."
+  "studio.channel.fileFormatInfo": "JPG, PNG yoki GIF. Maksimal hajm 5MB.",
+  "home.loadingMore": "Qo'shimcha videolar yuklanmoqda...",
+  "home.noMoreVideos": "Yuklash uchun boshqa videolar yo'q"
 }
