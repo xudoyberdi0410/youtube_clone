@@ -31,6 +31,7 @@ interface VideoPlayerProps {
   autoPlay?: boolean
   className?: string
   fallbackSrc?: string
+  startTime?: number
 }
 
 export function VideoPlayer({ 
@@ -40,7 +41,8 @@ export function VideoPlayer({
   // title = "Video",
   autoPlay = false,
   className = "",
-  fallbackSrc = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+  fallbackSrc = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+  startTime = 0
 }: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -57,7 +59,9 @@ export function VideoPlayer({
   const [playbackRate, setPlaybackRate] = useState(1)
   const [isLoading, setIsLoading] = useState(true)
   const [hasError, setHasError] = useState(false)
+  const [shouldAutoPlay, setShouldAutoPlay] = useState(autoPlay)
   const hasAddedToHistory = useRef(false)
+  const instantPlayRef = useRef<{ videoId: string; videoUrl: string; currentTime: number } | null>(null)
 
   const hideControlsTimeout = useRef<NodeJS.Timeout | null>(null)
   
@@ -153,11 +157,59 @@ export function VideoPlayer({
     }
   }
 
+  // Проверяем мгновенное воспроизведение при загрузке
+  useEffect(() => {
+    try {
+      const instantPlayData = sessionStorage.getItem('instantPlay')
+      if (instantPlayData) {
+        const data = JSON.parse(instantPlayData)
+        // Проверяем, что данные не старше 5 секунд и соответствуют текущему видео
+        if (Date.now() - data.timestamp < 5000 && data.videoId === videoId) {
+          instantPlayRef.current = data
+          // Очищаем данные из sessionStorage
+          sessionStorage.removeItem('instantPlay')
+                  // Устанавливаем автовоспроизведение
+        setShouldAutoPlay(true)
+        }
+      }
+    } catch (error) {
+      console.error('Error parsing instant play data:', error)
+    }
+  }, [videoId])
+
   const handleLoadedMetadata = () => {
     if (videoRef.current) {
       setDuration(videoRef.current.duration)
       setIsLoading(false)
       setHasError(false)
+      
+      // Если есть данные мгновенного воспроизведения, устанавливаем время
+      if (instantPlayRef.current) {
+        const { currentTime: instantTime } = instantPlayRef.current
+        if (instantTime > 0 && instantTime < videoRef.current.duration) {
+          videoRef.current.currentTime = instantTime
+          setCurrentTime(instantTime)
+        }
+        // Автоматически начинаем воспроизведение
+        videoRef.current.play().then(() => {
+          setIsPlaying(true)
+        }).catch(() => {
+          // Игнорируем ошибки автовоспроизведения
+        })
+        instantPlayRef.current = null
+      } else if (shouldAutoPlay) {
+        // Обычное автовоспроизведение
+        videoRef.current.play().then(() => {
+          setIsPlaying(true)
+        }).catch(() => {
+          // Игнорируем ошибки автовоспроизведения
+        })
+      }
+      // Если задан startTime, устанавливаем его
+      if (startTime > 0 && startTime < videoRef.current.duration) {
+        videoRef.current.currentTime = startTime;
+        setCurrentTime(startTime);
+      }
     }
   }
 
@@ -268,7 +320,7 @@ export function VideoPlayer({
         ref={videoRef}
         className="w-full h-full object-cover"
         src={videoSrc}
-        autoPlay={autoPlay}
+        autoPlay={shouldAutoPlay}
         onLoadedMetadata={handleLoadedMetadata}
         onTimeUpdate={handleTimeUpdate}
         onPlay={handlePlay}

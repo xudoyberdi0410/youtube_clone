@@ -16,6 +16,7 @@ interface Video {
   views: number;
   channel: Channel;
   preview: string;
+  videoUrl?: string;
   duration: string;
   uploadedAt: string;
 }
@@ -36,6 +37,7 @@ export function SearchResultList({ videos }: SearchResultListProps) {
           views={video.views}
           channel={{ name: video.channel.name, avatarUrl: video.channel.avatarUrl, isVerified: video.channel.isVerified, link: `/channel?name=${encodeURIComponent(video.channel.name)}` }}
           preview={video.preview}
+          videoUrl={video.videoUrl}
           duration={video.duration}
           uploadedAt={video.uploadedAt}
           showMenu={true}

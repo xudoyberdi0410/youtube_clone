@@ -2,7 +2,7 @@
 
 import { PrimaryColumn } from './primary-column'
 import { useRouter } from 'next/navigation'
-import { useVideo } from '@/hooks/use-video'
+import { useVideoWithCache } from '@/hooks/use-video-with-cache'
 import { useVideos } from '@/hooks/use-videos'
 import Image from 'next/image'
 import { Alert, AlertDescription } from "@/components/ui/alert"
@@ -17,6 +17,7 @@ import React, { useRef, useState, useEffect } from 'react';
 
 interface WatchVideoProps {
   videoId: string;
+  startTime?: number;
 }
 
 // Компонент с фильтрами и стрелками для горизонтального скролла
@@ -81,10 +82,27 @@ function SidebarVideoFiltersWithArrows() {
   );
 }
 
-export const WatchVideo = ({ videoId }: WatchVideoProps) => {
+export const WatchVideo = ({ videoId, startTime = 0 }: WatchVideoProps) => {
     const router = useRouter();
-    const { video, isLoading, error, refetch } = useVideo({ videoId });
+    const { video, isLoading, error, refetch } = useVideoWithCache({ videoId });
     const { videos: recommendedVideos, isLoading: loadingRecommended } = useVideos();
+    
+    // Проверяем, есть ли данные мгновенного перехода
+    const [isInstantTransition, setIsInstantTransition] = useState(false);
+    
+    useEffect(() => {
+      try {
+        const instantPlayData = sessionStorage.getItem('instantPlay')
+        if (instantPlayData) {
+          const data = JSON.parse(instantPlayData)
+          if (data.videoId === videoId) {
+            setIsInstantTransition(true)
+          }
+        }
+      } catch (error) {
+        console.error('Error checking instant transition:', error)
+      }
+    }, [videoId])
     
     // Предзагружаем статистику для лучшего UX
     useVideoStats({ 
@@ -118,8 +136,8 @@ export const WatchVideo = ({ videoId }: WatchVideoProps) => {
         );
     }
 
-    // Показываем skeleton, пока идёт загрузка
-    if (isLoading) {
+    // Показываем skeleton только если это не мгновенный переход и данные еще загружаются
+    if (isLoading && !isInstantTransition) {
         return (
             <div className="flex justify-center items-center min-h-[400px]">
                 <div className="w-80 max-w-full">
@@ -163,6 +181,7 @@ export const WatchVideo = ({ videoId }: WatchVideoProps) => {
                     likes={video.likes}
                     dislikes={video.dislikes}
                     isSubscribed={false}
+                    startTime={startTime}
                 />
             </div>
 

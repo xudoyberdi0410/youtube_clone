@@ -14,6 +14,10 @@ export { useSubscriptions } from './use-subscriptions'
 export { useVideoStats } from './use-video-stats'
 export { usePlaylists } from './use-playlists'
 export { usePlaylist } from './use-playlist'
+export { useVideoPreview } from './use-video-preview'
+export { useInstantPlay } from './use-instant-play'
+export { useVideoCache } from './use-video-cache'
+export { useVideoWithCache } from './use-video-with-cache'
 
 // Re-export existing hooks from components/ui
 export { useIsMobile } from './use-mobile'

@@ -7,6 +7,8 @@ import { getCurrentLanguage } from '@/lib/i18n';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { MoreVertical } from 'lucide-react';
+import { useVideoPreview } from "@/hooks/use-video-preview";
+import { useInstantPlay } from "@/hooks/use-instant-play";
 
 export interface UniversalVideoCardProps {
   id: string | number;
@@ -21,6 +23,7 @@ export interface UniversalVideoCardProps {
     link?: string;
   };
   preview: string;
+  videoUrl?: string;
   duration?: string;
   uploadedAt?: string;
   showMenu?: boolean;
@@ -38,6 +41,7 @@ export function UniversalVideoCard({
   views,
   channel,
   preview,
+  videoUrl,
   duration,
   uploadedAt,
   showMenu = false,
@@ -47,27 +51,71 @@ export function UniversalVideoCard({
   deleteLabel,
   className = "",
 }: UniversalVideoCardProps) {
+  const {
+    videoRef,
+    isPreviewing,
+    currentTime,
+    handleMouseEnter,
+    handleMouseLeave,
+    handleTimeUpdate,
+  } = useVideoPreview({
+    videoUrl,
+    previewDelay: 500,
+    autoPlay: true
+  });
+
+  const { navigateToWatch } = useInstantPlay({
+    videoId: typeof id === 'number' ? id.toString() : id,
+    videoUrl,
+    currentTime: currentTime
+  });
+
+  const handleCardClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    navigateToWatch();
+  };
+
   return (
-    <div className={`flex flex-col sm:flex-row w-full rounded-2xl bg-card hover:bg-accent transition shadow group overflow-hidden ${className}`}>
+    <div 
+      className={`flex flex-col sm:flex-row w-full rounded-2xl bg-card hover:bg-accent transition shadow group overflow-hidden ${className}`}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onClick={handleCardClick}
+    >
       {/* Превью */}
-      <Link
-        href={typeof id === 'number' ? `/watch?v=${id}` : `/watch?v=${encodeURIComponent(id)}`}
-        className="relative w-full aspect-video sm:w-64 sm:h-36 md:w-80 md:h-44 flex-shrink-0 bg-muted block"
-        tabIndex={-1}
-      >
+      <div className="relative w-full aspect-video sm:w-64 sm:h-36 md:w-80 md:h-44 flex-shrink-0 bg-muted block">
+        {/* Превью изображение */}
         <Image
           src={preview}
           alt={title}
           fill
-          className="object-cover group-hover:scale-105 transition-transform duration-200"
+          className={`object-cover group-hover:scale-105 transition-all duration-200 ${
+            isPreviewing ? 'opacity-0' : 'opacity-100'
+          }`}
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 25vw"
         />
+        
+        {/* Видео для предварительного воспроизведения */}
+        {videoUrl && (
+          <video
+            ref={videoRef}
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-200 ${
+              isPreviewing ? 'opacity-100' : 'opacity-0'
+            }`}
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            onTimeUpdate={handleTimeUpdate}
+          />
+        )}
+        
         {duration && (
-          <span className="absolute bottom-2 right-2 bg-foreground/80 text-background text-xs px-2 py-0.5 rounded font-semibold">
+          <span className="absolute bottom-2 right-2 bg-foreground/80 text-background text-xs px-2 py-0.5 rounded font-semibold z-10">
             {formatVideoDuration(duration)}
           </span>
         )}
-      </Link>
+      </div>
       {/* Информация */}
       <div className="flex-1 flex flex-col justify-center px-4 py-3 min-w-0 relative">
         {/* Меню */}
@@ -99,11 +147,9 @@ export function UniversalVideoCard({
             <MoreVertical className="w-5 h-5" />
           </button>
         )}
-        <Link href={typeof id === 'number' ? `/watch?v=${id}` : `/watch?v=${encodeURIComponent(id)}`} className="block">
-          <h3 className="text-lg md:text-xl font-bold leading-tight group-hover:text-primary line-clamp-2 text-foreground mb-2 pr-10 sm:pr-0">
-            {title}
-          </h3>
-        </Link>
+        <h3 className="text-lg md:text-xl font-bold leading-tight group-hover:text-primary line-clamp-2 text-foreground mb-2 pr-10 sm:pr-0">
+          {title}
+        </h3>
         <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
           {typeof views === 'number' && <span>{views.toLocaleString()} {t('video.views')}</span>}
           {typeof views === 'number' && uploadedAt && <span>•</span>}
