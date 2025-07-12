@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { buildImageUrl } from "@/lib/api-config";
 import { useAuth } from "@/hooks/use-auth";
 import { useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import type { Channel } from "@/types/api";
 import Image from "next/image";
 import { t } from "@/lib/i18n";
@@ -21,6 +22,7 @@ export function ChannelHeader({ channel }: ChannelHeaderProps) {
     channel.subscribers_count || 0,
   );
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const isOwnChannel = user?.id === channel.user_id;
 
@@ -103,9 +105,14 @@ export function ChannelHeader({ channel }: ChannelHeaderProps) {
               {/* Кнопки действий */}
               <div className="flex gap-2">
                 {isOwnChannel ? (
-                  <Button variant="outline" className="min-w-[120px]">
-                    {t("channel.editChannel")}
-                  </Button>
+                  <>
+                    <Button variant="outline" className="min-w-[140px]" onClick={() => router.push("/studio/channel")}>
+                      {t("channel.customizeChannel")}
+                    </Button>
+                    <Button variant="default" className="min-w-[140px]" onClick={() => router.push("/studio/videos")}>
+                      {t("channel.manageVideos")}
+                    </Button>
+                  </>
                 ) : (
                   user && (
                     <Button

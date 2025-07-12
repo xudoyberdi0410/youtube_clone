@@ -56,7 +56,7 @@ export const HomeNavbar = () => {
                     
                     {/* Upload button - only show for authenticated users */}
                     {loading ? null : isLoggedIn && (
-                    <Link href="/upload">
+                    <Link href="/studio/upload">
                         <Button variant="ghost" size="sm" className="flex items-center gap-2">
                         <Upload className="w-4 h-4" />
                         <span className="hidden sm:inline">{t('navbar.upload')}</span>

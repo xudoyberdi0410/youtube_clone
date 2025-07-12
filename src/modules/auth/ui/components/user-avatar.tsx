@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut, Settings } from "lucide-react";
+import { LogOut, Settings, Video } from "lucide-react";
 import { logout, getAvatarUrl } from "../../lib/auth-utils";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -87,6 +87,14 @@ export function UserAvatar({ user }: UserAvatarProps) {
             )}
           </div>
         </div>
+
+        <DropdownMenuSeparator />
+
+        {/* Studio */}
+        <DropdownMenuItem onClick={() => router.push("/studio/dashboard")}>
+          <Video className="mr-2 h-4 w-4" />
+          <span>{t("menu.studio")}</span>
+        </DropdownMenuItem>
 
         <DropdownMenuSeparator />
 

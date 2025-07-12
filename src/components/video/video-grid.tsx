@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { buildImageUrl } from "@/lib/api-config";
 import { formatVideoDuration, formatRelativeTimeIntl } from "@/lib/utils/format";
-import type { Video, VideoCategory } from "@/types/api";
+import type { Video } from "@/types/api";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { MoreVertical } from "lucide-react";
@@ -15,16 +15,10 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { VideoEditForm } from "@/modules/upload/ui/components/video-edit-form";
-import { apiClient } from "@/lib/api-client";
+
 import { t } from "@/lib/i18n";
 import { getCurrentLanguage } from "@/lib/i18n";
+import { apiClient } from "@/lib/api-client";
 
 interface VideoGridProps {
   videos: Video[];
@@ -77,61 +71,40 @@ interface VideoCardProps {
   isOwner?: boolean;
 }
 
-function VideoCard({ video, isOwner }: VideoCardProps) {
+function VideoCard({ video }: VideoCardProps) {
   const videoTitle = video.video_title || video.title || t("video.untitled");
   const videoViews = video.video_views || video.views || 0;
   const videoDuration = video.duration_video || video.duration;
 
-  const [editOpen, setEditOpen] = useState(false);
-  const [editLoading, setEditLoading] = useState(false);
-  const [editError, setEditError] = useState<string | null>(null);
-  const [editSuccess, setEditSuccess] = useState(false);
-
-  const handleEditSubmit = async (data: {
-    title: string;
-    description: string;
-    category: VideoCategory;
-  }) => {
-    setEditLoading(true);
-    setEditError(null);
-    setEditSuccess(false);
-    try {
-      await apiClient.updateVideo({
-        title: data.title,
-        description: data.description,
-        category: data.category,
-      });
-      setEditSuccess(true);
-      setTimeout(() => setEditOpen(false), 1000);
-    } catch (e) {
-      setEditError(e instanceof Error ? e.message : "Ошибка сохранения");
-    } finally {
-      setEditLoading(false);
-    }
-  };
-
   return (
     <Card className="overflow-hidden hover:shadow-md transition-shadow relative">
-      {isOwner && (
-        <div className="absolute bottom-2 right-2 z-10">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="w-10 h-10 p-0 bg-background/80 hover:bg-background"
-              >
-                <MoreVertical className="w-6 h-6 text-foreground" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => setEditOpen(true)}>
-                {t("video.edit")}
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      )}
+      <div className="absolute bottom-2 right-2 z-10">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="w-10 h-10 p-0 bg-background/80 hover:bg-background"
+            >
+              <MoreVertical className="w-6 h-6 text-foreground" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem>{t("video.addToQueue")}</DropdownMenuItem>
+            <DropdownMenuItem>{t("video.saveToWatchLater")}</DropdownMenuItem>
+            <DropdownMenuItem>{t("video.saveToPlaylist")}</DropdownMenuItem>
+            <DropdownMenuItem>{t("video.download")}</DropdownMenuItem>
+            <DropdownMenuItem>{t("video.share")}</DropdownMenuItem>
+            <DropdownMenuItem className="text-red-600">
+              {t("video.notInterested")}
+            </DropdownMenuItem>
+            <DropdownMenuItem className="text-red-600">
+              {t("video.dontRecommendChannel")}
+            </DropdownMenuItem>
+            <DropdownMenuItem>{t("video.report")}</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
       <Link href={`/watch?v=${video.id}`}>
         <CardContent className="p-0">
           <div className="relative aspect-video bg-muted">
@@ -171,24 +144,6 @@ function VideoCard({ video, isOwner }: VideoCardProps) {
           </div>
         </CardContent>
       </Link>
-      <Dialog open={editOpen} onOpenChange={setEditOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{t("video.editTitle")}</DialogTitle>
-          </DialogHeader>
-          <VideoEditForm
-            initialTitle={video.video_title || video.title || ""}
-            initialDescription={
-              video.video_description || video.description || ""
-            }
-            initialCategory={video.category}
-            onSubmit={handleEditSubmit}
-            loading={editLoading}
-            error={editError}
-            success={editSuccess}
-          />
-        </DialogContent>
-      </Dialog>
     </Card>
   );
 }

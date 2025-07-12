@@ -21,7 +21,9 @@ export const BaseLayout = ({
 
   // Исключаем определенные маршруты, которые имеют свой собственный layout
   const shouldRenderLayout =
-    !pathname?.startsWith("/watch") && !pathname?.startsWith("/auth");
+    !pathname?.startsWith("/watch") && 
+    !pathname?.startsWith("/auth") && 
+    !pathname?.startsWith("/studio");
 
   // Если это исключенный маршрут, просто рендерим children
   if (!shouldRenderLayout) {
