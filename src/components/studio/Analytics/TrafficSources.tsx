@@ -40,7 +40,7 @@ export function TrafficSources({ data }: TrafficSourcesProps) {
                 dataKey="percentage"
               >
                 {chartData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
+                  <Cell key={`cell-${index}`} fill={entry.color || "#8884d8"} />
                 ))}
               </Pie>
               <Tooltip />

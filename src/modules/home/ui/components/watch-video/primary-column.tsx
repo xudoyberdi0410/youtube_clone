@@ -7,7 +7,7 @@ import { Separator } from '@/components/ui/separator'
 import { VideoDescription } from '@/components/video/VideoDescription'
 import { VideoPlayer } from '@/components/video/VideoPlayer'
 import { VideoCommentsWrapper } from '@/components/video/VideoCommentsWrapper'
-import { useAuth } from '@/hooks/use-auth'
+import { useAuth } from '@/modules/auth/hooks/use-auth'
 import { useVideoStats } from '@/hooks/use-video-stats'
 import { AuthRequiredDialog } from '@/components/auth/AuthRequiredDialog'
 import { 

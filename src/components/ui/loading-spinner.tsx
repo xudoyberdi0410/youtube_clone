@@ -15,10 +15,13 @@ export function LoadingSpinner({ size = 'medium', className }: LoadingSpinnerPro
   }
 
   return (
-    <div className={cn(
-      "border-2 border-current border-t-transparent rounded-full animate-spin",
-      sizeClasses[size],
-      className
-    )} />
+    <div
+      role="status"
+      className={cn(
+        "border-2 border-current border-t-transparent rounded-full animate-spin",
+        sizeClasses[size],
+        className
+      )}
+    />
   )
 }

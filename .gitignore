@@ -63,3 +63,4 @@ next-env.d.ts
 !/scripts/test-files/test-image.png
 
 .vscode/
+test.log

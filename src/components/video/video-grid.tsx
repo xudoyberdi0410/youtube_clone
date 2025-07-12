@@ -53,7 +53,7 @@ export function VideoGrid({
     >
       {videos.map((video) => (
         <VideoCard
-          key={video.id}
+          key={video.id || video.video_id}
           video={video}
           isOwner={
             myChannelId !== null &&
@@ -115,7 +115,7 @@ function VideoCard({ video }: VideoCardProps) {
                 className="w-full h-full object-cover"
                 fill
                 sizes="(max-width: 768px) 100vw, 33vw"
-                priority={true}
+                priority="high"
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-muted">

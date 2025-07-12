@@ -249,15 +249,20 @@ export function UploadVideoForm() {
 
                 {uploadState.videoType && (
                   <Badge
+                    data-testid={
+                      uploadState.videoType === 'shorts'
+                        ? 'shorts-badge'
+                        : 'video-badge'
+                    }
                     variant={
-                      uploadState.videoType === "shorts"
-                        ? "secondary"
-                        : "default"
+                      uploadState.videoType === 'shorts'
+                        ? 'secondary'
+                        : 'default'
                     }
                   >
-                    {uploadState.videoType === "shorts"
-                      ? t("upload.shortsBadge")
-                      : t("upload.videoBadge")}
+                    {uploadState.videoType === 'shorts'
+                      ? t('upload.shortsBadge')
+                      : t('upload.videoBadge')}
                   </Badge>
                 )}
               </div>
@@ -403,7 +408,7 @@ export function UploadVideoForm() {
 
         {/* Error Message */}
         {uploadState.error && (
-          <Alert variant="destructive">
+          <Alert variant="destructive" data-testid="upload-error-alert">
             <AlertTriangle className="h-4 w-4" />
             <AlertDescription>{uploadState.error}</AlertDescription>
           </Alert>
@@ -411,9 +416,9 @@ export function UploadVideoForm() {
 
         {/* Success Message */}
         {uploadState.success && (
-          <Alert>
+          <Alert data-testid="upload-success-alert">
             <CheckCircle className="h-4 w-4" />
-            <AlertDescription>{t("upload.success")}</AlertDescription>
+            <AlertDescription>{t('upload.success')}</AlertDescription>
           </Alert>
         )}
 

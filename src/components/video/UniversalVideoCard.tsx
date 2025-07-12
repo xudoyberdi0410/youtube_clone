@@ -129,7 +129,7 @@ export function UniversalVideoCard({
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 {menuItems.map((item, idx) => (
-                  <DropdownMenuItem key={idx} asChild={!!item.href} onClick={item.onClick}>
+                  <DropdownMenuItem key={item.label + idx} asChild={!!item.href} onClick={item.onClick}>
                     {item.href ? <Link href={item.href}>{item.label}</Link> : item.label}
                   </DropdownMenuItem>
                 ))}

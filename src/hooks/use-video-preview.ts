@@ -112,6 +112,7 @@ export function useVideoPreview({
     return () => {
       if (previewTimeoutRef.current) {
         clearTimeout(previewTimeoutRef.current)
+        previewTimeoutRef.current = null
       }
     }
   }, [])

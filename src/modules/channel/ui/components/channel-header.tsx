@@ -3,7 +3,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { buildImageUrl } from "@/lib/api-config";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuth } from '@/modules/auth/hooks/use-auth'
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import type { Channel } from "@/types/api";

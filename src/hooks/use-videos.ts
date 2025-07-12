@@ -119,13 +119,13 @@ export function useVideos(options: UseVideosOptions = {}) {
     }
   }, [ident, category, getCachedData, setCachedData, isHydrated])
 
-  const refetch = () => {
+  const refetch = useCallback(() => {
     loadVideos(category, ident, true) // Форсируем обновление при refetch
-  }
+  }, [loadVideos, category, ident])
 
-  const changeCategory = (newCategory?: VideoCategory) => {
+  const changeCategory = useCallback((newCategory?: VideoCategory) => {
     loadVideos(newCategory, ident, true) // Форсируем обновление при смене категории
-  }
+  }, [loadVideos, ident])
 
   useEffect(() => {
     if (immediate && isHydrated) {

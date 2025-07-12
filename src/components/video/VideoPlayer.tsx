@@ -69,6 +69,7 @@ export function VideoPlayer({
     setShowControls(true)
     if (hideControlsTimeout.current) {
       clearTimeout(hideControlsTimeout.current)
+      hideControlsTimeout.current = null
     }
     hideControlsTimeout.current = setTimeout(() => {
       if (isPlaying) {
@@ -82,6 +83,7 @@ export function VideoPlayer({
     return () => {
       if (hideControlsTimeout.current) {
         clearTimeout(hideControlsTimeout.current)
+        hideControlsTimeout.current = null
       }
     }
   }, [resetHideControlsTimer])
@@ -329,6 +331,7 @@ export function VideoPlayer({
         onCanPlay={handleCanPlay}
         onError={handleError}
         onClick={togglePlay}
+        data-testid="video-player"
       />
       
       {isLoading && (

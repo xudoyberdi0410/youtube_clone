@@ -34,10 +34,11 @@ export const ShortsVideoCard: React.FC<ShortsVideoCardProps> = ({
         <video
           ref={videoRef}
           data-id={short.id}
+          data-testid="video-element"
           src={short.video_url}
           className="h-full max-h-screen aspect-[9/16] max-w-[calc(100vh*9/16)] object-cover rounded-xl shadow-2xl border border-border bg-card"
           loop
-          muted
+          muted={true}
           playsInline
           style={{ background: "hsl(var(--background))" }}
           autoPlay={autoPlay}
@@ -49,7 +50,7 @@ export const ShortsVideoCard: React.FC<ShortsVideoCardProps> = ({
               {short.title}
             </h2>
             <p className="text-sm opacity-80 truncate max-w-full break-words whitespace-pre-line">
-              {short.channel?.channel_name}
+              {short.channel?.channel_name || "Unknown"}
             </p>
           </div>
         </div>

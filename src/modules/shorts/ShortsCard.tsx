@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function ShortsCard() {
   return (
-    <div className="relative w-full max-w-xs mx-auto aspect-[9/16] bg-card rounded-xl overflow-hidden flex items-center justify-center shadow-lg">
+    <div data-testid="shorts-card-container" className="relative w-full max-w-xs mx-auto aspect-[9/16] bg-card rounded-xl overflow-hidden flex items-center justify-center shadow-lg">
       {/* Видео-превью или видео */}
       <div className="absolute inset-0 flex items-center justify-center">
         <span className="text-muted-foreground">Видео-превью</span>
@@ -20,7 +20,7 @@ export default function ShortsCard() {
         </button>
       </div>
       {/* Информация о видео снизу */}
-      <div className="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/80 to-transparent">
+      <div data-testid="video-info-container" className="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/80 to-transparent">
         <h2 className="text-lg font-semibold">Название короткого видео</h2>
         <p className="text-zinc-400 text-sm">Описание или автор</p>
       </div>

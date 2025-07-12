@@ -24,7 +24,7 @@ export function mapApiVideoToVideo(apiVideo: ApiVideo): Video {
       id: `channel-${apiVideo.id}`, // Используем уникальный ID для каждого видео
       name: apiVideo.channel_name || apiVideo.name || 'Unknown Channel',
       avatarUrl: apiVideo.profile_image 
-        ? `${baseUrl}/images/${apiVideo.profile_image}`
+        ? `${baseUrl}/images/${apiVideo.profile_image.replace(/\\/g, '/')}`
         : undefined,
       isVerified: false,
       subscriberCount: '0', // Нет в API

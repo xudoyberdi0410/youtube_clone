@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { VideoCommentComponent } from './VideoComment'
 import { useVideoComments } from '@/hooks/use-video-comments'
-import { useAuth } from '@/hooks/use-auth'
+import { useAuth } from '@/modules/auth/hooks/use-auth'
 
 interface VideoCommentsProps {
   videoId: string
@@ -175,7 +175,7 @@ export const VideoComments = memo(({ videoId, className }: VideoCommentsProps) =
           <div className="space-y-4">
             {comments.map((comment) => (
               <VideoCommentComponent 
-                key={comment.comment_id} 
+                key={comment.comment_id || comment.id} 
                 comment={comment} 
               />
             ))}

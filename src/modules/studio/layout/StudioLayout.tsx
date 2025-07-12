@@ -68,6 +68,7 @@ export function StudioLayout({
               variant="ghost"
               size="sm"
               onClick={() => setSidebarOpen(false)}
+              data-testid="close-btn"
             >
               <X className="h-4 w-4" />
             </Button>
@@ -102,7 +103,7 @@ export function StudioLayout({
                 <span className="text-sm font-medium text-muted-foreground">{t('studio.language')}</span>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm" className="h-8">
+                    <Button variant="outline" size="sm" className="h-8" data-testid="language-dropdown-trigger">
                       <Globe className="h-3 w-3 mr-1" />
                       {currentLanguage.toUpperCase()}
                     </Button>
@@ -126,7 +127,7 @@ export function StudioLayout({
                 <span className="text-sm font-medium text-muted-foreground">{t('studio.theme')}</span>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm" className="h-8">
+                    <Button variant="outline" size="sm" className="h-8" data-testid="theme-dropdown-trigger">
                       {theme === "light" ? (
                         <Sun className="h-3 w-3 mr-1" />
                       ) : theme === "dark" ? (
@@ -200,7 +201,7 @@ export function StudioLayout({
                 <span className="text-sm font-medium text-muted-foreground">{t('studio.language')}</span>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm" className="h-8">
+                    <Button variant="outline" size="sm" className="h-8" data-testid="language-dropdown-trigger">
                       <Globe className="h-3 w-3 mr-1" />
                       {currentLanguage.toUpperCase()}
                     </Button>
@@ -224,7 +225,7 @@ export function StudioLayout({
                 <span className="text-sm font-medium text-muted-foreground">{t('studio.theme')}</span>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm" className="h-8">
+                    <Button variant="outline" size="sm" className="h-8" data-testid="theme-dropdown-trigger">
                       {theme === "light" ? (
                         <Sun className="h-3 w-3 mr-1" />
                       ) : theme === "dark" ? (
@@ -264,6 +265,7 @@ export function StudioLayout({
             variant="ghost"
             size="sm"
             onClick={() => setSidebarOpen(true)}
+            data-testid="menu-btn"
           >
             <Menu className="h-5 w-5" />
           </Button>
