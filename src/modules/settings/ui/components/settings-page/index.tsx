@@ -10,7 +10,6 @@ import { t } from '@/lib/i18n'
 
 export const SettingsPage = () => {
   const { user, loading } = useSettings()
-  const [activeTab, setActiveTab] = useState('account')
 
   if (loading) {
     return (
@@ -32,19 +31,7 @@ export const SettingsPage = () => {
         </div>
         <p className="text-gray-600">{t('settings.description')}</p>
       </div>
-
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-1">
-          <TabsTrigger value="account" className="flex items-center gap-2">
-            <User className="h-4 w-4" />
-            {t('settings.accountTab')}
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="account" className="space-y-6">
-          <AccountTab />
-        </TabsContent>
-      </Tabs>
+      <AccountTab />
     </div>
   )
 }

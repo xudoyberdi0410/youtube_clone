@@ -41,7 +41,7 @@ export const HomeSidebar = () => {
         >
             <SidebarContent className="bg-background px-1 py-2 overflow-y-auto data-[state=collapsed]:px-2">
                 <MainSection />
-                <Separator className="my-3 bg-gray-200" />
+                <Separator className="my-2" />
                 <PersonalSection />
             </SidebarContent>
             <SidebarFooter className="bg-background border-t border-border flex flex-col items-center relative">
