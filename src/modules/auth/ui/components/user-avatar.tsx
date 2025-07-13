@@ -9,13 +9,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut, Settings } from "lucide-react";
+import { LogOut, Settings, Video } from "lucide-react";
 import { logout, getAvatarUrl } from "../../lib/auth-utils";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import type { User } from "@/types/auth";
 import { t } from "@/lib/i18n";
-import { LanguageSwitcher } from "@/components/ui/language-switcher";
 
 interface UserAvatarProps {
   user?: Partial<User> & { email: string };
@@ -91,18 +90,19 @@ export function UserAvatar({ user }: UserAvatarProps) {
 
         <DropdownMenuSeparator />
 
+        {/* Studio */}
+        <DropdownMenuItem onClick={() => router.push("/studio/dashboard")}>
+          <Video className="mr-2 h-4 w-4" />
+          <span>{t("menu.studio")}</span>
+        </DropdownMenuItem>
+
+        <DropdownMenuSeparator />
+
         {/* Настройки */}
         <DropdownMenuItem onClick={handleSettings}>
           <Settings className="mr-2 h-4 w-4" />
           <span>{t("menu.settings")}</span>
         </DropdownMenuItem>
-
-        <DropdownMenuSeparator />
-
-        {/* Переключатель языка */}
-        <div className="px-2 py-1">
-          <LanguageSwitcher />
-        </div>
 
         <DropdownMenuSeparator />
 

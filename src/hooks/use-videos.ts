@@ -119,13 +119,13 @@ export function useVideos(options: UseVideosOptions = {}) {
     }
   }, [ident, category, getCachedData, setCachedData, isHydrated])
 
-  const refetch = () => {
+  const refetch = useCallback(() => {
     loadVideos(category, ident, true) // Форсируем обновление при refetch
-  }
+  }, [loadVideos, category, ident])
 
-  const changeCategory = (newCategory?: VideoCategory) => {
+  const changeCategory = useCallback((newCategory?: VideoCategory) => {
     loadVideos(newCategory, ident, true) // Форсируем обновление при смене категории
-  }
+  }, [loadVideos, ident])
 
   useEffect(() => {
     if (immediate && isHydrated) {
@@ -138,5 +138,56 @@ export function useVideos(options: UseVideosOptions = {}) {
     loadVideos,
     refetch,
     changeCategory,
+  }
+}
+
+export function useMyVideos(options: { immediate?: boolean } = {}) {
+  const { immediate = true } = options
+  const [isHydrated, setIsHydrated] = useState(false)
+  const [state, setState] = useState<UseVideosState>({
+    videos: [],
+    isLoading: false,
+    error: null,
+  })
+
+  useEffect(() => {
+    setIsHydrated(true)
+  }, [])
+
+  const loadVideos = useCallback(async () => {
+    setState(prev => ({ ...prev, isLoading: true, error: null }))
+    try {
+      const apiClient = ApiClient.getInstance()
+      const apiVideos = await apiClient.getMyVideos()
+      const videos = apiVideos.map(mapApiVideoToVideo)
+      setState({
+        videos,
+        isLoading: false,
+        error: null,
+      })
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to load videos'
+      setState(prev => ({
+        ...prev,
+        isLoading: false,
+        error: errorMessage,
+      }))
+    }
+  }, [])
+
+  const refetch = useCallback(() => {
+    loadVideos()
+  }, [loadVideos])
+
+  useEffect(() => {
+    if (immediate && isHydrated) {
+      loadVideos()
+    }
+  }, [immediate, loadVideos, isHydrated])
+
+  return {
+    ...state,
+    loadVideos,
+    refetch,
   }
 }

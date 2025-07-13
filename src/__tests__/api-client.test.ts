@@ -2,15 +2,46 @@ import { ApiClient, ApiError } from '../lib/api-client'
 import type { User, Video, Channel } from '../types/api'
 
 // Mock fetch для тестирования
-global.fetch = jest.fn()
+const mockFetch = jest.fn()
+global.fetch = mockFetch
+
+// Mock localStorage
+const localStorageMock = {
+  getItem: jest.fn(),
+  setItem: jest.fn(),
+  removeItem: jest.fn(),
+  clear: jest.fn(),
+}
+global.localStorage = localStorageMock
+
+// Mock window.dispatchEvent
+Object.defineProperty(window, 'dispatchEvent', {
+  value: jest.fn(),
+  writable: true,
+})
+
+// Helper function to create mock Response
+const createMockResponse = (data: unknown, ok: boolean = true, status: number = 200) => ({
+  ok,
+  status,
+  json: jest.fn().mockResolvedValue(data),
+  text: jest.fn().mockResolvedValue(JSON.stringify(data)),
+  headers: {
+    get: jest.fn().mockReturnValue('application/json')
+  }
+})
 
 describe('ApiClient', () => {
   let apiClient: ApiClient
-  const mockFetch = fetch as jest.MockedFunction<typeof fetch>
 
   beforeEach(() => {
     apiClient = ApiClient.getInstance()
     mockFetch.mockClear()
+    localStorageMock.getItem.mockClear()
+    localStorageMock.setItem.mockClear()
+    localStorageMock.removeItem.mockClear()
+    localStorageMock.clear.mockClear()
+    ;(window.dispatchEvent as jest.Mock).mockClear()
   })
 
   describe('User methods', () => {
@@ -23,11 +54,7 @@ describe('ApiClient', () => {
         avatar_url: 'https://example.com/avatar.jpg'
       }
 
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => mockUser,
-        text: async () => JSON.stringify(mockUser),
-      } as Response)
+      mockFetch.mockResolvedValueOnce(createMockResponse(mockUser))
 
       const result = await apiClient.registerUser({
         username: 'testuser',
@@ -60,11 +87,7 @@ describe('ApiClient', () => {
         created_at: '2023-01-01T00:00:00Z'
       }
 
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => mockUser,
-        text: async () => JSON.stringify(mockUser),
-      } as Response)
+      mockFetch.mockResolvedValueOnce(createMockResponse(mockUser))
 
       const result = await apiClient.getUser()
 
@@ -100,11 +123,7 @@ describe('ApiClient', () => {
         }
       ]
 
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => mockVideos,
-        text: async () => JSON.stringify(mockVideos),
-      } as Response)
+      mockFetch.mockResolvedValueOnce(createMockResponse(mockVideos))
 
       const result = await apiClient.getVideos()
 
@@ -126,12 +145,7 @@ describe('ApiClient', () => {
         message: 'Error occurred'
       }
 
-      mockFetch.mockResolvedValueOnce({
-        ok: false,
-        status: 404,
-        json: async () => errorResponse,
-        text: async () => JSON.stringify(errorResponse),
-      } as Response)
+      mockFetch.mockResolvedValueOnce(createMockResponse(errorResponse, false, 404))
 
       await expect(apiClient.getUser()).rejects.toThrow(ApiError)
     })
@@ -175,18 +189,9 @@ describe('ApiClient', () => {
       }
 
       mockFetch
-        .mockResolvedValueOnce({
-          ok: true,
-          text: async () => JSON.stringify(mockUser),
-        } as Response)
-        .mockResolvedValueOnce({
-          ok: true,
-          text: async () => JSON.stringify(mockVideos),
-        } as Response)
-        .mockResolvedValueOnce({
-          ok: true,
-          text: async () => JSON.stringify(mockChannel),
-        } as Response)
+        .mockResolvedValueOnce(createMockResponse(mockUser))
+        .mockResolvedValueOnce(createMockResponse(mockVideos))
+        .mockResolvedValueOnce(createMockResponse(mockChannel))
 
       const userPromise = apiClient.getUser()
       const videosPromise = apiClient.getVideos()
@@ -201,6 +206,76 @@ describe('ApiClient', () => {
       expect(Array.isArray(videos)).toBe(true)
       expect(typeof channel.id).toBe('number')
       expect(typeof channel.channel_name).toBe('string')
+    })
+  })
+
+  describe('HTTP methods', () => {
+    it('should make GET request', async () => {
+      const mockData = { test: 'data' }
+      
+      mockFetch.mockResolvedValueOnce(createMockResponse(mockData))
+
+      const result = await apiClient.get('/test')
+      
+      expect(result).toEqual(mockData)
+      expect(mockFetch).toHaveBeenCalledWith(
+        expect.stringContaining('/test'),
+        expect.objectContaining({
+          method: 'GET'
+        })
+      )
+    })
+
+    it('should make POST request', async () => {
+      const mockData = { test: 'data' }
+      const postData = { name: 'test' }
+      
+      mockFetch.mockResolvedValueOnce(createMockResponse(mockData))
+
+      const result = await apiClient.post('/test', postData)
+      
+      expect(result).toEqual(mockData)
+      expect(mockFetch).toHaveBeenCalledWith(
+        expect.stringContaining('/test'),
+        expect.objectContaining({
+          method: 'POST',
+          body: JSON.stringify(postData)
+        })
+      )
+    })
+
+    it('should make PUT request', async () => {
+      const mockData = { test: 'data' }
+      const putData = { name: 'updated' }
+      
+      mockFetch.mockResolvedValueOnce(createMockResponse(mockData))
+
+      const result = await apiClient.put('/test', putData)
+      
+      expect(result).toEqual(mockData)
+      expect(mockFetch).toHaveBeenCalledWith(
+        expect.stringContaining('/test'),
+        expect.objectContaining({
+          method: 'PUT',
+          body: JSON.stringify(putData)
+        })
+      )
+    })
+
+    it('should make DELETE request', async () => {
+      const mockData = { message: 'deleted' }
+      
+      mockFetch.mockResolvedValueOnce(createMockResponse(mockData))
+
+      const result = await apiClient.delete('/test')
+      
+      expect(result).toEqual(mockData)
+      expect(mockFetch).toHaveBeenCalledWith(
+        expect.stringContaining('/test'),
+        expect.objectContaining({
+          method: 'DELETE'
+        })
+      )
     })
   })
 })

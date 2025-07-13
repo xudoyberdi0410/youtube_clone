@@ -37,42 +37,41 @@ export function PlaylistCard({ playlist, onEdit, onDelete }: PlaylistCardProps) 
     }
   }
 
-  // Используем lucide иконку вместо SVG
   const videoCount = playlist.videos_count || 0
 
   return (
-    <Card className="group hover:shadow-lg transition-shadow duration-200">
+    <Card className="group hover:shadow-lg transition-shadow duration-200 bg-card border-none rounded-2xl overflow-hidden">
       <CardContent className="p-0">
         <div className="relative">
           {/* Thumbnail */}
           <Link href={`/playlist/${playlist.id}`} className="block">
-            <div className="relative aspect-video rounded-t-lg overflow-hidden bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-              <PlaySquare className="w-16 h-16 text-white/80" />
+            <div className="relative aspect-video w-full bg-muted flex items-center justify-center">
+              <PlaySquare className="w-16 h-16 text-muted-foreground/60" />
               {/* Play overlay */}
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-200 flex items-center justify-center">
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-200 flex items-center justify-center">
                 <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                  <div className="bg-black/70 rounded-full p-3">
-                    <Play className="w-6 h-6 text-white fill-white" />
+                  <div className="bg-foreground/80 rounded-full p-3">
+                    <Play className="w-6 h-6 text-background" />
                   </div>
                 </div>
               </div>
               {/* Video count badge */}
-              <div className="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-2 py-1 rounded">
-                {videoCount} {t("playlist.videos")}
+              <div className="absolute bottom-2 right-2 bg-foreground/80 text-background text-xs px-2 py-1 rounded">
+                {videoCount} {t(videoCount === 1 ? "playlist.video" : "playlist.videos")}
               </div>
             </div>
           </Link>
 
           {/* More actions */}
-          <div className="absolute top-2 right-2">
+          <div className="absolute top-2 right-2 z-10">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
-                  size="sm"
-                  className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black/20 hover:bg-black/40 text-white"
+                  size="icon"
+                  className="p-2 rounded-full hover:bg-muted transition text-muted-foreground opacity-100 sm:opacity-0 group-hover:opacity-100"
                 >
-                  <MoreVertical className="w-4 h-4" />
+                  <MoreVertical className="w-5 h-5" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
@@ -82,7 +81,7 @@ export function PlaylistCard({ playlist, onEdit, onDelete }: PlaylistCardProps) 
                 </DropdownMenuItem>
                 <DropdownMenuItem 
                   onClick={handleDelete}
-                  className="text-red-600 focus:text-red-600"
+                  className="text-destructive focus:text-destructive"
                   disabled={isLoading}
                 >
                   <Trash2 className="w-4 h-4 mr-2" />
@@ -95,19 +94,17 @@ export function PlaylistCard({ playlist, onEdit, onDelete }: PlaylistCardProps) 
 
         {/* Content */}
         <div className="p-4">
-          <Link href={`/playlist/${playlist.id}`}>
-            <h3 className="font-medium text-sm line-clamp-2 mb-1 hover:text-blue-600 transition-colors">
+          <Link href={`/playlist/${playlist.id}`}> 
+            <h3 className="font-semibold text-base md:text-lg line-clamp-2 mb-1 text-foreground hover:text-primary transition-colors">
               {playlist.name}
             </h3>
           </Link>
-          
           {playlist.description && (
-            <p className="text-gray-600 text-xs line-clamp-2 mb-2">
+            <p className="text-muted-foreground text-xs line-clamp-2 mb-2">
               {playlist.description}
             </p>
           )}
-          
-          <div className="flex items-center gap-2 text-xs text-gray-500">
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <span>{videoCount} {t(videoCount === 1 ? "playlist.video" : "playlist.videos")}</span>
             {(playlist.is_personal || !playlist.is_public) && (
               <>

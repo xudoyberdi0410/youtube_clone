@@ -31,9 +31,10 @@ const items = [
         icon: List,
         auth: true
     },
+    // Вместо yourVideos — ссылка на Studio
     {
         title: t("sidebar.yourVideos"),
-        url: "/feed/your-videos",
+        url: "/studio/videos",
         icon: Play,
         auth: true
     },
@@ -62,12 +63,12 @@ export const PersonalSection = memo(() => {
             <SidebarGroup className="py-0">
                 <SidebarGroupContent>
                     <div className="animate-pulse space-y-2">
-                        <div className="h-10 bg-gray-200 rounded-lg"></div>
-                        <div className="h-10 bg-gray-200 rounded-lg"></div>
-                        <div className="h-10 bg-gray-200 rounded-lg"></div>
-                        <div className="h-10 bg-gray-200 rounded-lg"></div>
-                        <div className="h-10 bg-gray-200 rounded-lg"></div>
-                        <div className="h-10 bg-gray-200 rounded-lg"></div>
+                        <div className="h-10 bg-muted rounded-lg"></div>
+                        <div className="h-10 bg-muted rounded-lg"></div>
+                        <div className="h-10 bg-muted rounded-lg"></div>
+                        <div className="h-10 bg-muted rounded-lg"></div>
+                        <div className="h-10 bg-muted rounded-lg"></div>
+                        <div className="h-10 bg-muted rounded-lg"></div>
                     </div>
                 </SidebarGroupContent>
             </SidebarGroup>
@@ -79,15 +80,15 @@ export const PersonalSection = memo(() => {
         return (
             <SidebarGroup className="py-0">
                 <SidebarGroupContent>
-                    <div className="px-2 py-2">
+                    <div className="px-2 py-2 group-data-[state=collapsed]:px-0">
                         <Button
                             variant={"outline"}
-                            className="w-full justify-start h-10 px-2 text-sm font-medium text-blue-600 hover:text-blue-500 border-blue-500/20 rounded-lg shadow-none hover:bg-blue-100"
+                            className="w-full h-10 px-2 text-sm font-medium rounded-full shadow-none flex items-center border border-primary/40 text-primary hover:bg-primary hover:text-primary-foreground hover:shadow transition-colors duration-150 group-data-[state=collapsed]:w-10 group-data-[state=collapsed]:h-10 group-data-[state=collapsed]:justify-center group-data-[state=collapsed]:px-0 group-data-[state=collapsed]:border-0"
                             asChild
                         >
-                            <Link href="/auth/signin" className="flex items-center gap-6 group-data-[state=collapsed]:gap-0 group-data-[state=collapsed]:justify-center">
+                            <Link href="/auth/signin" className="flex items-center gap-3 group-data-[state=collapsed]:gap-0 group-data-[state=collapsed]:justify-center w-full h-full">
                                 <UserCircleIcon className="w-6 h-6 flex-shrink-0"/>
-                                <span className="group-data-[state=collapsed]:hidden">Sign in</span>
+                                <span className="group-data-[state=collapsed]:hidden">{t("auth.signIn")}</span>
                             </Link>
                         </Button>
                     </div>
@@ -107,7 +108,7 @@ export const PersonalSection = memo(() => {
                                 tooltip={item.title}
                                 asChild
                                 isActive={pathname === item.url}
-                                className="h-10 px-2 rounded-lg hover:bg-gray-100 data-[active=true]:bg-gray-100 group-data-[state=collapsed]:px-2 group-data-[state=collapsed]:justify-center"
+                                className="h-10 px-2 rounded-lg hover:bg-muted data-[active=true]:bg-muted group-data-[state=collapsed]:px-2 group-data-[state=collapsed]:justify-center"
                             >
                                 <Link href={item.url} className="flex items-center gap-6 group-data-[state=collapsed]:gap-0">
                                     <item.icon className="w-6 h-6 flex-shrink-0"/>

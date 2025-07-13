@@ -145,8 +145,8 @@ export const useChannels = () => {
       setError(null)
       setSuccess(null)
       
-      // Поскольку поддерживаем только один канал, используем основной эндпоинт
-      await apiClient.deleteChannel()
+      // Используем deleteChannelById для удаления конкретного канала
+      await apiClient.deleteChannelById(channelId)
       
       // Удаляем канал из списка
       const updatedChannels = channels.filter(channel => channel.id !== channelId)

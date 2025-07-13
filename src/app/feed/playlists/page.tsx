@@ -19,7 +19,13 @@ export default function PlaylistsPage() {
 
     const handlePlaylistCreated = async (playlistData: PlaylistCreate) => {
         try {
-            await createPlaylist(playlistData);
+            // Приводим к типу Omit<Playlist, 'id' | 'created_at'>
+            const playlistDataForApi = {
+                ...playlistData,
+                user_id: 0, // TODO: заменить на реальный user_id, если есть
+                is_public: true, // или false, если по умолчанию приватный
+            };
+            await createPlaylist(playlistDataForApi);
         } catch (error) {
             console.error('Failed to create playlist:', error);
         }
@@ -116,18 +122,18 @@ export default function PlaylistsPage() {
                 </div>
             )}
             {playlists.length === 0 ? (
-                <div className="text-center py-16">
-                    <List className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-                    <h2 className="text-xl font-medium text-gray-600 mb-2">
+                <div className="flex flex-col items-center justify-center py-24 text-center bg-card rounded-2xl shadow-sm">
+                    <List className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
+                    <h2 className="text-xl font-semibold text-foreground mb-2">
                         {t('playlists.noPlaylists')}
                     </h2>
-                    <p className="text-gray-500 mb-6">
+                    <p className="text-muted-foreground mb-6">
                         {t('playlists.createToOrganize')}
                     </p>
                     <CreatePlaylistDialog 
                         onPlaylistCreated={handlePlaylistCreated}
                         trigger={
-                            <button className="inline-flex items-center gap-2 px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors">
+                            <button className="inline-flex items-center gap-2 px-6 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors">
                                 <Plus className="w-4 h-4" />
                                 {t('playlists.createFirst')}
                             </button>

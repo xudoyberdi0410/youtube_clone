@@ -1,20 +1,35 @@
 // src/hooks/index.ts
 
-// Re-export all custom hooks
-export { useAuth } from '@/modules/auth/hooks/use-auth'
-export { useSettings } from '@/modules/settings/hooks/use-settings'
-export { useLocalStorage } from './use-local-storage'
+// API Hooks
 export { useApi } from './use-api'
-export { useIsClient } from './use-is-client'
 export { useVideos } from './use-videos'
+export { useInfiniteVideos } from './use-infinite-videos'
 export { useVideo } from './use-video'
-export { useLikes } from './use-likes'
-export { useVideoComments } from './use-video-comments'
-export { useSubscriptions } from './use-subscriptions'
+export { useVideoWithCache } from './use-video-with-cache'
 export { useVideoStats } from './use-video-stats'
-export { usePlaylists } from './use-playlists'
-export { usePlaylist } from './use-playlist'
+export { useVideoComments } from './use-video-comments'
+export { useVideoPreview } from './use-video-preview'
+export { useVideoCache } from './use-video-cache'
+export { useInstantPlay } from './use-instant-play'
 
-// Re-export existing hooks from components/ui
+// Auth Hooks
+export { useAuth } from '@/modules/auth/hooks/use-auth'
+export { useLikes } from './use-likes'
+export { useLikedVideos } from './use-liked-videos'
+
+// Playlist Hooks
+export { usePlaylist } from './use-playlist'
+export { usePlaylists } from './use-playlists'
+
+// Subscription Hooks
+export { useSubscriptions } from './use-subscriptions'
+
+// UI Hooks
 export { useIsMobile } from './use-mobile'
 export { useToast } from './use-toast'
+export { useLocalStorage } from './use-local-storage'
+export { useIsClient } from './use-is-client'
+
+// Memory Leak Prevention Hooks
+export { useIsMounted } from './use-is-mounted'
+export { useSafeTimeout } from './use-safe-timeout'

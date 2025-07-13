@@ -4,8 +4,7 @@ import { useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useSettings } from '@/modules/settings/hooks/use-settings'
 import { AccountTab } from '@/modules/settings/ui/components/account-tab'
-import { ChannelsTab } from '@/modules/settings/ui/components/channels-tab'
-import { User, Video } from "lucide-react"
+import { User } from "lucide-react"
 import { LoadingSpinner } from '@/components/ui/loading-spinner'
 import { t } from '@/lib/i18n'
 
@@ -35,23 +34,15 @@ export const SettingsPage = () => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-1">
           <TabsTrigger value="account" className="flex items-center gap-2">
             <User className="h-4 w-4" />
             {t('settings.accountTab')}
-          </TabsTrigger>
-          <TabsTrigger value="channels" className="flex items-center gap-2">
-            <Video className="h-4 w-4" />
-            {t('settings.channelsTab')}
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="account" className="space-y-6">
           <AccountTab />
-        </TabsContent>
-
-        <TabsContent value="channels" className="space-y-6">
-          <ChannelsTab />
         </TabsContent>
       </Tabs>
     </div>

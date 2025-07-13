@@ -15,7 +15,7 @@ const Layout = ({ children }: LayoutProps) => {
         <HomeNavbar />
         <div className="min-h-screen">
           <WatchSidebar />
-          <main className="flex-1 overflow-y-auto bg-white pt-16">
+          <main className="flex-1 overflow-y-auto bg-background pt-16">
             {children}
           </main>
         </div>

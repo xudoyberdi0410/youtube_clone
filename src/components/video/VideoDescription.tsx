@@ -4,11 +4,14 @@ import React, { useState, useMemo, useCallback } from 'react'
 import { t } from '@/lib/i18n'
 import { Button } from '@/components/ui/button'
 import { ChevronDown, ChevronUp } from 'lucide-react'
+import { formatRelativeTimeIntl, formatFullDateIntl } from '@/lib/utils/format';
+import { getCurrentLanguage } from '@/lib/i18n';
 
 interface VideoDescriptionProps {
   description: string
   viewCount?: string
   publishDate?: string
+  category?: string
   onSeek?: (seconds: number) => void
   maxPreviewLength?: number
 }
@@ -33,6 +36,7 @@ export function VideoDescription({
   description,
   viewCount,
   publishDate,
+  category,
   onSeek,
   maxPreviewLength = 150,
 }: VideoDescriptionProps) {
@@ -144,7 +148,13 @@ export function VideoDescription({
         <div className="flex items-center text-sm font-medium space-x-2 mb-2">
           {viewCount && <span>{viewCount} {t('video.views')}</span>}
           {viewCount && publishDate && <span>•</span>}
-          {publishDate && <span>{publishDate}</span>}
+          {publishDate && (
+            <span>
+              {isExpanded
+                ? formatFullDateIntl(publishDate, getCurrentLanguage())
+                : formatRelativeTimeIntl(publishDate, getCurrentLanguage())}
+            </span>
+          )}
         </div>
       )}
 
@@ -155,6 +165,16 @@ export function VideoDescription({
             {para.lines.map((ln, idx) => renderLine(ln, idx))}
           </div>
         ))}
+        {isExpanded && category && (
+          <div className="mt-2">
+            <a
+              href={`/search?category=${encodeURIComponent(category)}`}
+              className="inline-block px-2 py-1 rounded bg-muted text-muted-foreground hover:bg-primary/10 hover:text-primary transition-colors text-xs font-medium"
+            >
+              #{category}
+            </a>
+          </div>
+        )}
       </div>
 
       {/* Кнопка */}

@@ -31,6 +31,7 @@ interface VideoPlayerProps {
   autoPlay?: boolean
   className?: string
   fallbackSrc?: string
+  startTime?: number
 }
 
 export function VideoPlayer({ 
@@ -40,7 +41,8 @@ export function VideoPlayer({
   // title = "Video",
   autoPlay = false,
   className = "",
-  fallbackSrc = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+  fallbackSrc = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+  startTime = 0
 }: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -57,7 +59,9 @@ export function VideoPlayer({
   const [playbackRate, setPlaybackRate] = useState(1)
   const [isLoading, setIsLoading] = useState(true)
   const [hasError, setHasError] = useState(false)
+  const [shouldAutoPlay, setShouldAutoPlay] = useState(autoPlay)
   const hasAddedToHistory = useRef(false)
+  const instantPlayRef = useRef<{ videoId: string; videoUrl: string; currentTime: number } | null>(null)
 
   const hideControlsTimeout = useRef<NodeJS.Timeout | null>(null)
   
@@ -65,6 +69,7 @@ export function VideoPlayer({
     setShowControls(true)
     if (hideControlsTimeout.current) {
       clearTimeout(hideControlsTimeout.current)
+      hideControlsTimeout.current = null
     }
     hideControlsTimeout.current = setTimeout(() => {
       if (isPlaying) {
@@ -78,6 +83,7 @@ export function VideoPlayer({
     return () => {
       if (hideControlsTimeout.current) {
         clearTimeout(hideControlsTimeout.current)
+        hideControlsTimeout.current = null
       }
     }
   }, [resetHideControlsTimer])
@@ -153,11 +159,59 @@ export function VideoPlayer({
     }
   }
 
+  // Проверяем мгновенное воспроизведение при загрузке
+  useEffect(() => {
+    try {
+      const instantPlayData = sessionStorage.getItem('instantPlay')
+      if (instantPlayData) {
+        const data = JSON.parse(instantPlayData)
+        // Проверяем, что данные не старше 5 секунд и соответствуют текущему видео
+        if (Date.now() - data.timestamp < 5000 && data.videoId === videoId) {
+          instantPlayRef.current = data
+          // Очищаем данные из sessionStorage
+          sessionStorage.removeItem('instantPlay')
+                  // Устанавливаем автовоспроизведение
+        setShouldAutoPlay(true)
+        }
+      }
+    } catch (error) {
+      console.error('Error parsing instant play data:', error)
+    }
+  }, [videoId])
+
   const handleLoadedMetadata = () => {
     if (videoRef.current) {
       setDuration(videoRef.current.duration)
       setIsLoading(false)
       setHasError(false)
+      
+      // Если есть данные мгновенного воспроизведения, устанавливаем время
+      if (instantPlayRef.current) {
+        const { currentTime: instantTime } = instantPlayRef.current
+        if (instantTime > 0 && instantTime < videoRef.current.duration) {
+          videoRef.current.currentTime = instantTime
+          setCurrentTime(instantTime)
+        }
+        // Автоматически начинаем воспроизведение
+        videoRef.current.play().then(() => {
+          setIsPlaying(true)
+        }).catch(() => {
+          // Игнорируем ошибки автовоспроизведения
+        })
+        instantPlayRef.current = null
+      } else if (shouldAutoPlay) {
+        // Обычное автовоспроизведение
+        videoRef.current.play().then(() => {
+          setIsPlaying(true)
+        }).catch(() => {
+          // Игнорируем ошибки автовоспроизведения
+        })
+      }
+      // Если задан startTime, устанавливаем его
+      if (startTime > 0 && startTime < videoRef.current.duration) {
+        videoRef.current.currentTime = startTime;
+        setCurrentTime(startTime);
+      }
     }
   }
 
@@ -260,7 +314,7 @@ export function VideoPlayer({
   return (
     <div 
       ref={containerRef}
-      className={`relative aspect-video bg-black rounded-lg overflow-hidden group ${className}`}
+      className={`relative aspect-video bg-background rounded-lg overflow-hidden group ${className}`}
       onMouseMove={resetHideControlsTimer}
       onMouseLeave={() => setShowControls(false)}
     >
@@ -268,7 +322,7 @@ export function VideoPlayer({
         ref={videoRef}
         className="w-full h-full object-cover"
         src={videoSrc}
-        autoPlay={autoPlay}
+        autoPlay={shouldAutoPlay}
         onLoadedMetadata={handleLoadedMetadata}
         onTimeUpdate={handleTimeUpdate}
         onPlay={handlePlay}
@@ -277,12 +331,13 @@ export function VideoPlayer({
         onCanPlay={handleCanPlay}
         onError={handleError}
         onClick={togglePlay}
+        data-testid="video-player"
       />
       
       {isLoading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black">
-          <div className="text-white text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+        <div className="absolute inset-0 flex items-center justify-center bg-background/90">
+          <div className="text-foreground text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
             <p>{t('video.loading')}</p>
           </div>
         </div>
@@ -313,7 +368,7 @@ export function VideoPlayer({
 
       {/* Speed indicator */}
       {playbackRate !== 1 && (
-        <div className="absolute top-4 right-4 bg-black/70 text-white px-3 py-1 rounded-md text-sm font-medium backdrop-blur-sm border border-white/20">
+        <div className="absolute top-4 right-4 bg-background/80 text-foreground px-3 py-1 rounded-md text-sm font-medium backdrop-blur-sm border border-border/20">
           {playbackRate}x
         </div>
       )}
@@ -332,7 +387,7 @@ export function VideoPlayer({
                 e.stopPropagation();
                 togglePlay();
               }}
-              className="text-white hover:bg-white/20 p-4 rounded-full pointer-events-auto"
+              className="text-foreground hover:bg-primary/20 p-4 rounded-full pointer-events-auto"
             >
               <Play className="w-12 h-12" />
             </Button>
@@ -435,7 +490,7 @@ export function VideoPlayer({
                   {formatTime(currentTime)} / {formatTime(duration)}
                 </span>
                 {playbackRate !== 1 && (
-                  <span className="text-xs bg-white/20 px-2 py-1 rounded backdrop-blur-sm">
+                  <span className="text-xs bg-primary/20 px-2 py-1 rounded backdrop-blur-sm">
                 {playbackRate === 1 ? t('video.speedNormal') : `${playbackRate}x`}
                   </span>
                 )}
