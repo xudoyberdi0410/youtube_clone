@@ -31,14 +31,18 @@ export function useSafeTimeout() {
   const isMountedRef = useRef(true)
 
   useEffect(() => {
+    const timeouts = timeoutsRef.current
+    const intervals = intervalsRef.current
+    
     return () => {
       isMountedRef.current = false
       // Очищаем все таймеры при размонтировании
-      timeoutsRef.current.forEach(timeout => clearTimeout(timeout))
-      intervalsRef.current.forEach(interval => clearInterval(interval))
-      timeoutsRef.current.clear()
-      intervalsRef.current.clear()
+      timeouts.forEach(timeout => clearTimeout(timeout))
+      intervals.forEach(interval => clearInterval(interval))
+      timeouts.clear()
+      intervals.clear()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const setTimeout = useCallback((callback: () => void, delay: number) => {
@@ -62,7 +66,7 @@ export function useSafeTimeout() {
       if (isMountedRef.current) {
         callback()
       } else {
-        clearInterval(intervalId)
+        global.clearInterval(intervalId)
         intervalsRef.current.delete(intervalId)
       }
     }, delay)

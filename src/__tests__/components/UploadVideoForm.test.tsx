@@ -9,7 +9,7 @@ jest.mock('@/lib/api-client')
 jest.mock('@/lib/utils/validation')
 jest.mock('next/navigation')
 jest.mock('@/lib/i18n', () => ({
-  t: (key: string, params?: Record<string, any>) => {
+  t: (key: string, params?: Record<string, unknown>) => {
     if (params) {
       return key.replace(/\{(\w+)\}/g, (_, param) => params[param] || '')
     }
@@ -247,7 +247,7 @@ describe('UploadVideoForm', () => {
 
   it('should upload regular video successfully', async () => {
     mockValidateFileUpload.mockReturnValue({ isValid: true })
-    mockApiClient.uploadVideo.mockResolvedValue({ id: 1, title: 'Test Video' } as any)
+    mockApiClient.uploadVideo.mockResolvedValue({ id: 1, title: 'Test Video' } as { id: number; title: string })
     
     render(<UploadVideoForm />)
 
@@ -285,7 +285,7 @@ describe('UploadVideoForm', () => {
 
   it('should upload shorts successfully', async () => {
     mockValidateFileUpload.mockReturnValue({ isValid: true })
-    mockApiClient.uploadShorts.mockResolvedValue({ id: 1 } as any)
+    mockApiClient.uploadShorts.mockResolvedValue({ id: 1 } as { id: number })
     
     // Mock vertical video
     Object.defineProperty(window.HTMLVideoElement.prototype, 'videoWidth', {

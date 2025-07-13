@@ -24,12 +24,12 @@ describe('Auth Component', () => {
     prefetch: jest.fn(),
   };
 
-  beforeEach(() => {
+  beforeEach(async () => {
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
     (useParams as jest.Mock).mockReturnValue({ mode: 'login' });
 
     // Mock useAuth hook
-    const { useAuth } = require('@/modules/auth/hooks/use-auth');
+    const { useAuth } = await import('@/modules/auth/hooks/use-auth');
     useAuth.mockReturnValue({
       user: null,
       isLoading: false,

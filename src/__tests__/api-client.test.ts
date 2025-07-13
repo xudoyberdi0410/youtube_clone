@@ -21,7 +21,7 @@ Object.defineProperty(window, 'dispatchEvent', {
 })
 
 // Helper function to create mock Response
-const createMockResponse = (data: any, ok: boolean = true, status: number = 200) => ({
+const createMockResponse = (data: unknown, ok: boolean = true, status: number = 200) => ({
   ok,
   status,
   json: jest.fn().mockResolvedValue(data),

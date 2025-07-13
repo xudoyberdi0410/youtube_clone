@@ -69,11 +69,11 @@ describe('Feed History Page', () => {
     },
   ];
 
-  beforeEach(() => {
+  beforeEach(async () => {
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
 
     // Mock API client
-    const { apiClient } = require('@/lib/api-client');
+    const { apiClient } = await import('@/lib/api-client');
     apiClient.getHistory.mockResolvedValue(mockHistoryData);
     apiClient.deleteFromHistory.mockResolvedValue(undefined);
   });
@@ -110,8 +110,8 @@ describe('Feed History Page', () => {
     });
   });
 
-  it('shows loading state when history is loading', () => {
-    const { apiClient } = require('@/lib/api-client');
+  it('shows loading state when history is loading', async () => {
+    const { apiClient } = await import('@/lib/api-client');
     apiClient.getHistory.mockImplementation(() => new Promise(() => {})); // Never resolves
 
     render(<HistoryPage />);
@@ -120,7 +120,7 @@ describe('Feed History Page', () => {
   });
 
   it('shows error state when history fails to load', async () => {
-    const { apiClient } = require('@/lib/api-client');
+    const { apiClient } = await import('@/lib/api-client');
     apiClient.getHistory.mockRejectedValueOnce(new Error('Failed to load'));
     render(<HistoryPage />);
     await waitFor(() => {
@@ -134,9 +134,9 @@ describe('Feed History Page', () => {
       __esModule: true,
       default: () => <div>No watch history found</div>,
     }));
-    const { apiClient } = require('@/lib/api-client');
+    const { apiClient } = await import('@/lib/api-client');
     apiClient.getHistory.mockResolvedValueOnce([]);
-    const HistoryPage = require('@/modules/history/pages/history-page').default;
+    const HistoryPage = (await import('@/modules/history/pages/history-page')).default;
     render(<HistoryPage />);
     expect(screen.getByText('No watch history found')).toBeInTheDocument();
   });

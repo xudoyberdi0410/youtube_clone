@@ -1,6 +1,5 @@
 import { mapApiVideoToVideo } from '@/lib/utils/video-mapper'
 import type { Video as ApiVideo } from '@/types/api'
-import type { Video } from '@/types/video'
 
 describe('video-mapper', () => {
   const mockApiVideo: ApiVideo = {
@@ -145,9 +144,9 @@ describe('video-mapper', () => {
   it('should handle null values', () => {
     const apiVideoWithNulls: ApiVideo = {
       ...mockApiVideo,
-      video_title: null as any,
-      video_description: null as any,
-      channel_name: null as any,
+      video_title: null as unknown as string,
+      video_description: null as unknown as string,
+      channel_name: null as unknown as string,
       profile_image: null,
     }
 

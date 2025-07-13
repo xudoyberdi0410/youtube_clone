@@ -68,8 +68,8 @@ jest.mock('../../../lib/i18n', () => ({
 // Mock the Image component
 jest.mock('next/image', () => ({
   __esModule: true,
-  default: ({ src, alt, className, width, height, unoptimized }: any) => (
-    <img src={src} alt={alt} className={className} width={width} height={height} data-testid="next-image" />
+  default: ({ src, alt, className, width, height }: { src: string; alt: string; className?: string; width?: number; height?: number }) => (
+    <div data-testid="next-image" data-src={src} data-alt={alt} className={className} style={{ width, height }} />
   ),
 }));
 
@@ -86,7 +86,7 @@ jest.mock('../styles.css', () => ({}));
 
 // Mock the Button component
 jest.mock('@/components/ui/button', () => ({
-  Button: ({ children, onClick, className, variant, size, 'aria-label': ariaLabel, ...props }: any) => (
+  Button: ({ children, onClick, className, 'aria-label': ariaLabel, ...props }: { children: React.ReactNode; onClick?: () => void; className?: string; 'aria-label'?: string; [key: string]: unknown }) => (
     <button onClick={onClick} className={className} aria-label={ariaLabel} {...props}>
       {children}
     </button>
@@ -157,7 +157,7 @@ describe('Shorts Performance Tests', () => {
       });
 
       // Measure memory before render
-      const memoryBefore = (performance as any).memory?.usedJSHeapSize || 0;
+      const memoryBefore = (performance as unknown as { memory?: { usedJSHeapSize: number } }).memory?.usedJSHeapSize || 0;
       
       const { unmount } = render(<ShortsFeed />);
       
@@ -172,7 +172,7 @@ describe('Shorts Performance Tests', () => {
         global.gc();
       }
       
-      const memoryAfter = (performance as any).memory?.usedJSHeapSize || 0;
+      const memoryAfter = (performance as unknown as { memory?: { usedJSHeapSize: number } }).memory?.usedJSHeapSize || 0;
       
       // Memory usage should be reasonable (less than 50MB increase for 500 items)
       const memoryIncrease = memoryAfter - memoryBefore;

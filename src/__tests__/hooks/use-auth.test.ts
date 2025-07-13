@@ -180,7 +180,7 @@ describe('useAuth', () => {
     ;(shouldRefreshToken as jest.Mock).mockReturnValue(false)
     ;(getCurrentUser as jest.Mock).mockResolvedValue(null)
 
-    const { result } = renderHook(() => useAuth())
+    renderHook(() => useAuth())
 
     // Simulate storage change
     const storageEvent = new StorageEvent('storage')
@@ -196,7 +196,7 @@ describe('useAuth', () => {
     ;(shouldRefreshToken as jest.Mock).mockReturnValue(false)
     ;(getCurrentUser as jest.Mock).mockResolvedValue(null)
 
-    const { result } = renderHook(() => useAuth())
+    renderHook(() => useAuth())
 
     // Simulate auth state change
     const authEvent = new Event('authStateChanged')

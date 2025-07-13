@@ -45,11 +45,11 @@ describe('Studio Channel Page', () => {
     language: 'English',
   };
 
-  beforeEach(() => {
+  beforeEach(async () => {
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
 
     // Mock useAuth hook
-    const { useAuth } = require('@/modules/auth/hooks/use-auth');
+    const { useAuth } = await import('@/modules/auth/hooks/use-auth');
     useAuth.mockReturnValue({
       user: { id: 'user-1', name: 'Test User' },
       isLoading: false,
@@ -60,7 +60,7 @@ describe('Studio Channel Page', () => {
     });
 
     // Mock useChannel hook
-    const { default: useChannel } = require('@/modules/channel/hooks/use-channel');
+    const { default: useChannel } = await import('@/modules/channel/hooks/use-channel');
     useChannel.mockReturnValue({
       channel: mockChannel,
       isLoading: false,
@@ -109,8 +109,8 @@ describe('Studio Channel Page', () => {
     });
   });
 
-  it('shows loading state when channel is loading', () => {
-    const { default: useChannel } = require('@/modules/channel/hooks/use-channel');
+  it('shows loading state when channel is loading', async () => {
+    const { default: useChannel } = await import('@/modules/channel/hooks/use-channel');
     useChannel.mockReturnValue({
       channel: null,
       isLoading: true,
@@ -124,8 +124,8 @@ describe('Studio Channel Page', () => {
     expect(screen.getByText('Channel')).toBeInTheDocument();
   });
 
-  it('shows error state when channel fails to load', () => {
-    const { default: useChannel } = require('@/modules/channel/hooks/use-channel');
+  it('shows error state when channel fails to load', async () => {
+    const { default: useChannel } = await import('@/modules/channel/hooks/use-channel');
     useChannel.mockReturnValue({
       channel: null,
       isLoading: false,

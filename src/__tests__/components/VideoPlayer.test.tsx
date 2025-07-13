@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
+import { render, screen, fireEvent, act } from '@testing-library/react'
 import { VideoPlayer } from '@/components/video/VideoPlayer'
 import { ApiClient } from '@/lib/api-client'
 
@@ -122,7 +122,7 @@ describe('VideoPlayer', () => {
     })
 
     // Mock the skipTime function by simulating the expected behavior
-    const originalCurrentTime = video.currentTime
+    // const originalCurrentTime = video.currentTime
     
     // Right arrow should skip forward
     fireEvent.keyDown(document, { code: 'ArrowRight' })
@@ -213,7 +213,7 @@ describe('VideoPlayer', () => {
     const video = screen.getByTestId('video-player')
     
     // Mock apiClient to return a Promise
-    const { apiClient } = require('@/lib/api-client')
+    const { apiClient } = await import('@/lib/api-client')
     apiClient.addToHistory = jest.fn().mockResolvedValue(undefined)
     
     // Simulate play event
@@ -340,7 +340,7 @@ describe('VideoPlayer', () => {
     Object.defineProperty(video, 'buffered', {
       value: {
         length: 1,
-        end: (index: number) => 50
+        end: () => 50
       },
       writable: true
     })

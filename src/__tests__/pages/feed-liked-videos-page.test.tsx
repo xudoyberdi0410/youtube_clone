@@ -71,11 +71,11 @@ describe('Feed Liked Videos Page', () => {
     },
   ];
 
-  beforeEach(() => {
+  beforeEach(async () => {
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
 
     // Mock useAuth hook
-    const { useAuth } = require('@/modules/auth/hooks/use-auth');
+    const { useAuth } = await import('@/modules/auth/hooks/use-auth');
     useAuth.mockReturnValue({
       isLoggedIn: true,
       user: { id: 'user-1', name: 'Test User' },
@@ -83,7 +83,7 @@ describe('Feed Liked Videos Page', () => {
     });
 
     // Mock useLikedVideos hook
-    const { useLikedVideos } = require('@/hooks/use-liked-videos');
+    const { useLikedVideos } = await import('@/hooks/use-liked-videos');
     useLikedVideos.mockReturnValue({
       likedVideos: mockLikedVideos,
       isLoading: false,
@@ -145,8 +145,8 @@ describe('Feed Liked Videos Page', () => {
     });
   });
 
-  it('shows loading state when liked videos are loading', () => {
-    const { useLikedVideos } = require('@/hooks/use-liked-videos');
+  it('shows loading state when liked videos are loading', async () => {
+    const { useLikedVideos } = await import('@/hooks/use-liked-videos');
     useLikedVideos.mockReturnValue({
       likedVideos: [],
       isLoading: true,
@@ -162,8 +162,8 @@ describe('Feed Liked Videos Page', () => {
     expect(document.querySelector('.animate-pulse')).toBeInTheDocument();
   });
 
-  it('shows error state when liked videos fail to load', () => {
-    const { useLikedVideos } = require('@/hooks/use-liked-videos');
+  it('shows error state when liked videos fail to load', async () => {
+    const { useLikedVideos } = await import('@/hooks/use-liked-videos');
     useLikedVideos.mockReturnValue({
       likedVideos: [],
       isLoading: false,
@@ -178,50 +178,45 @@ describe('Feed Liked Videos Page', () => {
     expect(screen.getByText('Error loading')).toBeInTheDocument();
   });
 
-  it('shows empty state when no liked videos found', () => {
-    const { useLikedVideos } = require('@/hooks/use-liked-videos');
+  it('shows empty state when no liked videos found', async () => {
+    const { useLikedVideos } = await import('@/hooks/use-liked-videos');
     useLikedVideos.mockReturnValue({
       likedVideos: [],
       isLoading: false,
       error: null,
-      hasNextPage: false,
-      fetchNextPage: jest.fn(),
-      isFetchingNextPage: false,
+      refetch: jest.fn(),
     });
 
     render(<LikedVideosPage />);
-
     expect(screen.getByText('You have no liked videos yet')).toBeInTheDocument();
   });
 
-  it('requires authentication to access liked videos', () => {
-    const { useAuth } = require('@/modules/auth/hooks/use-auth');
+  it('requires authentication to access liked videos', async () => {
+    const { useAuth } = await import('@/modules/auth/hooks/use-auth');
     useAuth.mockReturnValue({
       isLoggedIn: false,
       user: null,
       loading: false,
+      isAuthenticated: false,
+      isLoading: false,
     });
 
     render(<LikedVideosPage />);
-
-    // Проверяем, что отображается сообщение о необходимости авторизации
-    expect(screen.getAllByText(/sign in/i)).toHaveLength(2); // Заголовок и кнопка
+    // AuthRequiredDialog should be rendered when not logged in
+    expect(screen.getByText('Sign in to view liked videos')).toBeInTheDocument();
   });
 
-  it('shows loading indicator when fetching next page', () => {
-    const { useLikedVideos } = require('@/hooks/use-liked-videos');
+  it('should show loading indicator when fetching next page', async () => {
+    const { useLikedVideos } = await import('@/hooks/use-liked-videos');
     useLikedVideos.mockReturnValue({
       likedVideos: mockLikedVideos,
       isLoading: false,
       error: null,
-      hasNextPage: true,
-      fetchNextPage: jest.fn(),
-      isFetchingNextPage: true,
+      refetch: jest.fn(),
+      isLoadingMore: true,
     });
 
     render(<LikedVideosPage />);
-
-    // Проверяем наличие индикатора загрузки
-    expect(screen.getByText('Liked videos')).toBeInTheDocument();
+    expect(screen.getByRole('status')).toBeInTheDocument();
   });
 }); 

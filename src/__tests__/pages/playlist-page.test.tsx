@@ -1,6 +1,5 @@
 import '@testing-library/jest-dom';
 import { render, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { useRouter, useParams } from 'next/navigation';
 import PlaylistPage from '@/app/playlist/[id]/page';
 
@@ -66,12 +65,12 @@ describe('Playlist Page', () => {
     },
   ];
 
-  beforeEach(() => {
+  beforeEach(async () => {
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
     (useParams as jest.Mock).mockReturnValue({ id: '1' });
 
     // Mock useAuth hook
-    const { useAuth } = require('@/modules/auth/hooks/use-auth');
+    const { useAuth } = await import('@/modules/auth/hooks/use-auth');
     useAuth.mockReturnValue({
       user: { id: 'user-1', name: 'Test User' },
       isLoading: false,
@@ -80,7 +79,7 @@ describe('Playlist Page', () => {
     });
 
     // Mock usePlaylist hook
-    const { usePlaylist } = require('@/hooks/use-playlist');
+    const { usePlaylist } = await import('@/hooks/use-playlist');
     usePlaylist.mockReturnValue({
       playlist: mockPlaylist,
       playlistVideos: mockPlaylistVideos,
@@ -120,8 +119,8 @@ describe('Playlist Page', () => {
     });
   });
 
-  it('shows loading state when playlist is loading', () => {
-    const { usePlaylist } = require('@/hooks/use-playlist');
+  it('shows loading state when playlist is loading', async () => {
+    const { usePlaylist } = await import('@/hooks/use-playlist');
     usePlaylist.mockReturnValue({
       playlist: null,
       playlistVideos: [],
@@ -136,8 +135,8 @@ describe('Playlist Page', () => {
     expect(document.querySelector('.animate-pulse')).toBeInTheDocument();
   });
 
-  it('shows error state when playlist fails to load', () => {
-    const { usePlaylist } = require('@/hooks/use-playlist');
+  it('shows error state when playlist fails to load', async () => {
+    const { usePlaylist } = await import('@/hooks/use-playlist');
     usePlaylist.mockReturnValue({
       playlist: null,
       playlistVideos: [],
@@ -152,8 +151,8 @@ describe('Playlist Page', () => {
     expect(screen.getByText('Failed to load playlist')).toBeInTheDocument();
   });
 
-  it('shows empty state when no videos in playlist', () => {
-    const { usePlaylist } = require('@/hooks/use-playlist');
+  it('shows empty state when no videos in playlist', async () => {
+    const { usePlaylist } = await import('@/hooks/use-playlist');
     usePlaylist.mockReturnValue({
       playlist: { ...mockPlaylist, videos_count: 0 },
       playlistVideos: [],
@@ -167,9 +166,9 @@ describe('Playlist Page', () => {
     expect(screen.getByText('No videos in this playlist')).toBeInTheDocument();
   });
 
-  it('handles missing playlist ID gracefully', () => {
+  it('handles missing playlist ID gracefully', async () => {
     (useParams as jest.Mock).mockReturnValue({ id: undefined });
-    const { usePlaylist } = require('@/hooks/use-playlist');
+    const { usePlaylist } = await import('@/hooks/use-playlist');
     usePlaylist.mockReturnValue({
       playlist: null,
       playlistVideos: [],
@@ -192,7 +191,7 @@ describe('Playlist Page', () => {
   });
 
   it('shows private indicator for private playlists', async () => {
-    const { usePlaylist } = require('@/hooks/use-playlist');
+    const { usePlaylist } = await import('@/hooks/use-playlist');
     usePlaylist.mockReturnValue({
       playlist: { ...mockPlaylist, is_public: false, is_personal: true },
       playlistVideos: mockPlaylistVideos,
@@ -208,8 +207,8 @@ describe('Playlist Page', () => {
     });
   });
 
-  it('does not show edit/delete buttons for non-owner', () => {
-    const { usePlaylist } = require('@/hooks/use-playlist');
+  it('does not show edit/delete buttons for non-owner', async () => {
+    const { usePlaylist } = await import('@/hooks/use-playlist');
     usePlaylist.mockReturnValue({
       playlist: { ...mockPlaylist, user_id: 'other-user' },
       playlistVideos: mockPlaylistVideos,

@@ -11,13 +11,18 @@ jest.mock('@/lib/i18n', () => ({
 }))
 
 jest.mock('@/components/auth/AuthRequiredDialog', () => ({
-  AuthRequiredDialog: (props: any) => (
-    <div data-testid="auth-dialog" data-open={props.open} data-title={props.title} data-description={props.description} />
+  AuthRequiredDialog: (props: unknown) => (
+    <div data-testid="auth-dialog" data-open={(props as { open: boolean }).open} data-title={(props as { title: string }).title} data-description={(props as { description: string }).description} />
   ),
 }))
 
 describe('YourVideosPage', () => {
-  const useAuth = require('@/modules/auth/hooks/use-auth').useAuth
+  let useAuth: any
+
+  beforeAll(async () => {
+    const authModule = await import('@/modules/auth/hooks/use-auth')
+    useAuth = authModule.useAuth
+  })
 
   it('показывает skeleton при loading', () => {
     useAuth.mockReturnValue({ isLoggedIn: false, loading: true })

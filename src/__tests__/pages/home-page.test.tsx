@@ -15,7 +15,7 @@ jest.mock('@/hooks/use-infinite-videos', () => ({
 
 // Мокаем VideoCardWithPreview
 jest.mock('@/components/video/VideoCardWithPreview', () => ({
-  VideoCardWithPreview: ({ title, channel }: any) => (
+  VideoCardWithPreview: ({ title, channel }: { title: string; channel: { name: string } }) => (
     <div data-testid="video-card">
       <h3>{title}</h3>
       <p>{channel.name}</p>

@@ -65,11 +65,11 @@ describe('Shorts Page', () => {
     },
   ];
 
-  beforeEach(() => {
+  beforeEach(async () => {
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
 
     // Mock useAuth hook
-    const { useAuth } = require('@/modules/auth/hooks/use-auth');
+    const { useAuth } = await import('@/modules/auth/hooks/use-auth');
     useAuth.mockReturnValue({
       isLoggedIn: true,
       user: { id: 'user-1', name: 'Test User' },
@@ -77,7 +77,7 @@ describe('Shorts Page', () => {
     });
 
     // Mock useShorts hook
-    const { useShorts } = require('@/modules/shorts/hooks/useShorts');
+    const { useShorts } = await import('@/modules/shorts/hooks/useShorts');
     useShorts.mockReturnValue({
       shorts: mockShorts,
       loading: false,
@@ -112,8 +112,8 @@ describe('Shorts Page', () => {
     expect(screen.getByText(/750.*likes/)).toBeInTheDocument();
   });
 
-  it('shows loading state when shorts are loading', () => {
-    const { useShorts } = require('@/modules/shorts/hooks/useShorts');
+  it('shows loading state when shorts are loading', async () => {
+    const { useShorts } = await import('@/modules/shorts/hooks/useShorts');
     useShorts.mockReturnValue({
       shorts: [],
       loading: true,
@@ -127,8 +127,8 @@ describe('Shorts Page', () => {
     expect(screen.getByText(/loading/i)).toBeInTheDocument();
   });
 
-  it('shows error state when shorts fail to load', () => {
-    const { useShorts } = require('@/modules/shorts/hooks/useShorts');
+  it('shows error state when shorts fail to load', async () => {
+    const { useShorts } = await import('@/modules/shorts/hooks/useShorts');
     useShorts.mockReturnValue({
       shorts: [],
       loading: false,
@@ -141,8 +141,8 @@ describe('Shorts Page', () => {
     expect(screen.getByText('Failed to load shorts')).toBeInTheDocument();
   });
 
-  it('shows empty state when no shorts found', () => {
-    const { useShorts } = require('@/modules/shorts/hooks/useShorts');
+  it('shows empty state when no shorts found', async () => {
+    const { useShorts } = await import('@/modules/shorts/hooks/useShorts');
     useShorts.mockReturnValue({
       shorts: [],
       loading: false,

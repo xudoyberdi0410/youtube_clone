@@ -12,13 +12,13 @@ jest.mock('@/lib/i18n', () => ({
 }))
 
 jest.mock('@/lib/utils/format', () => ({
-  formatFullDateIntl: (date: string) => 'Formatted Date',
+  formatFullDateIntl: () => 'Formatted Date',
 }))
 
 jest.mock('@/modules/channel/ui/components/channel-header', () => ({
-  ChannelHeader: ({ channel }: { channel: any }) => (
-    <div data-testid="channel-header" data-channel-id={channel.id}>
-      Channel Header - {channel.name}
+  ChannelHeader: ({ channel }: { channel: unknown }) => (
+    <div data-testid="channel-header" data-channel-id={(channel as { id: string }).id}>
+      Channel Header - {(channel as { name: string }).name}
     </div>
   ),
 }))
@@ -34,7 +34,7 @@ jest.mock('@/modules/channel/ui/components/channel-tabs', () => ({
 }))
 
 jest.mock('@/components/video/video-grid', () => ({
-  VideoGrid: ({ videos, currentChannelId }: { videos: any[]; currentChannelId: string }) => (
+  VideoGrid: ({ videos, currentChannelId }: { videos: unknown[]; currentChannelId: string }) => (
     <div data-testid="video-grid" data-channel-id={currentChannelId}>
       Video Grid - {videos.length} videos
     </div>
@@ -48,7 +48,12 @@ jest.mock('@/components/ui/loading-spinner', () => ({
 }))
 
 describe('Channel Page', () => {
-  const useChannelPageData = require('@/modules/channel/hooks/use-channel-page-data').useChannelPageData
+  let useChannelPageData: any
+
+  beforeAll(async () => {
+    const channelModule = await import('@/modules/channel/hooks/use-channel-page-data')
+    useChannelPageData = channelModule.useChannelPageData
+  })
 
   const mockChannel = {
     id: 'channel-1',

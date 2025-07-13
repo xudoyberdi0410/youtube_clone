@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { DashboardPage } from '@/modules/studio/pages/DashboardPage';
 import { useRouter } from 'next/navigation';
 
@@ -79,11 +79,11 @@ describe('Studio Dashboard Page', () => {
     prefetch: jest.fn(),
   };
 
-  beforeEach(() => {
+  beforeEach(async () => {
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
 
     // Mock useAuth hook
-    const { useAuth } = require('@/modules/auth/hooks/use-auth');
+    const { useAuth } = await import('@/modules/auth/hooks/use-auth');
     useAuth.mockReturnValue({
       user: { id: 'user-1', name: 'Test User' },
       isLoading: false,

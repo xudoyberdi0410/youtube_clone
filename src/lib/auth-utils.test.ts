@@ -20,7 +20,7 @@ describe('Auth Utils', () => {
   describe('getCurrentUserId', () => {
     it('returns null when window is undefined (SSR)', () => {
       const originalWindow = global.window
-      delete (global as any).window
+      delete (global as unknown as { window: unknown }).window
 
       const result = getCurrentUserId()
 
@@ -95,7 +95,7 @@ describe('Auth Utils', () => {
   describe('isUserAuthenticated', () => {
     it('returns false when window is undefined (SSR)', () => {
       const originalWindow = global.window
-      delete (global as any).window
+      delete (global as unknown as { window: unknown }).window
 
       const result = isUserAuthenticated()
 

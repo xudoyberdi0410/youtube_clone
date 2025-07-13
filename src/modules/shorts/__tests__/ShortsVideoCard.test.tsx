@@ -5,7 +5,7 @@ import { ShortVideo } from '../types';
 
 // Mock the Button component
 jest.mock('@/components/ui/button', () => ({
-  Button: ({ children, onClick, className, variant, size, 'aria-label': ariaLabel, ...props }: any) => (
+  Button: ({ children, onClick, className, 'aria-label': ariaLabel, ...props }: { children: React.ReactNode; onClick?: () => void; className?: string; 'aria-label'?: string; [key: string]: unknown }) => (
     <button onClick={onClick} className={className} aria-label={ariaLabel} {...props}>
       {children}
     </button>

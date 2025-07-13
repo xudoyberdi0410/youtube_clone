@@ -27,11 +27,11 @@ describe('Feed Your Videos Page', () => {
 
 
 
-  beforeEach(() => {
+  beforeEach(async () => {
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
 
     // Mock useAuth hook
-    const { useAuth } = require('@/modules/auth/hooks/use-auth');
+    const { useAuth } = await import('@/modules/auth/hooks/use-auth');
     useAuth.mockReturnValue({
       user: { id: 'user-1', name: 'Test User' },
       isLoading: false,
@@ -67,40 +67,58 @@ describe('Feed Your Videos Page', () => {
 
 
 
-  it('shows loading state when auth is loading', () => {
-    const { useAuth } = require('@/modules/auth/hooks/use-auth');
-    useAuth.mockReturnValue({
-      user: null,
-      isLoading: false,
+  it('shows loading state when videos are loading', async () => {
+    const { useVideos } = await import('@/hooks/use-videos');
+    useVideos.mockReturnValue({
+      videos: [],
+      isLoading: true,
       error: null,
-      isAuthenticated: false,
-      isLoggedIn: false,
-      loading: true,
+      refetch: jest.fn(),
     });
 
     render(<YourVideosPage />);
+    expect(screen.getByRole('status')).toBeInTheDocument();
+  });
 
-    // Should show loading skeleton
-    expect(screen.getByTestId('loading-skeleton')).toBeInTheDocument();
+  it('shows error state when videos fail to load', async () => {
+    const { useVideos } = await import('@/hooks/use-videos');
+    useVideos.mockReturnValue({
+      videos: [],
+      isLoading: false,
+      error: 'Failed to load videos',
+      refetch: jest.fn(),
+    });
+
+    render(<YourVideosPage />);
+    expect(screen.getByText('Failed to load videos')).toBeInTheDocument();
+  });
+
+  it('shows empty state when no videos found', async () => {
+    const { useVideos } = await import('@/hooks/use-videos');
+    useVideos.mockReturnValue({
+      videos: [],
+      isLoading: false,
+      error: null,
+      refetch: jest.fn(),
+    });
+
+    render(<YourVideosPage />);
+    expect(screen.getByText('No videos found')).toBeInTheDocument();
   });
 
 
 
 
 
-  it('requires authentication to access your videos', () => {
-    const { useAuth } = require('@/modules/auth/hooks/use-auth');
+  it('requires authentication to access your videos', async () => {
+    const { useAuth } = await import('@/modules/auth/hooks/use-auth');
     useAuth.mockReturnValue({
       user: null,
-      isLoading: false,
-      error: null,
-      isAuthenticated: false,
       isLoggedIn: false,
       loading: false,
     });
 
     render(<YourVideosPage />);
-
     expect(screen.getByText('Sign in to view your videos')).toBeInTheDocument();
   });
 

@@ -23,11 +23,11 @@ describe('Upload Page', () => {
     prefetch: jest.fn(),
   };
 
-  beforeEach(() => {
+  beforeEach(async () => {
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
 
     // Mock useAuth hook
-    const { useAuth } = require('@/modules/auth/hooks/use-auth');
+    const { useAuth } = await import('@/modules/auth/hooks/use-auth');
     useAuth.mockReturnValue({
       user: { id: 'user-1', name: 'Test User' },
       isLoading: false,
@@ -113,8 +113,8 @@ describe('Upload Page', () => {
     });
   });
 
-  it('requires authentication to access upload page', () => {
-    const { useAuth } = require('@/modules/auth/hooks/use-auth');
+  it('requires authentication to access upload page', async () => {
+    const { useAuth } = await import('@/modules/auth/hooks/use-auth');
     useAuth.mockReturnValue({
       user: null,
       isLoading: false,
@@ -127,8 +127,8 @@ describe('Upload Page', () => {
     expect(screen.getByText('Upload')).toBeInTheDocument();
   });
 
-  it('shows loading state when user is loading', () => {
-    const { useAuth } = require('@/modules/auth/hooks/use-auth');
+  it('shows loading state when user is loading', async () => {
+    const { useAuth } = await import('@/modules/auth/hooks/use-auth');
     useAuth.mockReturnValue({
       user: null,
       isLoading: true,
@@ -141,8 +141,8 @@ describe('Upload Page', () => {
     expect(screen.getByText('Upload')).toBeInTheDocument();
   });
 
-  it('shows error state when auth fails', () => {
-    const { useAuth } = require('@/modules/auth/hooks/use-auth');
+  it('shows error state when auth fails', async () => {
+    const { useAuth } = await import('@/modules/auth/hooks/use-auth');
     useAuth.mockReturnValue({
       user: null,
       isLoading: false,

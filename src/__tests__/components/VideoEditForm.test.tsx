@@ -3,7 +3,7 @@ import { VideoEditForm } from '@/modules/upload/ui/components/video-edit-form'
 
 // Mock i18n
 jest.mock('@/lib/i18n', () => ({
-  t: (key: string, params?: Record<string, any>) => {
+  t: (key: string, params?: Record<string, unknown>) => {
     if (params) {
       return key.replace(/\{(\w+)\}/g, (_, param) => params[param] || '')
     }

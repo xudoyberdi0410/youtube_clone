@@ -1,3 +1,4 @@
+import '@testing-library/jest-dom';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { UniversalVideoCard } from '@/components/video/UniversalVideoCard'
 import { useVideoPreview } from '@/hooks/use-video-preview'
@@ -14,7 +15,7 @@ jest.mock('@/lib/i18n', () => ({
 // Mock Next.js components
 jest.mock('next/image', () => ({
   __esModule: true,
-  default: ({ src, alt, fill, priority, ...props }: any) => {
+  default: ({ src, alt, ...props }: { src: string; alt: string; [key: string]: unknown }) => {
     // Фильтруем props, которые не должны передаваться в img
     const imgProps = { ...props };
     delete imgProps.fill;
@@ -34,7 +35,7 @@ jest.mock('next/image', () => ({
 
 jest.mock('next/link', () => ({
   __esModule: true,
-  default: ({ children, href, ...props }: any) => (
+  default: ({ children, href, ...props }: { children: React.ReactNode; href: string; [key: string]: unknown }) => (
     <a href={href} {...props}>{children}</a>
   ),
 }))
@@ -43,6 +44,16 @@ jest.mock('next/link', () => ({
 jest.mock('@/components/youtube-icons', () => ({
   VerifiedIcon: () => <svg data-testid="verified-icon" />
 }))
+
+jest.mock('@/components/video/UniversalVideoCard', () => ({
+  __esModule: true,
+  default: ({ video }: { video: { title: string; preview: string } }) => (
+    <div data-testid="universal-video-card">
+      <h3>{video.title}</h3>
+      <div data-testid="video-preview" data-src={video.preview} data-alt={`Preview for ${video.title}`} />
+    </div>
+  ),
+}));
 
 const mockUseVideoPreview = useVideoPreview as jest.MockedFunction<typeof useVideoPreview>
 const mockUseInstantPlay = useInstantPlay as jest.MockedFunction<typeof useInstantPlay>

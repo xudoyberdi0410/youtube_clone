@@ -418,7 +418,7 @@ describe('useLikedVideos', () => {
       register: jest.fn()
     })
 
-    const { result, rerender } = renderHook(() => useLikedVideos())
+    const { rerender } = renderHook(() => useLikedVideos())
 
     expect(mockApiClient.getLikes).not.toHaveBeenCalled()
 

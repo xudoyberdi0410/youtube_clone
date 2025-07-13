@@ -1,5 +1,4 @@
 import { ApiClient } from '@/lib/api-client'
-import { API_CONFIG } from '@/lib/api-config'
 
 // Mock fetch globally
 global.fetch = jest.fn()

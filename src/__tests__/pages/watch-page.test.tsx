@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { useRouter } from 'next/navigation';
 import { WatchVideo } from '@/modules/home/ui/components/watch-video';
 
@@ -54,11 +54,11 @@ describe('Watch Page', () => {
     prefetch: jest.fn(),
   };
 
-  beforeEach(() => {
+  beforeEach(async () => {
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
     
     // Mock useVideo hook
-    const { default: useVideo } = require('@/hooks/use-video');
+    const { default: useVideo } = await import('@/hooks/use-video');
     useVideo.mockReturnValue({
       video: null,
       isLoading: false,
@@ -66,7 +66,7 @@ describe('Watch Page', () => {
     });
 
     // Mock useVideoComments hook
-    const { default: useVideoComments } = require('@/hooks/use-video-comments');
+    const { default: useVideoComments } = await import('@/hooks/use-video-comments');
     useVideoComments.mockReturnValue({
       comments: [],
       isLoading: false,
@@ -75,7 +75,7 @@ describe('Watch Page', () => {
     });
 
     // Mock useVideoStats hook
-    const { useVideoStats } = require('@/hooks/use-video-stats');
+    const { useVideoStats } = await import('@/hooks/use-video-stats');
     useVideoStats.mockReturnValue({
       stats: {
         viewCount: 0,
@@ -87,7 +87,7 @@ describe('Watch Page', () => {
     });
 
     // Mock useLikes hook
-    const { default: useLikes } = require('@/hooks/use-likes');
+    const { default: useLikes } = await import('@/hooks/use-likes');
     useLikes.mockReturnValue({
       isLiked: false,
       isDisliked: false,
@@ -98,7 +98,7 @@ describe('Watch Page', () => {
     });
 
     // Mock useSubscriptions hook
-    const { default: useSubscriptions } = require('@/hooks/use-subscriptions');
+    const { default: useSubscriptions } = await import('@/hooks/use-subscriptions');
     useSubscriptions.mockReturnValue({
       isSubscribed: false,
       subscriberCount: 0,
@@ -107,7 +107,7 @@ describe('Watch Page', () => {
     });
 
     // Mock usePlaylists hook
-    const { default: usePlaylists } = require('@/hooks/use-playlists');
+    const { default: usePlaylists } = await import('@/hooks/use-playlists');
     usePlaylists.mockReturnValue({
       playlists: [],
       isLoading: false,
@@ -126,8 +126,8 @@ describe('Watch Page', () => {
     expect(skeletonElements.length).toBeGreaterThan(0);
   });
 
-  it('shows error state when video fails to load', () => {
-    const { default: useVideo } = require('@/hooks/use-video');
+  it('shows error state when video fails to load', async () => {
+    const { default: useVideo } = await import('@/hooks/use-video');
     useVideo.mockReturnValue({
       video: null,
       isLoading: false,
@@ -140,8 +140,8 @@ describe('Watch Page', () => {
     expect(skeletonElements.length).toBeGreaterThan(0);
   });
 
-  it('shows loading skeleton when loading', () => {
-    const { default: useVideo } = require('@/hooks/use-video');
+  it('shows loading skeleton when loading', async () => {
+    const { default: useVideo } = await import('@/hooks/use-video');
     useVideo.mockReturnValue({
       video: null,
       isLoading: true,
@@ -154,8 +154,8 @@ describe('Watch Page', () => {
     expect(skeletonElements.length).toBeGreaterThan(0);
   });
 
-  it('shows empty state when no video ID provided', () => {
-    const { default: useVideo } = require('@/hooks/use-video');
+  it('shows empty state when no video ID provided', async () => {
+    const { default: useVideo } = await import('@/hooks/use-video');
     useVideo.mockReturnValue({
       video: null,
       isLoading: false,

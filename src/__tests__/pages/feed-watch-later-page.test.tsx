@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { useRouter } from 'next/navigation';
 import WatchLaterPage from '@/app/feed/watch-later/page';
 
@@ -47,8 +47,8 @@ describe('Feed Watch Later Page', () => {
     jest.clearAllMocks();
   });
 
-  it('renders sign in prompt when not authenticated', () => {
-    const { useAuth } = require('@/modules/auth/hooks/use-auth');
+  it('renders sign in prompt when not authenticated', async () => {
+    const { useAuth } = await import('@/modules/auth/hooks/use-auth');
     useAuth.mockReturnValue({
       isLoggedIn: false,
       loading: false,
@@ -61,7 +61,7 @@ describe('Feed Watch Later Page', () => {
   });
 
   it('renders empty state when authenticated', async () => {
-    const { useAuth } = require('@/modules/auth/hooks/use-auth');
+    const { useAuth } = await import('@/modules/auth/hooks/use-auth');
     useAuth.mockReturnValue({
       isLoggedIn: true,
       loading: false,
@@ -74,8 +74,8 @@ describe('Feed Watch Later Page', () => {
     expect(screen.getByText('Save videos to watch them later')).toBeInTheDocument();
   });
 
-  it('shows loading state', () => {
-    const { useAuth } = require('@/modules/auth/hooks/use-auth');
+  it('shows loading state', async () => {
+    const { useAuth } = await import('@/modules/auth/hooks/use-auth');
     useAuth.mockReturnValue({
       isLoggedIn: false,
       loading: true,
@@ -88,7 +88,7 @@ describe('Feed Watch Later Page', () => {
   });
 
   it('shows auth dialog when sign in button is clicked', async () => {
-    const { useAuth } = require('@/modules/auth/hooks/use-auth');
+    const { useAuth } = await import('@/modules/auth/hooks/use-auth');
     useAuth.mockReturnValue({
       isLoggedIn: false,
       loading: false,
@@ -100,8 +100,8 @@ describe('Feed Watch Later Page', () => {
     expect(signInButton).toBeInTheDocument();
   });
 
-  it('displays clock icon in header when authenticated', () => {
-    const { useAuth } = require('@/modules/auth/hooks/use-auth');
+  it('displays clock icon in header when authenticated', async () => {
+    const { useAuth } = await import('@/modules/auth/hooks/use-auth');
     useAuth.mockReturnValue({
       isLoggedIn: true,
       loading: false,
@@ -114,8 +114,8 @@ describe('Feed Watch Later Page', () => {
     expect(clockIcons.length).toBeGreaterThan(0);
   });
 
-  it('displays clock icon in empty state when authenticated', () => {
-    const { useAuth } = require('@/modules/auth/hooks/use-auth');
+  it('displays clock icon in empty state when authenticated', async () => {
+    const { useAuth } = await import('@/modules/auth/hooks/use-auth');
     useAuth.mockReturnValue({
       isLoggedIn: true,
       loading: false,
@@ -128,8 +128,8 @@ describe('Feed Watch Later Page', () => {
     expect(clockIcons.length).toBeGreaterThan(0);
   });
 
-  it('displays clock icon in sign in prompt when not authenticated', () => {
-    const { useAuth } = require('@/modules/auth/hooks/use-auth');
+  it('displays clock icon in sign in prompt when not authenticated', async () => {
+    const { useAuth } = await import('@/modules/auth/hooks/use-auth');
     useAuth.mockReturnValue({
       isLoggedIn: false,
       loading: false,

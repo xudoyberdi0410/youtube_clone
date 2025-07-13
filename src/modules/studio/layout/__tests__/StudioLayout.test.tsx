@@ -1,8 +1,7 @@
-import { render, screen, fireEvent, waitFor, within } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { StudioLayout } from '../StudioLayout'
 import { useTheme } from 'next-themes'
-import { t, setLanguage, getCurrentLanguage } from '@/lib/i18n'
+import { getCurrentLanguage } from '@/lib/i18n'
 
 // --- Моки ---
 jest.mock('next-themes', () => ({
@@ -36,13 +35,12 @@ jest.mock('next/navigation', () => ({
 }))
 
 jest.mock('next/link', () => {
-  return function MockLink({ children, href, ...props }: any) {
+  return function MockLink({ children, href, ...props }: { children: React.ReactNode; href: string; [key: string]: unknown }) {
     return <a href={href} {...props}>{children}</a>
   }
 })
 
 const mockUseTheme = useTheme as jest.MockedFunction<typeof useTheme>
-const mockSetLanguage = setLanguage as jest.MockedFunction<typeof setLanguage>
 const mockGetCurrentLanguage = getCurrentLanguage as jest.MockedFunction<typeof getCurrentLanguage>
 
 // Mock window.location.reload

@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { ShortsFeed } from '../ShortsFeed';
 import { useShorts } from '../hooks/useShorts';
 import { ShortVideo } from '../types';
@@ -26,8 +26,8 @@ jest.mock('../../../lib/i18n', () => ({
 // Mock the Image component
 jest.mock('next/image', () => ({
   __esModule: true,
-  default: ({ src, alt, className, width, height, unoptimized }: any) => (
-    <img src={src} alt={alt} className={className} width={width} height={height} data-testid="next-image" />
+  default: ({ src, alt, className, width, height }: { src: string; alt: string; className?: string; width?: number; height?: number }) => (
+    <div data-testid="next-image" data-src={src} data-alt={alt} className={className} style={{ width, height }} />
   ),
 }));
 
@@ -262,9 +262,9 @@ describe('ShortsFeed', () => {
     const images = screen.getAllByTestId('next-image');
     expect(images.length).toBeGreaterThan(0);
     
-    const avatarImage = images.find(img => img.getAttribute('src') === mockShorts[0].channel!.profile_image_url);
+    const avatarImage = images.find(img => img.getAttribute('data-src') === mockShorts[0].channel!.profile_image_url);
     expect(avatarImage).toBeInTheDocument();
-    expect(avatarImage).toHaveAttribute('alt', mockShorts[0].channel!.channel_name);
+    expect(avatarImage).toHaveAttribute('data-alt', mockShorts[0].channel!.channel_name);
   });
 
   it('should render video stats correctly', () => {

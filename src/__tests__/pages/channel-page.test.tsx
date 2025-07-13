@@ -1,6 +1,6 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import ChannelPage from '@/app/channel/page';
+import ChannelPageWrapper from '@/app/channel/page';
 
 // Mock Next.js router
 jest.mock('next/navigation', () => ({
@@ -40,12 +40,12 @@ describe('Channel Page', () => {
     prefetch: jest.fn(),
   };
 
-  beforeEach(() => {
+  beforeEach(async () => {
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
     (useSearchParams as jest.Mock).mockReturnValue(new URLSearchParams('?name=test-channel'));
 
     // Mock useChannelPageData hook
-    const { useChannelPageData } = require('@/modules/channel/hooks/use-channel-page-data');
+    const { useChannelPageData } = await import('@/modules/channel/hooks/use-channel-page-data');
     useChannelPageData.mockReturnValue({
       channelName: 'test-channel',
       channel: null,
@@ -62,14 +62,14 @@ describe('Channel Page', () => {
   });
 
   it('renders channel page', () => {
-    render(<ChannelPage />);
+    render(<ChannelPageWrapper />);
     // Проверяем наличие любого div элемента
     const divElements = document.querySelectorAll('div');
     expect(divElements.length).toBeGreaterThan(0);
   });
 
-  it('shows error state when channel fails to load', () => {
-    const { useChannelPageData } = require('@/modules/channel/hooks/use-channel-page-data');
+  it('shows error state when channel fails to load', async () => {
+    const { useChannelPageData } = await import('@/modules/channel/hooks/use-channel-page-data');
     useChannelPageData.mockReturnValue({
       channelName: 'test-channel',
       channel: null,
@@ -80,14 +80,14 @@ describe('Channel Page', () => {
       error: null,
     });
 
-    render(<ChannelPage />);
+    render(<ChannelPageWrapper />);
     expect(screen.getByText('Failed to load channel')).toBeInTheDocument();
   });
 
-  it('handles missing channel ID gracefully', () => {
+  it('handles missing channel ID gracefully', async () => {
     (useSearchParams as jest.Mock).mockReturnValue(new URLSearchParams(''));
 
-    const { useChannelPageData } = require('@/modules/channel/hooks/use-channel-page-data');
+    const { useChannelPageData } = await import('@/modules/channel/hooks/use-channel-page-data');
     useChannelPageData.mockReturnValue({
       channelName: null,
       channel: null,
@@ -98,7 +98,7 @@ describe('Channel Page', () => {
       error: null,
     });
 
-    render(<ChannelPage />);
+    render(<ChannelPageWrapper />);
     expect(screen.getByText('channel.nameNotProvided')).toBeInTheDocument();
   });
 }); 

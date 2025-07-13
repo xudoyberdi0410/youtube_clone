@@ -18,34 +18,34 @@ describe('VideoComments', () => {
     videoId: '123'
   }
 
-  const mockComments = [
-    {
-      comment_id: '1',
-      user_id: 'user1',
-      username: 'TestUser1',
-      comment_text: 'Great video!',
-      created_at: '2023-01-01T00:00:00Z',
-      likes_count: 5,
-      dislikes_count: 1,
-      is_liked: false,
-      is_disliked: false,
-      can_edit: false,
-      can_delete: false
-    },
-    {
-      comment_id: '2',
-      user_id: 'user2',
-      username: 'TestUser2',
-      comment_text: 'Amazing content!',
-      created_at: '2023-01-02T00:00:00Z',
-      likes_count: 3,
-      dislikes_count: 0,
-      is_liked: true,
-      is_disliked: false,
-      can_edit: false,
-      can_delete: false
-    }
-  ]
+  // const mockComments = [
+  //   {
+  //     comment_id: '1',
+  //     user_id: 'user1',
+  //     username: 'TestUser1',
+  //     comment_text: 'Great video!',
+  //     created_at: '2023-01-01T00:00:00Z',
+  //     likes_count: 5,
+  //     dislikes_count: 1,
+  //     is_liked: false,
+  //     is_disliked: false,
+  //     can_edit: false,
+  //     can_delete: false
+  //   },
+  //   {
+  //     comment_id: '2',
+  //     user_id: 'user2',
+  //     username: 'TestUser2',
+  //     comment_text: 'Amazing content!',
+  //     created_at: '2023-01-02T00:00:00Z',
+  //     likes_count: 3,
+  //     dislikes_count: 0,
+  //     is_liked: true,
+  //     is_disliked: false,
+  //     can_edit: false,
+  //     can_delete: false
+  //   }
+  // ]
 
   beforeEach(() => {
     mockUseVideoComments.mockReturnValue({

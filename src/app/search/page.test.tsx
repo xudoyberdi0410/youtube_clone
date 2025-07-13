@@ -9,13 +9,13 @@ jest.mock('next/navigation', () => ({
 
 // Mock the SearchPageContent component
 jest.mock('@/modules/home/ui/components/search/SearchPageContent', () => ({
-  SearchPageContent: ({ query, videos }: { query: string; videos: any[] }) => (
+  SearchPageContent: ({ query, videos }: { query: string; videos: unknown[] }) => (
     <div data-testid="search-page-content" data-query={query}>
       Search Results for: {query}
       <div data-testid="videos-count">Found {videos.length} videos</div>
       {videos.map((video) => (
-        <div key={video.id} data-testid={`video-${video.id}`}>
-          {video.title}
+        <div key={(video as { id: string }).id} data-testid={`video-${(video as { id: string }).id}`}>
+          {(video as { title: string }).title}
         </div>
       ))}
     </div>
@@ -23,7 +23,12 @@ jest.mock('@/modules/home/ui/components/search/SearchPageContent', () => ({
 }))
 
 describe('Search Page', () => {
-  const useSearchParams = require('next/navigation').useSearchParams
+  let useSearchParams: any
+
+  beforeAll(async () => {
+    const navigationModule = await import('next/navigation')
+    useSearchParams = navigationModule.useSearchParams
+  })
 
   beforeEach(() => {
     jest.clearAllMocks()

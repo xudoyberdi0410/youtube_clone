@@ -53,11 +53,11 @@ describe('Feed Playlists Page', () => {
     },
   ];
 
-  beforeEach(() => {
+  beforeEach(async () => {
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
 
     // Mock useAuth hook
-    const { useAuth } = require('@/modules/auth/hooks/use-auth');
+    const { useAuth } = await import('@/modules/auth/hooks/use-auth');
     useAuth.mockReturnValue({
       user: { id: 'user-1', name: 'Test User' },
       isLoading: false,
@@ -66,7 +66,7 @@ describe('Feed Playlists Page', () => {
     });
 
     // Mock usePlaylists hook
-    const { usePlaylists } = require('@/hooks/use-playlists');
+    const { usePlaylists } = await import('@/hooks/use-playlists');
     usePlaylists.mockReturnValue({
       playlists: mockPlaylists,
       isLoading: false,
@@ -89,34 +89,58 @@ describe('Feed Playlists Page', () => {
     });
   });
 
-  it('shows empty state when no playlists found', () => {
-    const { usePlaylists } = require('@/hooks/use-playlists');
+  it('shows loading state when playlists are loading', async () => {
+    const { usePlaylists } = await import('@/hooks/use-playlists');
+    usePlaylists.mockReturnValue({
+      playlists: [],
+      isLoading: true,
+      error: null,
+      refetch: jest.fn(),
+    });
+
+    render(<PlaylistsPage />);
+    expect(screen.getByRole('status')).toBeInTheDocument();
+  });
+
+  it('shows error state when playlists fail to load', async () => {
+    const { usePlaylists } = await import('@/hooks/use-playlists');
+    usePlaylists.mockReturnValue({
+      playlists: [],
+      isLoading: false,
+      error: 'Failed to load playlists',
+      refetch: jest.fn(),
+    });
+
+    render(<PlaylistsPage />);
+    expect(screen.getByText('Failed to load playlists')).toBeInTheDocument();
+  });
+
+  it('shows empty state when no playlists found', async () => {
+    const { usePlaylists } = await import('@/hooks/use-playlists');
     usePlaylists.mockReturnValue({
       playlists: [],
       isLoading: false,
       error: null,
-      createPlaylist: jest.fn(),
-      updatePlaylist: jest.fn(),
-      deletePlaylist: jest.fn(),
+      refetch: jest.fn(),
     });
 
     render(<PlaylistsPage />);
-
-    expect(screen.getByText(/No playlists yet/)).toBeInTheDocument();
+    expect(screen.getByText('No playlists yet')).toBeInTheDocument();
   });
 
-  it('requires authentication to access playlists', () => {
-    const { useAuth } = require('@/modules/auth/hooks/use-auth');
+  it('requires authentication to access playlists', async () => {
+    const { useAuth } = await import('@/modules/auth/hooks/use-auth');
     useAuth.mockReturnValue({
-      user: null,
-      isLoading: false,
-      error: null,
       isLoggedIn: false,
+      user: null,
+      loading: false,
+      isAuthenticated: false,
+      isLoading: false,
     });
 
     render(<PlaylistsPage />);
-
-    expect(screen.getByText(/Sign in to view your playlists/)).toBeInTheDocument();
+    // AuthRequiredDialog should be rendered when not logged in
+    expect(screen.getByText('Sign in to view your playlists')).toBeInTheDocument();
   });
 
   it('shows create playlist button', async () => {

@@ -42,11 +42,11 @@ describe('Settings Page', () => {
     avatar: 'user-avatar.jpg',
   };
 
-  beforeEach(() => {
+  beforeEach(async () => {
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
 
     // Mock useAuth hook
-    const { useAuth } = require('@/modules/auth/hooks/use-auth');
+    const { useAuth } = await import('@/modules/auth/hooks/use-auth');
     useAuth.mockReturnValue({
       user: mockUser,
       isLoading: false,
@@ -55,7 +55,7 @@ describe('Settings Page', () => {
     });
 
     // Mock useSettings hook
-    const { useSettings } = require('@/modules/settings/hooks/use-settings');
+    const { useSettings } = await import('@/modules/settings/hooks/use-settings');
     useSettings.mockReturnValue({
       user: mockUser,
       loading: false,
@@ -108,8 +108,8 @@ describe('Settings Page', () => {
     expect(screen.getByDisplayValue('test@example.com')).toBeInTheDocument();
   });
 
-  it('shows loading state when settings are loading', () => {
-    const { useSettings } = require('@/modules/settings/hooks/use-settings');
+  it('shows loading state when settings are loading', async () => {
+    const { useSettings } = await import('@/modules/settings/hooks/use-settings');
     useSettings.mockReturnValue({
       user: null,
       loading: true,
@@ -135,8 +135,8 @@ describe('Settings Page', () => {
     expect(screen.getByRole('status')).toBeInTheDocument();
   });
 
-  it('requires authentication to access settings', () => {
-    const { useSettings } = require('@/modules/settings/hooks/use-settings');
+  it('requires authentication to access settings', async () => {
+    const { useSettings } = await import('@/modules/settings/hooks/use-settings');
     useSettings.mockReturnValue({
       user: null,
       loading: false,

@@ -36,12 +36,12 @@ describe('Auth Page', () => {
   })
 
   it('calls notFound for invalid mode', async () => {
-    const { notFound } = require('next/navigation')
+    const { notFound } = await import('next/navigation')
     const params = Promise.resolve({ mode: 'invalid' })
     
     try {
       await AuthPage({ params })
-    } catch (error) {
+    } catch {
       // Expected to throw due to notFound call
     }
     

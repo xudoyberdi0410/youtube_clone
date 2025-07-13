@@ -90,11 +90,11 @@ describe('Feed You Page', () => {
     },
   ];
 
-  beforeEach(() => {
+  beforeEach(async () => {
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
 
     // Mock useAuth hook
-    const { useAuth } = require('@/modules/auth/hooks/use-auth');
+    const { useAuth } = await import('@/modules/auth/hooks/use-auth');
     useAuth.mockReturnValue({
       user: mockUser,
       isLoading: false,
@@ -103,7 +103,7 @@ describe('Feed You Page', () => {
     });
 
     // Mock useSubscriptions hook
-    const { default: useSubscriptions } = require('@/hooks/use-subscriptions');
+    const { default: useSubscriptions } = await import('@/hooks/use-subscriptions');
     useSubscriptions.mockReturnValue({
       subscriptions: mockSubscriptions,
       isLoading: false,
@@ -113,7 +113,7 @@ describe('Feed You Page', () => {
     });
 
     // Mock useLikedVideos hook
-    const { default: useLikedVideos } = require('@/hooks/use-liked-videos');
+    const { default: useLikedVideos } = await import('@/hooks/use-liked-videos');
     useLikedVideos.mockReturnValue({
       likedVideos: mockLikedVideos,
       isLoading: false,
