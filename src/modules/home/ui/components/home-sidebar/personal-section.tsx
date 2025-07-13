@@ -31,9 +31,10 @@ const items = [
         icon: List,
         auth: true
     },
+    // Вместо yourVideos — ссылка на Studio
     {
         title: t("sidebar.yourVideos"),
-        url: "/feed/your-videos",
+        url: "/studio/videos",
         icon: Play,
         auth: true
     },

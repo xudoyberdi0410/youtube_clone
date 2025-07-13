@@ -3,7 +3,7 @@
 export interface Channel {
   id: string
   name: string
-  avatarUrl: string
+  avatarUrl?: string
   isVerified?: boolean
   subscriberCount?: string
   description?: string

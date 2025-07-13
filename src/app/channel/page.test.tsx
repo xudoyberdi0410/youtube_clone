@@ -48,7 +48,7 @@ jest.mock('@/components/ui/loading-spinner', () => ({
 }))
 
 describe('Channel Page', () => {
-  let useChannelPageData: any
+  let useChannelPageData: jest.Mock
 
   beforeAll(async () => {
     const channelModule = await import('@/modules/channel/hooks/use-channel-page-data')

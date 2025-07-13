@@ -19,7 +19,13 @@ export default function PlaylistsPage() {
 
     const handlePlaylistCreated = async (playlistData: PlaylistCreate) => {
         try {
-            await createPlaylist(playlistData);
+            // Приводим к типу Omit<Playlist, 'id' | 'created_at'>
+            const playlistDataForApi = {
+                ...playlistData,
+                user_id: 0, // TODO: заменить на реальный user_id, если есть
+                is_public: true, // или false, если по умолчанию приватный
+            };
+            await createPlaylist(playlistDataForApi);
         } catch (error) {
             console.error('Failed to create playlist:', error);
         }

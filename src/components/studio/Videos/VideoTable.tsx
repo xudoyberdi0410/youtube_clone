@@ -142,7 +142,7 @@ export function VideoTable({ videos }: VideoTableProps) {
           </TableHeader>
           <TableBody>
             {filteredVideos.map((video) => (
-              <TableRow key={video.id || video.video_id}>
+              <TableRow key={video.id}>
                 <TableCell>
                   <div className="flex items-center gap-3">
                     <div className="relative w-20 h-12 bg-muted rounded overflow-hidden flex-shrink-0">

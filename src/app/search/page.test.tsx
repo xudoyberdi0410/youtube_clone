@@ -23,7 +23,7 @@ jest.mock('@/modules/home/ui/components/search/SearchPageContent', () => ({
 }))
 
 describe('Search Page', () => {
-  let useSearchParams: any
+  let useSearchParams: unknown
 
   beforeAll(async () => {
     const navigationModule = await import('next/navigation')

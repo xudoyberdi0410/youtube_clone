@@ -3,18 +3,21 @@ import { useState, useEffect } from "react";
 import { VideoMetaForm } from "@/components/studio/Upload/VideoMetaForm";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { mockVideos } from "@/lib/mock/studio-data";
 import { t } from "@/lib/i18n";
 
 import { Save, Trash2, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import Image from "next/image";
+import { useVideo } from "@/hooks/use-video";
 
 export function EditVideoPage() {
   const params = useParams();
   const videoId = params?.id as string;
-  
+
+  const { video, isLoading, error } = useVideo({ videoId });
+
+  // Local state for editing
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [tags, setTags] = useState<string[]>([]);
@@ -23,22 +26,20 @@ export function EditVideoPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
+  // Sync video data to local state when loaded
   useEffect(() => {
-    const video = mockVideos.find(v => v.id === videoId);
     if (video) {
       setTitle(video.title);
-      setDescription(video.description);
-      setTags(video.tags);
-      setVisibility(video.visibility);
-      setThumbnail(video.thumbnail);
+      setDescription(video.description || "");
+      setTags(video.tags || []);
+      setVisibility('public'); // always public for now
+      setThumbnail(video.preview);
     }
-  }, [videoId]);
-
-  const video = mockVideos.find(v => v.id === videoId);
+  }, [video]);
 
   const handleSave = async () => {
     setIsSaving(true);
-    // Simulate API call
+    // TODO: Implement real API update call
     await new Promise(resolve => setTimeout(resolve, 1000));
     setIsSaving(false);
     // In a real app, this would save to backend
@@ -49,16 +50,19 @@ export function EditVideoPage() {
     if (!confirm('Are you sure you want to delete this video? This action cannot be undone.')) {
       return;
     }
-    
     setIsDeleting(true);
-    // Simulate API call
+    // TODO: Implement real API delete call
     await new Promise(resolve => setTimeout(resolve, 1000));
     setIsDeleting(false);
     // In a real app, this would delete from backend
     console.log('Video deleted:', videoId);
   };
 
-  if (!video) {
+  if (isLoading) {
+    return <div className="text-center py-12 text-muted-foreground">{t('loading')}</div>;
+  }
+
+  if (error || !video) {
     return (
       <div className="text-center py-12">
         <h2 className="text-2xl font-bold mb-4">{t('studio.editVideo.videoNotFound')}</h2>
@@ -102,28 +106,34 @@ export function EditVideoPage() {
             <CardContent>
               <div className="space-y-4">
                 <div className="relative w-full bg-muted rounded-lg overflow-hidden">
-                  <Image
-                    src={video.thumbnail}
-                    alt={video.title}
-                    width={480}
-                    height={270}
-                    className="w-full h-48 object-cover"
-                  />
+                  {thumbnail ? (
+                    <Image
+                      src={thumbnail}
+                      alt={title}
+                      width={480}
+                      height={270}
+                      className="w-full h-48 object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-48 bg-gray-200 flex items-center justify-center text-gray-400">
+                      {t('studio.editVideo.noThumbnail')}
+                    </div>
+                  )}
                   <div className="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-2 py-1 rounded">
                     {video.duration}
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <h3 className="font-medium">{video.title}</h3>
+                  <h3 className="font-medium">{title}</h3>
                   <p className="text-sm text-muted-foreground">
-                    {video.views.toLocaleString()} views • {video.likes.toLocaleString()} likes
+                    {video.views.toLocaleString()} views • {(video.likes ?? 0).toLocaleString()} likes
                   </p>
                   <div className="flex gap-2">
                     <span className="text-xs bg-muted px-2 py-1 rounded">
-                      {video.status}
+                      published
                     </span>
                     <span className="text-xs bg-muted px-2 py-1 rounded">
-                      {video.visibility}
+                      public
                     </span>
                   </div>
                 </div>

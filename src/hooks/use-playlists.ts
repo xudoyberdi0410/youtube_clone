@@ -65,7 +65,13 @@ export function usePlaylists() {
     
     try {
       const apiClient = ApiClient.getInstance()
-      const newPlaylist = await apiClient.createPlaylist(playlistData)
+      // Приводим к PlaylistCreate, чтобы is_personal был boolean
+      const playlistCreate: import('@/types/api').PlaylistCreate = {
+        name: playlistData.name,
+        description: playlistData.description,
+        is_personal: playlistData.is_personal ?? false,
+      };
+      const newPlaylist = await apiClient.createPlaylist(playlistCreate)
       
       if (isMountedRef.current) {
         setState(prev => ({

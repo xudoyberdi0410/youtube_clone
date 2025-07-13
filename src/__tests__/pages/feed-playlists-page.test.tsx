@@ -99,7 +99,8 @@ describe('Feed Playlists Page', () => {
     });
 
     render(<PlaylistsPage />);
-    expect(screen.getByRole('status')).toBeInTheDocument();
+    // Check for loading skeleton elements
+    expect(document.querySelector('.animate-pulse')).toBeInTheDocument();
   });
 
   it('shows error state when playlists fail to load', async () => {

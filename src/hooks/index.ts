@@ -25,7 +25,7 @@ export { usePlaylists } from './use-playlists'
 export { useSubscriptions } from './use-subscriptions'
 
 // UI Hooks
-export { useMobile } from './use-mobile'
+export { useIsMobile } from './use-mobile'
 export { useToast } from './use-toast'
 export { useLocalStorage } from './use-local-storage'
 export { useIsClient } from './use-is-client'

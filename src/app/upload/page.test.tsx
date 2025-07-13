@@ -21,7 +21,7 @@ jest.mock('@/components/auth/AuthRequiredDialog', () => ({
 }))
 
 describe('Upload Page', () => {
-  let useAuth: any
+  let useAuth: unknown
 
   beforeAll(async () => {
     const authModule = await import('@/modules/auth/hooks/use-auth')

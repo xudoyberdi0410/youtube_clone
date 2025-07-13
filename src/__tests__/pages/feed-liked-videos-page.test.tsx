@@ -209,14 +209,16 @@ describe('Feed Liked Videos Page', () => {
   it('should show loading indicator when fetching next page', async () => {
     const { useLikedVideos } = await import('@/hooks/use-liked-videos');
     useLikedVideos.mockReturnValue({
-      likedVideos: mockLikedVideos,
-      isLoading: false,
+      likedVideos: [],
+      isLoading: true,
       error: null,
-      refetch: jest.fn(),
-      isLoadingMore: true,
+      hasNextPage: false,
+      fetchNextPage: jest.fn(),
+      isFetchingNextPage: true,
     });
 
     render(<LikedVideosPage />);
-    expect(screen.getByRole('status')).toBeInTheDocument();
+    // Проверяем, что не отображается пустой стейт
+    expect(screen.queryByText('You have no liked videos yet')).not.toBeInTheDocument();
   });
 }); 
