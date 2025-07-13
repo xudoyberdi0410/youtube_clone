@@ -39,7 +39,8 @@ describe('Auth Utils', () => {
     })
 
     it('extracts user ID from JWT token with sub claim', () => {
-      const mockToken = 'header.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.signature'
+      const payload = { sub: "1234567890", name: "John Doe", iat: 1516239022 }
+      const mockToken = 'header.' + btoa(JSON.stringify(payload)) + '.signature'
       localStorageMock.getItem.mockReturnValue(mockToken)
 
       const result = getCurrentUserId()
